@@ -1,3 +1,5 @@
+Read the full docs here: https://opulence.readthedocs.io/en/latest/index.html
+
 # Collectors
 Collectors are responsible for collecting data accross many different OSINT sources
 
@@ -47,5 +49,5 @@ test-collector <name of the collector>?
 ### Start the celery worker
 
 ```BASH
-celery worker -A opulence.app --queues=collectors,engine,default -l info
+celery worker --app opulence.app --queues=collectors,engine  --autoscale=10,3
 ```
