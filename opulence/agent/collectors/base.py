@@ -88,7 +88,7 @@ class BaseCollector:
                     yield out
                 else:
                     logger.error(
-                        f"Found unknown output from collector {self.config.name}: {out}"
+                        f"Found unknown output from collector {self.config.name}: {out}",
                     )
         except Exception as err:
             logger.error(f"Error while executing {fn} from {self.config.name}: {err}")
@@ -121,7 +121,7 @@ class BaseCollector:
         callbacks = self._prepare_callbacks(facts)
 
         logger.info(
-            f"Execute collector {self.config.name} with {len(facts)} facts and {len(callbacks)} callbacks"
+            f"Execute collector {self.config.name} with {len(facts)} facts and {len(callbacks)} callbacks",
         )
 
         output_facts = self._execute_callbacks(callbacks)

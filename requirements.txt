@@ -1,4 +1,5 @@
 celery==5.0.5
+celery-redbeat==2.0.0
 celerybeat-mongo==0.2.0
 docker
 dynaconf
@@ -8,4 +9,3 @@ loguru==0.5.3
 neo4j==4.2.1
 pydantic==1.7.3
 redis==3.5.3
-celery-redbeat==2.0.0

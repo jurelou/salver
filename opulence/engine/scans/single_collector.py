@@ -29,5 +29,5 @@ class SingleCollector(BaseScan):
         check_collector_exists(self.config.collector_name)
 
         agent_tasks.scan(
-            self.config.external_id, self.config.collector_name, self.config.facts
+            self.config.external_id, self.config.collector_name, self.config.facts,
         )

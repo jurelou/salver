@@ -9,7 +9,7 @@ from opulence.common.database.es.utils import create_client
 from opulence.config import agent_config
 
 all_collectors = CollectorFactory().build()
-queues = [Queue(collector) for collector in all_collectors.keys()]
+queues = [Queue(name) for name, config in all_collectors.items() if config["active"]]
 
 # Create celery app
 celery_app = create_app()

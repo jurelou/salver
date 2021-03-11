@@ -10,7 +10,7 @@ from opulence.facts.uri import Uri
 class Dirsearch(DockerCollector):
     config = {
         "name": "dirsearch",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):
@@ -18,7 +18,7 @@ class Dirsearch(DockerCollector):
 
     def from_domain(self, domain):
         data = self.run_container(
-            command=["-u", domain.fqdn, "-F", "--timeout=5", "-q", "-t", "4"]
+            command=["-u", domain.fqdn, "-F", "--timeout=5", "-q", "-t", "4"],
         )
         print("!!!!", data)
 

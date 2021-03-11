@@ -3,13 +3,17 @@ celery:
     result_backend: redis://localhost/0
 
 collectors:
-    - dummy-docker-collector
+    # - dummy-docker-collector
     - recon-ng
     - certificate-transparency
     - nmap
     # - dirsearch
     - sherlock
     - infoga
+    - harvester
+    - subfinder
+    - phone-infoga
+    - twint
 
 elasticsearch:
     endpoint:

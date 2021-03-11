@@ -15,7 +15,7 @@ from opulence.engine.controllers.scan import add_facts
 def scan_success(result, scan_id):
     try:
         logger.info(
-            f"Task success: got {len(result['facts'])} facts in {result['duration']}"
+            f"Task success: got {len(result['facts'])} facts in {result['duration']}",
         )
         # print(result)
         # add_many()

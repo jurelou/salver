@@ -17,7 +17,7 @@ class CertificateTransparency(BaseCollector):
         if res:
             for entry in res.json():
                 yield Domain(
-                    fqdn=entry["common_name"], certificate_issuer=entry["issuer_name"]
+                    fqdn=entry["common_name"], certificate_issuer=entry["issuer_name"],
                 )
         else:
             print(f"CT Error: {res}")

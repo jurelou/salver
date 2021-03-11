@@ -9,7 +9,7 @@ from opulence.facts.username import Username
 class Sherlock(DockerCollector):
     config = {
         "name": "sherlock",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):
@@ -17,7 +17,7 @@ class Sherlock(DockerCollector):
 
     def from_username(self, username):
         data = self.run_container(
-            command=[username.name, "--no-color", "--print-found", "--timeout", "20"]
+            command=[username.name, "--no-color", "--print-found", "--timeout", "20"],
         )
         for item in self.findall_regex(data, r"\[\+\] .*: (.*)\n"):
             yield Account(address=item)

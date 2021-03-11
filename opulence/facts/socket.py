@@ -13,7 +13,7 @@ class Socket(BaseFact):
                     "properties": {
                         "port": {"type": "integer"},
                         "proto": {"type": "keyword"},
-                    }
-                }
+                    },
+                },
             },
         )

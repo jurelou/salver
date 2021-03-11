@@ -9,7 +9,7 @@ from opulence.facts.email import Email
 class Infoga(DockerCollector):
     config = {
         "name": "infoga",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):

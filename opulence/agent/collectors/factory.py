@@ -27,7 +27,7 @@ class CollectorFactory(Factory):
                     f"Found collector with duplicate name `{collector_name}`.",
                 )
             logger.info(
-                f"Loaded collector {collector_name} with config: {collector_instance.config}"
+                f"Loaded collector {collector_name} with config: {collector_instance.config}",
             )
             collector_instances[collector_name] = {
                 "instance": collector_instance,

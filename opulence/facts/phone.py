@@ -1,11 +1,11 @@
 from opulence.common.fact import BaseFact
 
 
-class Uri(BaseFact):
-    location: str
+class Phone(BaseFact):
+    number: str
 
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {"mappings": {"properties": {"location": {"type": "keyword"}}}},
+            {"mappings": {"properties": {"number": {"type": "keyword"}}}},
         )

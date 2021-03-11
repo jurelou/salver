@@ -14,9 +14,7 @@ celery_app = create_app()
 celery_app.conf.update(engine_config.celery)
 
 
-celery_app.conf.update(
-    {"imports": "opulence.engine.tasks",}
-)
+celery_app.conf.update({"imports": "opulence.engine.tasks"})
 
 
 es_client = es_utils.create_client(engine_config.elasticsearch)
@@ -52,8 +50,10 @@ def ready(sender=None, conf=None, **kwargs):
         from opulence.engine.models.case import Case
         from opulence.engine.models.scan import Scan
         from opulence.engine import tasks  # pragma: nocover
+        from opulence.facts.company import Company
         from opulence.facts.domain import Domain
         from opulence.facts.person import Person
+        from opulence.facts.phone import Phone
         from opulence.facts.username import Username
 
         case = Case()
@@ -61,8 +61,10 @@ def ready(sender=None, conf=None, **kwargs):
 
         scan = Scan(
             facts=[
-                Username(name="jurelou"),
-                Domain(fqdn="wavely.fr"),
+                Phone(number="+33689181869"),
+                Username(name="groupevitamineT"),
+                Company(name="vitamineT"),
+                # Domain(fqdn="wavely.fr"),
                 Person(
                     firstname="fname",
                     lastname="lname",
@@ -72,7 +74,7 @@ def ready(sender=None, conf=None, **kwargs):
                 ),
             ],
             scan_type="single_collector",
-            collector_name="infoga",
+            collector_name="twint",
         )
 
         tasks.add_case.apply(args=[case])

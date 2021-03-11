@@ -44,7 +44,7 @@ def create(client, scan: Scan):
 
 
 def add_facts(
-    client, scan_id: uuid4, facts_ids: List[str], relationship: str = "UNKNOWN"
+    client, scan_id: uuid4, facts_ids: List[str], relationship: str = "UNKNOWN",
 ):
     formated_links = [{"from": scan_id.hex, "to": fact} for fact in facts_ids]
 

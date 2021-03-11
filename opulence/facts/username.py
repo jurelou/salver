@@ -7,5 +7,5 @@ class Username(BaseFact):
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {"mappings": {"properties": {"name": {"type": "keyword"},},},},
+            {"mappings": {"properties": {"name": {"type": "keyword"}}}},
         )

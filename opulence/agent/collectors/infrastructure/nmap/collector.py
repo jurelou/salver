@@ -11,7 +11,7 @@ from opulence.facts.socket import Socket
 class Nmap(DockerCollector):
     config = {
         "name": "nmap",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):

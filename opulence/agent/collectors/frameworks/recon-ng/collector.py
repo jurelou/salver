@@ -9,7 +9,7 @@ from opulence.facts.person import Person
 class DummyDocker(DockerCollector):
     config = {
         "name": "recon-ng",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):
@@ -24,7 +24,7 @@ class DummyDocker(DockerCollector):
                 "-o",
                 f"SOURCE={fqdn}",
                 "-x",
-            ]
+            ],
         )
         for item in self.findall_regex(data, r"Host: (.*)"):
             yield Domain(fqdn=item)

@@ -53,7 +53,7 @@ def get_many(client, facts):
     facts = []
     for fact_type, ids in mapping.items():
         logger.info(f"Get {fact_type}: {ids}")
-        res = client.mget(index=fact_to_index(fact_type), body={"ids": ids},)
+        res = client.mget(index=fact_to_index(fact_type), body={"ids": ids})
         facts.extend(
             [
                 BaseFact.from_obj(
