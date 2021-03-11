@@ -4,8 +4,7 @@ from celery.utils.log import get_task_logger
 from dynaconf import settings
 
 from opulence import App
-from opulence.common.job import Result
-from opulence.common.job import StatusCode
+from opulence.common.job import Result, StatusCode
 from opulence.common.plugins import PluginManager
 
 logger = get_task_logger(__name__)

@@ -1,9 +1,7 @@
-from time import time
 import uuid
+from time import time
 
-from pydantic import BaseConfig
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import BaseConfig, BaseModel, Field
 
 
 class Case(BaseModel):

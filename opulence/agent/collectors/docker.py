@@ -1,14 +1,10 @@
 import os
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import List, Optional, Union
 
 import docker
-from pydantic import BaseModel
-from pydantic import root_validator
+from pydantic import BaseModel, root_validator
 
-from opulence.agent.collectors.base import BaseCollector
-from opulence.agent.collectors.base import BaseConfig
+from opulence.agent.collectors.base import BaseCollector, BaseConfig
 
 
 class DockerConfig(BaseModel):

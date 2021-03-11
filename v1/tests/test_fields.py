@@ -1,8 +1,6 @@
 import unittest
 
-from opulence.common.fields import BaseField
-from opulence.common.fields import IntegerField
-from opulence.common.fields import StringField
+from opulence.common.fields import BaseField, IntegerField, StringField
 
 
 class TestStringField(unittest.TestCase):

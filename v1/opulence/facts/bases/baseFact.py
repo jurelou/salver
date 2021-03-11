@@ -1,5 +1,4 @@
-from opulence.common.fields import BaseField
-from opulence.common.fields import DynamicField
+from opulence.common.fields import BaseField, DynamicField
 from opulence.common.patterns import JsonSerializable
 from opulence.common.plugins.basePlugin import BasePlugin
 

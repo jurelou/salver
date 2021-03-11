@@ -1,13 +1,9 @@
 import json
 import unittest
 
-from opulence.common.fields import IntegerField
-from opulence.common.fields import StringField
-from opulence.common.job import Composable
-from opulence.common.job import Result
-from opulence.common.job import StatusCode
-from opulence.common.jsonEncoder import decode
-from opulence.common.jsonEncoder import encode
+from opulence.common.fields import IntegerField, StringField
+from opulence.common.job import Composable, Result, StatusCode
+from opulence.common.jsonEncoder import decode, encode
 from opulence.common.patterns import Composite
 from opulence.facts.bases import BaseFact
 

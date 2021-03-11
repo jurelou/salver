@@ -1,5 +1,4 @@
-from opulence.common.fields import BooleanField
-from opulence.common.fields import StringField
+from opulence.common.fields import BooleanField, StringField
 from opulence.facts.bases import BaseFact
 
 

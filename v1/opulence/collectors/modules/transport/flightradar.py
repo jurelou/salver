@@ -1,9 +1,6 @@
 from opulence.collectors.bases import PypiCollector
 from opulence.common.plugins.dependencies import ModuleDependency
-from opulence.facts import Flight
-from opulence.facts import GeoCoordinates
-from opulence.facts import Plane
-from opulence.facts import TravelTime
+from opulence.facts import Flight, GeoCoordinates, Plane, TravelTime
 
 
 class FlightRadar(PypiCollector):

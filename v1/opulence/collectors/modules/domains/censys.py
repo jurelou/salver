@@ -1,8 +1,7 @@
+import opulence.facts as facts
 from opulence.collectors.bases import PypiCollector
 from opulence.common.passwordstore import Store
-from opulence.common.plugins.dependencies import ModuleDependency
-from opulence.common.plugins.dependencies import PasswordDependency
-import opulence.facts as facts
+from opulence.common.plugins.dependencies import ModuleDependency, PasswordDependency
 
 
 class Censys(PypiCollector):

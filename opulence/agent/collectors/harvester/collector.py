@@ -53,7 +53,7 @@ class TheHarester(DockerCollector):
                     yield Email(address=email)
 
         for item, _ in self.findall_regex(
-            data, r"\[\*\] Hosts found: \d+\n---------------------\n((.|\n)*)"
+            data, r"\[\*\] Hosts found: \d+\n---------------------\n((.|\n)*)",
         ):
             for host in item.split("\n"):
                 if not host:

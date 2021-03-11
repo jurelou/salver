@@ -2,9 +2,9 @@ import sys
 
 from dynaconf import settings
 
+import opulence.facts as facts
 from opulence.common.job import Result
 from opulence.common.plugins import PluginManager
-import opulence.facts as facts
 
 COLLECTORS_PATHS = settings.COLLECTORS_MODULES
 

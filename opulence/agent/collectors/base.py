@@ -1,22 +1,17 @@
-from functools import partial
 import re
+from functools import partial
 
 # from opulence.agent.collectors.dependencies import Dependency
 from timeit import default_timer as timer
-from typing import Callable
-from typing import Dict
-from typing import Iterator
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Callable, Dict, Iterator, List, Optional, Union
 
 from loguru import logger
-from pydantic import BaseModel
-from pydantic import ValidationError
-from pydantic import root_validator
+from pydantic import BaseModel, ValidationError, root_validator
 
-from opulence.agent.collectors.exceptions import CollectorRuntimeError
-from opulence.agent.collectors.exceptions import InvalidCollectorDefinition
+from opulence.agent.collectors.exceptions import (
+    CollectorRuntimeError,
+    InvalidCollectorDefinition,
+)
 from opulence.common.fact import BaseFact
 from opulence.common.types import BaseSet
 from opulence.common.utils import make_list

@@ -1,10 +1,8 @@
+import uuid
 from time import time
 from typing import List
-import uuid
 
-from pydantic import BaseConfig
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import BaseConfig, BaseModel, Field
 
 from opulence.common.fact import BaseFact
 

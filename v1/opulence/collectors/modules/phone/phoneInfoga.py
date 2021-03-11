@@ -2,8 +2,7 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Country
-from opulence.facts import Phone
+from opulence.facts import Country, Phone
 
 
 class PhoneInfoga(ScriptCollector):

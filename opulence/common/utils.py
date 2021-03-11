@@ -1,8 +1,8 @@
-from importlib import import_module
 import inspect
 import os
 import pkgutil
 import sys
+from importlib import import_module
 
 
 def get_actual_dir():

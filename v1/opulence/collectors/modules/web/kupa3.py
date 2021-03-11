@@ -2,8 +2,7 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Domain
-from opulence.facts import File
+from opulence.facts import Domain, File
 
 
 class Kupa3(ScriptCollector):

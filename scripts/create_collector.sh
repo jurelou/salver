@@ -41,12 +41,10 @@ class $1(DockerCollector):
     def scan(self, domain):
         data = self.run_container(command="ls", "-la")
         for item in self.findall_regex(data, r"(.*)"):
-            yield 
+            yield
 
 
 
 EOL
 
 echo "Done $lower_name"
-
-

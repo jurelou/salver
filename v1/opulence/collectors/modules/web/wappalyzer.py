@@ -2,8 +2,7 @@ import json
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import CPE
-from opulence.facts import URI
+from opulence.facts import CPE, URI
 
 
 class Wappalyzer(ScriptCollector):

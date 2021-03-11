@@ -1,11 +1,9 @@
 from opulence.common.job import StatusCode
 from opulence.common.patterns import is_composite
 from opulence.common.plugins import BasePlugin
-from opulence.common.plugins.exceptions import PluginFormatError
-from opulence.common.plugins.exceptions import RateLimitException
+from opulence.common.plugins.exceptions import PluginFormatError, RateLimitException
 from opulence.common.tokenbucket.bucketsManager import Buckets
-from opulence.common.utils import is_iterable
-from opulence.common.utils import is_list
+from opulence.common.utils import is_iterable, is_list
 from opulence.facts.bases import BaseFact
 
 

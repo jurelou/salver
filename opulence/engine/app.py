@@ -1,6 +1,5 @@
 from celery.result import allow_join_result
-from celery.signals import worker_init
-from celery.signals import worker_ready
+from celery.signals import worker_init, worker_ready
 from loguru import logger
 
 from opulence.common.celery import create_app
@@ -47,9 +46,9 @@ def init(sender=None, conf=None, **kwargs):
 def ready(sender=None, conf=None, **kwargs):
     try:
 
+        from opulence.engine import tasks  # pragma: nocover
         from opulence.engine.models.case import Case
         from opulence.engine.models.scan import Scan
-        from opulence.engine import tasks  # pragma: nocover
         from opulence.facts.company import Company
         from opulence.facts.domain import Domain
         from opulence.facts.person import Person

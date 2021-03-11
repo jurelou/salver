@@ -1,8 +1,7 @@
 from celery.signals import worker_ready
 
 from . import collector_tasks  # noqa: W0611
-from . import fact_tasks
-from . import scan_tasks
+from . import fact_tasks, scan_tasks
 from .scans import tasks as scan_task
 
 

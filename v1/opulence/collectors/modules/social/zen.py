@@ -2,12 +2,8 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.passwordstore import Store
-from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.common.plugins.dependencies import PasswordDependency
-from opulence.facts import Email
-from opulence.facts import GitRepository
-from opulence.facts import Organization
-from opulence.facts import Username
+from opulence.common.plugins.dependencies import BinaryDependency, PasswordDependency
+from opulence.facts import Email, GitRepository, Organization, Username
 
 
 class Zen(ScriptCollector):

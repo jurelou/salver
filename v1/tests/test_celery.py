@@ -1,14 +1,11 @@
 import unittest
-from unittest.mock import MagicMock
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from celery.exceptions import TimeoutError
 
-from opulence.common.celery.exceptions import TaskError
-from opulence.common.celery.exceptions import TaskTimeoutError
+from opulence.common.celery.exceptions import TaskError, TaskTimeoutError
 from opulence.common.celery.taskRouter import TaskRouter
-from opulence.common.celery.utils import async_call
-from opulence.common.celery.utils import sync_call
+from opulence.common.celery.utils import async_call, sync_call
 
 
 class TestCeleryTaskRouter(unittest.TestCase):

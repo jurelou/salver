@@ -5,9 +5,7 @@ import re
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
 from opulence.common.utils import is_list
-from opulence.facts import CryptoKey
-from opulence.facts import GitRepository
-from opulence.facts import Secret
+from opulence.facts import CryptoKey, GitRepository, Secret
 
 
 class TruffleHog(ScriptCollector):
