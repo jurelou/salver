@@ -35,11 +35,11 @@ class $1(DockerCollector):
 
     def callbacks(self):
         return {
-            Email: self.scan
+            Domain: self.scan
 	}
 
     def scan(self, domain):
-        data = self.run_container(command="ls", "-la")
+        data = self.run_container(command=["ls", "-la"])
         for item in self.findall_regex(data, r"(.*)"):
             yield
 
