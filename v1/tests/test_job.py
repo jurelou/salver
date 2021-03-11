@@ -1,9 +1,13 @@
 import json
 import unittest
 
-from opulence.common.fields import IntegerField, StringField
-from opulence.common.job import Composable, Result, StatusCode
-from opulence.common.jsonEncoder import decode, encode
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
+from opulence.common.job import Composable
+from opulence.common.job import Result
+from opulence.common.job import StatusCode
+from opulence.common.jsonEncoder import decode
+from opulence.common.jsonEncoder import encode
 from opulence.common.patterns import Composite
 from opulence.facts.bases import BaseFact
 
@@ -193,7 +197,7 @@ class TestJobResult(unittest.TestCase):
                         "mandatory": False,
                     },
                 },
-            }
+            },
         ]
 
         input_should_be = [
@@ -359,7 +363,7 @@ class TestJobResult(unittest.TestCase):
                         "mandatory": False,
                     },
                 },
-            }
+            },
         ]
 
         self.assertEqual(input_should_be, r_json["input"])

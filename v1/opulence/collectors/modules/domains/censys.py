@@ -1,9 +1,8 @@
-import opulence.facts as facts
 from opulence.collectors.bases import PypiCollector
 from opulence.common.passwordstore import Store
-from opulence.common.plugins.dependencies import (
-    ModuleDependency, PasswordDependency
-)
+from opulence.common.plugins.dependencies import ModuleDependency
+from opulence.common.plugins.dependencies import PasswordDependency
+import opulence.facts as facts
 
 
 class Censys(PypiCollector):
@@ -36,7 +35,7 @@ class Censys(PypiCollector):
 
     def launch(self, fact):
         api = self.modules["censys"].CensysIPv4(
-            api_id=self._api_id_, api_secret=self._api_key_
+            api_id=self._api_id_, api_secret=self._api_key_,
         )
 
         result = api.view(fact.address.value)

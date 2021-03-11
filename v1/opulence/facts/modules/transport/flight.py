@@ -1,4 +1,5 @@
-from opulence.common.fields import BooleanField, StringField
+from opulence.common.fields import BooleanField
+from opulence.common.fields import StringField
 from opulence.facts.bases import BaseFact
 
 
@@ -15,4 +16,4 @@ class Flight(BaseFact):
         self.live = BooleanField()
 
     def get_summary(self):
-        return "{}".format(self.flight_number.value)
+        return f"{self.flight_number.value}"

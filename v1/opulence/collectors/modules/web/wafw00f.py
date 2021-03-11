@@ -2,7 +2,9 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Domain, IPv4, Waf
+from opulence.facts import Domain
+from opulence.facts import IPv4
+from opulence.facts import Waf
 
 
 class WafWoof(ScriptCollector):
@@ -29,13 +31,13 @@ class WafWoof(ScriptCollector):
     def launch(self, fact):
         if isinstance(fact, Domain):
             commands = [
-                [self._script_path_, "http://{}".format(fact.fqdn.value)],
-                [self._script_path_, "https://{}".format(fact.fqdn.value)],
+                [self._script_path_, f"http://{fact.fqdn.value}"],
+                [self._script_path_, f"https://{fact.fqdn.value}"],
             ]
         elif isinstance(fact, IPv4):
             commands = [
-                [self._script_path_, "http://{}".format(fact.address.value)],
-                [self._script_path_, "https://{}".format(fact.address.value)],
+                [self._script_path_, f"http://{fact.address.value}"],
+                [self._script_path_, f"https://{fact.address.value}"],
             ]
         for command in commands:
             yield from self.parse_result(self._exec(*command))

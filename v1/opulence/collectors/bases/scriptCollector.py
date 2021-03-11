@@ -1,9 +1,9 @@
 import re
-from subprocess import PIPE, Popen
+from subprocess import PIPE
+from subprocess import Popen
 
-from opulence.common.plugins.exceptions import (
-    PluginFormatError, PluginRuntimeError
-)
+from opulence.common.plugins.exceptions import PluginFormatError
+from opulence.common.plugins.exceptions import PluginRuntimeError
 from opulence.common.utils import is_list
 
 from .baseCollector import BaseCollector
@@ -44,8 +44,8 @@ class ScriptCollector(BaseCollector):
         raise NotImplementedError(
             "Method parse_result() should be defined for Plugin \
             <{}>".format(
-                type(self).__name__
-            )
+                type(self).__name__,
+            ),
         )
 
     @staticmethod
@@ -56,7 +56,7 @@ class ScriptCollector(BaseCollector):
                 raise PluginRuntimeError(stderr)
             return stdout
 
-        print("ScriptCollector: launch command {}".format(cmd))
+        print(f"ScriptCollector: launch command {cmd}")
         if stdin is not None:
             out = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
             out.stdin.write(str.encode(stdin))
@@ -83,7 +83,7 @@ class ScriptCollector(BaseCollector):
         for fact in facts:
             if str(type(fact).__name__) == class_name and hasattr(fact, attribute_name):
                 replaced_value = getattr(fact, attribute_name).value
-                value_to_replace = "${}$".format(value)
+                value_to_replace = f"${value}$"
                 return arg.replace(value_to_replace, replaced_value)
         return None
 

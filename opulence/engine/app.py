@@ -62,9 +62,9 @@ def ready(sender=None, conf=None, **kwargs):
         scan = Scan(
             facts=[
                 Phone(number="+33689181869"),
-                Username(name="groupevitamineT"),
-                Company(name="vitamineT"),
-                # Domain(fqdn="wavely.fr"),
+                Username(name="jurelou"),
+                Company(name="wavely"),
+                Domain(fqdn="wavely.fr"),
                 Person(
                     firstname="fname",
                     lastname="lname",
@@ -74,7 +74,7 @@ def ready(sender=None, conf=None, **kwargs):
                 ),
             ],
             scan_type="single_collector",
-            collector_name="twint",
+            collector_name="blackwidow",
         )
 
         tasks.add_case.apply(args=[case])

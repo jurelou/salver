@@ -1,4 +1,5 @@
-from opulence.common.fields import IntegerField, StringField
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
 from opulence.facts.bases import BaseFact
 
 
@@ -17,4 +18,4 @@ class Banner(BaseFact):
         self.product = StringField()
 
     def get_summary(self):
-        return "{}".format(self.message.value)
+        return f"{self.message.value}"

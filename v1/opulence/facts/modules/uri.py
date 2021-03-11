@@ -17,4 +17,4 @@ class URI(BaseFact):
         self.fragment = StringField()
 
     def get_summary(self):
-        return "{}".format(self.full_uri.value)
+        return f"{self.full_uri.value}"

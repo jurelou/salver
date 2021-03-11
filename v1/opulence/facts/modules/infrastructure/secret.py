@@ -13,4 +13,4 @@ class Secret(BaseFact):
         self.categorie = StringField()
 
     def get_summary(self):
-        return "{}".format(self.secret.value)
+        return f"{self.secret.value}"

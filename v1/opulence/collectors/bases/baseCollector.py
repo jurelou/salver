@@ -1,11 +1,11 @@
 from opulence.common.job import StatusCode
 from opulence.common.patterns import is_composite
 from opulence.common.plugins import BasePlugin
-from opulence.common.plugins.exceptions import (
-    PluginFormatError, RateLimitException
-)
+from opulence.common.plugins.exceptions import PluginFormatError
+from opulence.common.plugins.exceptions import RateLimitException
 from opulence.common.tokenbucket.bucketsManager import Buckets
-from opulence.common.utils import is_iterable, is_list
+from opulence.common.utils import is_iterable
+from opulence.common.utils import is_list
 from opulence.facts.bases import BaseFact
 
 
@@ -17,7 +17,7 @@ class BaseCollector(BasePlugin):
     def __init__(self, *args, **kwargs):
         if not self._allowed_input_:
             raise PluginFormatError(
-                "<{}> needs at least one allowed_input".format(type(self).__name__)
+                "<{}> needs at least one allowed_input".format(type(self).__name__),
             )
         super().__init__()
 
@@ -69,17 +69,17 @@ class BaseCollector(BasePlugin):
             result.status = state
             return result
         try:
-            print("Clock starting for {}".format(self.plugin_name))
+            print(f"Clock starting for {self.plugin_name}")
             if Buckets.reduce(self._name_) is False:
                 refill_time = str(Buckets.nextRefill(self._name_))
                 raise RateLimitException(
-                    "API: out of tokens, refill in {}".format(refill_time)
+                    f"API: out of tokens, refill in {refill_time}",
                 )
             result.clock.start()
             result.status = StatusCode.started
             output = self.launch(result.input.get())
             result.clock.stop()
-            print("Stopped clock for {}".format(self.plugin_name))
+            print(f"Stopped clock for {self.plugin_name}")
             result.output = self._sanitize_output(output)
             result.status = StatusCode.finished
         except RateLimitException as err:
@@ -87,7 +87,7 @@ class BaseCollector(BasePlugin):
             result.status = 300, str(err)
             raise
         except Exception as err:
-            print("Error in run() from ({}): {}".format(self.plugin_name, err))
+            print(f"Error in run() from ({self.plugin_name}): {err}")
             result.clock.stop()
             result.status = StatusCode.error, str(err)
         finally:
@@ -97,8 +97,8 @@ class BaseCollector(BasePlugin):
         raise NotImplementedError(
             "Method launch() should be defined for Plugin \
             <{}>".format(
-                type(self).__name__
-            )
+                type(self).__name__,
+            ),
         )
 
     def get_allowed_input_as_list(self, full_data=False):

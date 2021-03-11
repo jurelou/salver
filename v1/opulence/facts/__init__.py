@@ -6,7 +6,9 @@ from .modules.infrastructure.cryptoKey import CryptoKey
 from .modules.infrastructure.domain import Domain
 from .modules.infrastructure.file import File
 from .modules.infrastructure.gitRepository import GitRepository
-from .modules.infrastructure.ip import IPRanking, IPv4, IPv6
+from .modules.infrastructure.ip import IPRanking
+from .modules.infrastructure.ip import IPv4
+from .modules.infrastructure.ip import IPv6
 from .modules.infrastructure.operatingSystem import OperatingSystem
 from .modules.infrastructure.port import Port
 from .modules.infrastructure.protocol import Protocol

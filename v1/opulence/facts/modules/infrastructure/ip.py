@@ -1,4 +1,6 @@
-from opulence.common.fields import BooleanField, IntegerField, StringField
+from opulence.common.fields import BooleanField
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
 from opulence.facts.bases import BaseFact
 
 
@@ -12,7 +14,7 @@ class IPv4(BaseFact):
         self.address = StringField(mandatory=True, default="127.0.0.1")
 
     def get_summary(self):
-        return "{}".format(self.address.value)
+        return f"{self.address.value}"
 
 
 class IPv6(BaseFact):
@@ -25,7 +27,7 @@ class IPv6(BaseFact):
         self.address = StringField(mandatory=True, default="127.0.0.1")
 
     def get_summary(self):
-        return "{}".format(self.address.value)
+        return f"{self.address.value}"
 
 
 class IPRanking(BaseFact):
@@ -41,4 +43,4 @@ class IPRanking(BaseFact):
         self.id = StringField()
 
     def get_summary(self):
-        return "{}".format(self.isBlacklisted.value)
+        return f"{self.isBlacklisted.value}"

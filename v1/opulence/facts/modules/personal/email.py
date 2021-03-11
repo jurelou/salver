@@ -12,4 +12,4 @@ class Email(BaseFact):
         self.address = StringField(mandatory=True, default="john@example.com")
 
     def get_summary(self):
-        return "{}".format(self.address.value)
+        return f"{self.address.value}"

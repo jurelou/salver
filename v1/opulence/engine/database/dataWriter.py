@@ -54,7 +54,7 @@ class Results:
         self.mongo_driver.results.add_many(scan_id, results)
 
 
-class Scans(object):
+class Scans:
     def __init__(self, mongo_driver, neo_driver):
         self.mongo_driver = mongo_driver
         self.neo_driver = neo_driver

@@ -2,7 +2,8 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Domain, File
+from opulence.facts import Domain
+from opulence.facts import File
 
 
 class Kupa3(ScriptCollector):
@@ -27,8 +28,8 @@ class Kupa3(ScriptCollector):
 
     def launch(self, fact):
         commands = [
-            [self._script_path_, "http://{}".format(fact.fqdn.value)],
-            [self._script_path_, "https://{}".format(fact.fqdn.value)],
+            [self._script_path_, f"http://{fact.fqdn.value}"],
+            [self._script_path_, f"https://{fact.fqdn.value}"],
         ]
 
         for command in commands:

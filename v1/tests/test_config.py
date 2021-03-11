@@ -1,5 +1,7 @@
 import unittest
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock
+from unittest.mock import Mock
+from unittest.mock import patch
 
 from opulence.common import configuration
 
@@ -25,7 +27,7 @@ class TestConfig(unittest.TestCase):
 
     def test_conf(self):
         with patch("opulence.common.configuration.Celery") as mock_celery, patch(
-            "opulence.common.configuration.register"
+            "opulence.common.configuration.register",
         ) as mock_register:
             celery_obj = Mock()
             celery_obj.return_value = "celery mock"
@@ -46,7 +48,7 @@ class TestConfig(unittest.TestCase):
 
     def test_conf(self):
         with patch("opulence.common.configuration.Celery") as mock_celery, patch(
-            "opulence.common.configuration.register"
+            "opulence.common.configuration.register",
         ) as mock_register:
             celery_obj = Mock()
             celery_obj.return_value = "celery mock"

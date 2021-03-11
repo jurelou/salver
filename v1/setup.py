@@ -1,4 +1,5 @@
-from setuptools import find_namespace_packages, setup
+from setuptools import find_namespace_packages
+from setuptools import setup
 
 with open("README.md") as f:
     readme = f.read()
@@ -20,7 +21,7 @@ setup(
     license=license,
     packages=find_namespace_packages(include=["opulence.*"]),
     entry_points={
-        "console_scripts": ["test-collector=opulence.scripts.test_collector:main"]
+        "console_scripts": ["test-collector=opulence.scripts.test_collector:main"],
     },
     install_requires=requirements,
     python_requires=">=3.6.*, <4",

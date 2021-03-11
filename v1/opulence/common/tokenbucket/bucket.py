@@ -14,7 +14,7 @@ class Bucket:
 
     def __str__(self):
         return "Rate: {}, amount {}, Maxtoken: {}, nextRefill: {}".format(
-            self.rate, self.amount, self.MaxToken, self.next_refill()
+            self.rate, self.amount, self.MaxToken, self.next_refill(),
         )
 
     def serialize(self):
@@ -32,7 +32,7 @@ class Bucket:
         self.lastUpdate = time.time()
 
     def _refill_count(self):
-        return int(((time.time() - self.lastUpdate) / self.resetTime))
+        return int((time.time() - self.lastUpdate) / self.resetTime)
 
     def get(self):
         return min(self.MaxToken, self.amount + self._refill_count() * self.MaxToken)

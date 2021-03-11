@@ -1,11 +1,15 @@
-import unittest
 from inspect import isclass
-from unittest.mock import MagicMock, call, patch
+import unittest
+from unittest.mock import MagicMock
+from unittest.mock import call
+from unittest.mock import patch
 
-from opulence.common.plugins import BasePlugin, PluginManager, PluginStatus
-from opulence.common.plugins.exceptions import (
-    DependencyMissing, ModuleDependencyMissing, PluginVerifyError
-)
+from opulence.common.plugins import BasePlugin
+from opulence.common.plugins import PluginManager
+from opulence.common.plugins import PluginStatus
+from opulence.common.plugins.exceptions import DependencyMissing
+from opulence.common.plugins.exceptions import ModuleDependencyMissing
+from opulence.common.plugins.exceptions import PluginVerifyError
 
 
 class basePlugin(BasePlugin):
@@ -34,7 +38,7 @@ class TestPluginManager(unittest.TestCase):
     @patch("opulence.common.plugins.basePlugin.import_module")
     @patch("opulence.common.plugins.basePlugin.pkgutil.iter_modules")
     def test_plugin_manager_discover(
-        self, mock_iter_modules, mock_import_module, mock_get_members, mock_is_subclass
+        self, mock_iter_modules, mock_import_module, mock_get_members, mock_is_subclass,
     ):
         def gen_iter_modules():
             yield ("loader", "directory", "ispkg")
@@ -48,7 +52,7 @@ class TestPluginManager(unittest.TestCase):
         mock_get_members.assert_called_with("module", isclass)
         mock_import_module.assert_called_with(".path.to.collector.directory")
         mock_iter_modules.assert_has_calls(
-            [call(["/path/to/collector"]), call(["/path/to/collector/directory"])]
+            [call(["/path/to/collector"]), call(["/path/to/collector/directory"])],
         )
 
     def test_register(self):

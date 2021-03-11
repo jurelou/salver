@@ -16,4 +16,4 @@ class TravelTime(BaseFact):
         self.duration = IntegerField()
 
     def get_summary(self):
-        return "{}".format(self.duration.value)
+        return f"{self.duration.value}"

@@ -15,4 +15,4 @@ class Airline(BaseFact):
         self.fullname = StringField()
 
     def get_summary(self):
-        return "{}".format(self.name.value)
+        return f"{self.name.value}"

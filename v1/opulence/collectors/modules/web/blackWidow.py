@@ -2,7 +2,10 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import URI, Domain, Email, Phone
+from opulence.facts import Domain
+from opulence.facts import Email
+from opulence.facts import Phone
+from opulence.facts import URI
 
 
 class BlackWidow(ScriptCollector):
@@ -44,16 +47,16 @@ class BlackWidow(ScriptCollector):
     def parse_result(self, result):
         urls_file = re.search("\\[\\+\\] URL's Discovered:.*\\n(.*).txt", result)
         dynamic_urls_file = re.search(
-            "\\[\\+\\] Dynamic URL's Discovered:.*\\n(.*).txt", result
+            "\\[\\+\\] Dynamic URL's Discovered:.*\\n(.*).txt", result,
         )
         form_urls_file = re.search(
-            "\\[\\+\\] Form URL's Discovered:.*\\n(.*).txt", result
+            "\\[\\+\\] Form URL's Discovered:.*\\n(.*).txt", result,
         )
         dynamic_parameters_file = re.search(
-            "\\[\\+\\] Unique Dynamic Parameters Discovered:.*\\n(.*).txt", result
+            "\\[\\+\\] Unique Dynamic Parameters Discovered:.*\\n(.*).txt", result,
         )
         sub_domains_file = re.search(
-            "\\[\\+\\] Sub-domains Discovered:.*\\n(.*).txt", result
+            "\\[\\+\\] Sub-domains Discovered:.*\\n(.*).txt", result,
         )
         emails_file = re.search("\\[\\+\\] Emails Discovered:.*\\n(.*).txt", result)
         phones_file = re.search("\\[\\+\\] Phones Discovered:.*\\n(.*).txt", result)
@@ -63,18 +66,18 @@ class BlackWidow(ScriptCollector):
 
         if sub_domains_file and sub_domains_file.group(1):
             for line in self.read_file_line_by_line(
-                "{}.txt".format(sub_domains_file.group(1))
+                "{}.txt".format(sub_domains_file.group(1)),
             ):
                 yield Domain(address=line)
 
         if emails_file and emails_file.group(1):
             for line in self.read_file_line_by_line(
-                "{}.txt".format(emails_file.group(1))
+                "{}.txt".format(emails_file.group(1)),
             ):
                 yield Email(address=line)
 
         if phones_file and phones_file.group(1):
             for line in self.read_file_line_by_line(
-                "{}.txt".format(phones_file.group(1))
+                "{}.txt".format(phones_file.group(1)),
             ):
                 yield Phone(number=line)

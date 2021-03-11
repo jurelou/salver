@@ -20,4 +20,4 @@ class Phone(BaseFact):
         self.rest = StringField()
 
     def get_summary(self):
-        return "{}".format(self.number.value)
+        return f"{self.number.value}"

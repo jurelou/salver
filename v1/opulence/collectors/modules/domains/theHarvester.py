@@ -2,7 +2,8 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Domain, IPv4
+from opulence.facts import Domain
+from opulence.facts import IPv4
 
 
 class TheHarvester(ScriptCollector):
@@ -54,7 +55,7 @@ class TheHarvester(ScriptCollector):
 
         if found_ips and found_ips.group(1):
             ips = re.findall(
-                "(\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b)", found_ips.group(1)
+                "(\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b)", found_ips.group(1),
             )
             if ips:
                 for i in ips:

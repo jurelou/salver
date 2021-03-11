@@ -1,12 +1,14 @@
-import unittest
 from shutil import which
-from unittest.mock import MagicMock, Mock, patch
+import unittest
+from unittest.mock import MagicMock
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import opulence.common.plugins.dependencies as dep
-from opulence.common.plugins.exceptions import (
-    BinaryDependencyMissing, DependencyMissing, FileDependencyMissing,
-    ModuleDependencyMissing
-)
+from opulence.common.plugins.exceptions import BinaryDependencyMissing
+from opulence.common.plugins.exceptions import DependencyMissing
+from opulence.common.plugins.exceptions import FileDependencyMissing
+from opulence.common.plugins.exceptions import ModuleDependencyMissing
 
 
 class TestPluginDependencies(unittest.TestCase):
@@ -52,9 +54,9 @@ class TestPluginDependencies(unittest.TestCase):
 
     def test_file_dep_ok(self):
         with patch(
-            "opulence.common.plugins.dependencies.os.path.isfile"
+            "opulence.common.plugins.dependencies.os.path.isfile",
         ) as mock_isfile, patch(
-            "opulence.common.plugins.dependencies.os.path.exists"
+            "opulence.common.plugins.dependencies.os.path.exists",
         ) as mock_exists:
             mock_isfile.return_value = True
             mock_exists.return_value = True
@@ -66,9 +68,9 @@ class TestPluginDependencies(unittest.TestCase):
 
     def test_file_raises(self):
         with patch(
-            "opulence.common.plugins.dependencies.os.path.isfile"
+            "opulence.common.plugins.dependencies.os.path.isfile",
         ) as mock_isfile, patch(
-            "opulence.common.plugins.dependencies.os.path.exists"
+            "opulence.common.plugins.dependencies.os.path.exists",
         ) as mock_exists:
             mock_isfile.return_value = False
             mock_exists.return_value = True
@@ -80,9 +82,9 @@ class TestPluginDependencies(unittest.TestCase):
 
     def test_file_raises_2(self):
         with patch(
-            "opulence.common.plugins.dependencies.os.path.isfile"
+            "opulence.common.plugins.dependencies.os.path.isfile",
         ) as mock_isfile, patch(
-            "opulence.common.plugins.dependencies.os.path.exists"
+            "opulence.common.plugins.dependencies.os.path.exists",
         ) as mock_exists:
             mock_isfile.return_value = False
             mock_exists.return_value = False
@@ -93,9 +95,9 @@ class TestPluginDependencies(unittest.TestCase):
 
     def test_file_raises_3(self):
         with patch(
-            "opulence.common.plugins.dependencies.os.path.isfile"
+            "opulence.common.plugins.dependencies.os.path.isfile",
         ) as mock_isfile, patch(
-            "opulence.common.plugins.dependencies.os.path.exists"
+            "opulence.common.plugins.dependencies.os.path.exists",
         ) as mock_exists:
             mock_isfile.return_value = True
             mock_exists.return_value = False

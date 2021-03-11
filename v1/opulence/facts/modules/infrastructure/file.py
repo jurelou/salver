@@ -17,4 +17,4 @@ class File(BaseFact):
         self.relativePath = StringField()
 
     def get_summary(self):
-        return "{}".format(self.filename.value)
+        return f"{self.filename.value}"

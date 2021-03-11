@@ -1,8 +1,9 @@
 from celery import group
 
-import opulence.collectors.signatures as remote_ctrl
 from opulence import App
-from opulence.common.utils import generate_uuid, is_list
+import opulence.collectors.signatures as remote_ctrl
+from opulence.common.utils import generate_uuid
+from opulence.common.utils import is_list
 from opulence.engine.database import DataWriter
 from opulence.facts import services as facts_services
 
@@ -33,12 +34,10 @@ def full_scan(facts):
     tasks = []
     for f in fact_cls:
         available_collectors = DataWriter().collectors.find_by_allowed_input(
-            f.plugin_name
+            f.plugin_name,
         )
         for ac in available_collectors:
-            tasks.append(
-                (remote_ctrl.launch(ac, f) | scan_ctrl.add_result(external_id))
-            )
+            tasks.append(remote_ctrl.launch(ac, f) | scan_ctrl.add_result(external_id))
 
     tasks_group = group(tasks)
     workflow = (

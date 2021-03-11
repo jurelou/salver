@@ -14,4 +14,4 @@ class Domain(BaseFact):
         self.ip = StringField()
 
     def get_summary(self):
-        return "{}".format(self.fqdn.value)
+        return f"{self.fqdn.value}"

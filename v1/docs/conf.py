@@ -1,6 +1,6 @@
-import sys
 import os
 import re
+import sys
 
 sys.path.append(os.path.abspath("./demo/"))
 

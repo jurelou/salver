@@ -1,8 +1,8 @@
 import inspect
 
-import opulence.facts as all_facts
 from opulence import App
 from opulence.engine.database import DataWriter
+import opulence.facts as all_facts
 from opulence.facts.bases import BaseFact
 
 

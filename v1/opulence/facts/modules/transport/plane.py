@@ -13,4 +13,4 @@ class Plane(BaseFact):
         self.code = StringField()
 
     def get_summary(self):
-        return "{}".format(self.name.value)
+        return f"{self.name.value}"

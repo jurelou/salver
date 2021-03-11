@@ -1,4 +1,5 @@
-from opulence.common.fields import BooleanField, StringField
+from opulence.common.fields import BooleanField
+from opulence.common.fields import StringField
 from opulence.facts.bases import BaseFact
 
 
@@ -14,4 +15,4 @@ class CryptoKey(BaseFact):
         self.private = BooleanField(default=True)
 
     def get_summary(self):
-        return "{}".format(self.key.value)
+        return f"{self.key.value}"

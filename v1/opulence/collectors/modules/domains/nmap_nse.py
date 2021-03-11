@@ -2,7 +2,10 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import CVE, Domain, IPv4, VulDB
+from opulence.facts import CVE
+from opulence.facts import Domain
+from opulence.facts import IPv4
+from opulence.facts import VulDB
 
 
 class NmapNSE(ScriptCollector):
@@ -44,7 +47,7 @@ class NmapNSE(ScriptCollector):
             if entries_cve:
                 for entry in entries_cve:
                     _id, description = entry
-                    yield CVE(id="CVE-{}".format(_id), description=description)
+                    yield CVE(id=f"CVE-{_id}", description=description)
             if entries_vulscan:
                 for entry in entries_vulscan:
                     _id, description = entry

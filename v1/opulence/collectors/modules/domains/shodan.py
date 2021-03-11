@@ -1,9 +1,8 @@
-import opulence.facts as facts
 from opulence.collectors.bases import PypiCollector
 from opulence.common.passwordstore import Store
-from opulence.common.plugins.dependencies import (
-    ModuleDependency, PasswordDependency
-)
+from opulence.common.plugins.dependencies import ModuleDependency
+from opulence.common.plugins.dependencies import PasswordDependency
+import opulence.facts as facts
 
 
 class Shodan(PypiCollector):
@@ -34,7 +33,7 @@ class Shodan(PypiCollector):
         host = api.host(fact.address.value)
 
         yield facts.Country(
-            name=host.get("country_name", None), code=host.get("country_code", None)
+            name=host.get("country_name", None), code=host.get("country_code", None),
         )
         yield facts.Organization(name=host.get("org", None))
         yield facts.OperatingSystem(family=host.get("os", None))
@@ -69,5 +68,5 @@ class Shodan(PypiCollector):
                 )
             if "port" in item:
                 yield facts.Port(
-                    number=item["port"], transport=host.get("transport", None)
+                    number=item["port"], transport=host.get("transport", None),
                 )

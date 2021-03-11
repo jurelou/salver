@@ -2,7 +2,7 @@ from dynaconf import settings
 from neo4j import GraphDatabase
 
 
-class Algorithms(object):
+class Algorithms:
     def __init__(self, client):
         self.client = client
 
@@ -10,13 +10,15 @@ class Algorithms(object):
         with self.client.session() as session:
             session.run(
                 "CALL algo.pageRank('Result', 'COLLECTED', {iterations:20, dampingFactor:0.85, write: true, writeProperty: 'pagerank'}) "
-                "YIELD nodes, iterations, loadMillis, computeMillis, writeMillis, dampingFactor, write, writeProperty ")
+                "YIELD nodes, iterations, loadMillis, computeMillis, writeMillis, dampingFactor, write, writeProperty ",
+            )
 
     def lpa(self):
         with self.client.session() as session:
             session.run(
                 "CALL algo.labelPropagation('Result', 'COLLECTED', {iterations: 10, writeProperty: 'lpa', write: true, direction: 'INCOMING'}) "
-                "YIELD nodes, iterations, loadMillis, computeMillis, writeMillis, write, writeProperty; ")
+                "YIELD nodes, iterations, loadMillis, computeMillis, writeMillis, write, writeProperty; ",
+            )
 
 
 class Results:
@@ -26,10 +28,9 @@ class Results:
     def get_node_by_value(self, value):
         with self.client.session() as session:
             return session.run(
-                "MATCH (node: Result) "
-                "WHERE node.name=$value "
-                "RETURN node",
-                value=value)
+                "MATCH (node: Result) " "WHERE node.name=$value " "RETURN node",
+                value=value,
+            )
 
     def add_many(self, results):
         with self.client.session() as session:
@@ -77,7 +78,7 @@ class Scans:
                 "CALL apoc.convert.toTree(paths) yield value "
                 "RETURN value, paths ",
                 sid=scan_id,
-                max_results=settings.DB_QUERY_LIMIT.neo_max_connections
+                max_results=settings.DB_QUERY_LIMIT.neo_max_connections,
             )
 
     def create_or_update(self, scan_name, data):

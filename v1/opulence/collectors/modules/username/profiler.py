@@ -2,7 +2,8 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import SocialProfile, Username
+from opulence.facts import SocialProfile
+from opulence.facts import Username
 
 
 class Profiler(ScriptCollector):
@@ -36,7 +37,7 @@ class Profiler(ScriptCollector):
     def parse_result(self, result):
         results = []
         found_social_profiles = re.findall(
-            "(.*)\\[profile\\] (.*) - (.*) \\((.*)\\)", result
+            "(.*)\\[profile\\] (.*) - (.*) \\((.*)\\)", result,
         )
         if not found_social_profiles:
             return results

@@ -1,13 +1,15 @@
 import unittest
 
-from opulence.common.fields import BaseField, IntegerField, StringField
+from opulence.common.fields import BaseField
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
 
 
 class TestStringField(unittest.TestCase):
     def test_stringfield_repr(self):
         a = StringField(default="a", mandatory=False)
         self.assertEqual(
-            str(a), "StringField  -> value: a, default: a, mandatory: False"
+            str(a), "StringField  -> value: a, default: a, mandatory: False",
         )
 
     def test_stringfield_comparison(self):

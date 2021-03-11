@@ -2,7 +2,9 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Domain, IPv4, OperatingSystem
+from opulence.facts import Domain
+from opulence.facts import IPv4
+from opulence.facts import OperatingSystem
 
 
 class NmapOSScan(ScriptCollector):
@@ -46,7 +48,7 @@ class NmapOSScan(ScriptCollector):
             _, vendor, osfamily, osgen, accuracy = os
             res.append(
                 OperatingSystem(
-                    family=osfamily, version=osgen, vendor=vendor, weight=accuracy
-                )
+                    family=osfamily, version=osgen, vendor=vendor, weight=accuracy,
+                ),
             )
         return res

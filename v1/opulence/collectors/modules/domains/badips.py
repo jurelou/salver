@@ -2,8 +2,8 @@ import hashlib
 
 import requests
 
-from opulence import facts
 from opulence.collectors.bases import HttpCollector
+from opulence import facts
 
 
 class BadIps(HttpCollector):
@@ -31,9 +31,9 @@ class BadIps(HttpCollector):
     def launch(self, fact):
         r = requests.get(self._url_ + fact.address.value).json()
         if "Listed" in r and r["Listed"] is True:
-            _id = hashlib.sha1(fact.address.value.encode('utf-8'))
-            LastReport = self.getLastReport(r['LastReport'])
-            yield from self.getProtocol(r['Categories'], _id)
+            _id = hashlib.sha1(fact.address.value.encode("utf-8"))
+            LastReport = self.getLastReport(r["LastReport"])
+            yield from self.getProtocol(r["Categories"], _id)
             yield facts.IPRanking(
                 isBlacklisted=True,
                 reportCount=r["ReporterCount"]["sum"],

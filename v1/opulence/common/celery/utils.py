@@ -11,11 +11,11 @@ def sync_call(app, task_path, timeout=5, **kwargs):
         task = app.send_task(task_path, **kwargs)
         return task.get(timeout=timeout)
     except celery.exceptions.TimeoutError:
-        raise TaskTimeoutError("{}".format(task_path))
+        raise TaskTimeoutError(f"{task_path}")
 
 
 def async_call(app, task_path, **kwargs):
     try:
         return app.send_task(task_path, **kwargs)
     except celery.exceptions.TimeoutError:
-        raise TaskTimeoutError("{}".format(task_path))
+        raise TaskTimeoutError(f"{task_path}")

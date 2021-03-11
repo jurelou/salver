@@ -13,4 +13,4 @@ class CVE(BaseFact):
         self.description = StringField()
 
     def get_summary(self):
-        return "{}".format(self.id.value)
+        return f"{self.id.value}"

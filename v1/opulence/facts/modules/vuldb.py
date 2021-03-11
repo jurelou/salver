@@ -1,4 +1,5 @@
-from opulence.common.fields import IntegerField, StringField
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
 from opulence.facts.bases import BaseFact
 
 
@@ -13,4 +14,4 @@ class VulDB(BaseFact):
         self.description = StringField()
 
     def get_summary(self):
-        return "{}".format(self.id.value)
+        return f"{self.id.value}"

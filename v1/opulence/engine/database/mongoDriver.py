@@ -49,7 +49,8 @@ class Results:
 
     def get_by_scan_id(self, scan_id):
         return models.Result.objects(scan_identifier=scan_id)[
-            :settings.DB_QUERY_LIMIT.mongo_objects]
+            : settings.DB_QUERY_LIMIT.mongo_objects
+        ]
 
     def get_by_id(self, identifier):
         return models.Result.objects(identifier=identifier)
@@ -59,7 +60,7 @@ class Results:
         # TODO: Refactor this
         if results["status"][0] >= 100:
             models.Scan(external_identifier=scan_id).update(
-                set__status=results["status"]
+                set__status=results["status"],
             )
         models.Scan(external_identifier=scan_id).update(inc__stats__number_of_results=1)
 
@@ -67,7 +68,7 @@ class Results:
             models.Result(
                 scan_identifier=scan_id,
                 result_identifier=results["identifier"],
-                **result
+                **result,
             ).save()
 
         results.pop("output", None)
@@ -83,7 +84,7 @@ class Scans:
             external_identifier=scan_name,
             status=(StatusCode.started, ""),
             stats=models.Stats(),
-            **data
+            **data,
         ).save()
 
     def get(self):
@@ -93,11 +94,11 @@ class Scans:
         scan = self.get_by_id(scan_id).get()
         if not scan.status[0] >= 100:
             return models.Scan(external_identifier=scan_id).update(
-                set__status=(40, ""), set__stats__end_date=now()
+                set__status=(40, ""), set__stats__end_date=now(),
             )
 
         return models.Scan(external_identifier=scan_id).update(
-            set__stats__end_date=now()
+            set__stats__end_date=now(),
         )
 
     def get_by_id(self, identifier):

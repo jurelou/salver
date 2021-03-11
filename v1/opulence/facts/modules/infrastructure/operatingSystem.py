@@ -14,4 +14,4 @@ class OperatingSystem(BaseFact):
         self.version = StringField()
 
     def get_summary(self):
-        return "{}".format(self.family.value)
+        return f"{self.family.value}"

@@ -1,5 +1,5 @@
-import json
 from datetime import datetime
+import json
 
 from opulence import App
 from opulence.common.utils import replace_dict_keys
@@ -10,14 +10,14 @@ from opulence.engine.database import DataWriter
 def get(external_identifier):
     scan = json.loads(DataWriter().scans.get_by_id(external_identifier).get().to_json())
     scan["results"] = json.loads(
-        DataWriter().results.get_by_scan_id(external_identifier).to_json()
+        DataWriter().results.get_by_scan_id(external_identifier).to_json(),
     )
     scan["stats"]["start_date"] = datetime.strptime(
-        scan["stats"]["start_date"], "%Y,%m,%d,%H,%M,%S,%f"
+        scan["stats"]["start_date"], "%Y,%m,%d,%H,%M,%S,%f",
     ).isoformat()
     if "end_date" in scan["stats"]:
         scan["stats"]["end_date"] = datetime.strptime(
-            scan["stats"]["end_date"], "%Y,%m,%d,%H,%M,%S,%f"
+            scan["stats"]["end_date"], "%Y,%m,%d,%H,%M,%S,%f",
         ).isoformat()
     return scan
 
@@ -61,7 +61,7 @@ def tree(scan_id):
     for link in result.graph().relationships:
         nodes = link.nodes
         relations.append(
-            {"source": nodes[0].get("name"), "target": nodes[1].get("name")}
+            {"source": nodes[0].get("name"), "target": nodes[1].get("name")},
         )
     graph = result.data()[0]["value"]
     print(graph)
@@ -94,7 +94,7 @@ def flat_result(scan_id):
         if node_data is not None:
             features = {
                 "pagerank": node_data.get("pagerank"),
-                "lpa": node_data.get("lpa")
+                "lpa": node_data.get("lpa"),
             }
 
         collector_result = cache_collector_results[result.result_identifier]
@@ -109,7 +109,7 @@ def flat_result(scan_id):
                 "fact_category": result.plugin_data["category"],
                 "collector_name": collector_result["name"],
                 "collector_description": collector_result["description"],
-            }
+            },
         )
     return response
 

@@ -17,7 +17,4 @@ class Test(BaseCollector):
     _allowed_input_ = Person
 
     def launch(self, facts):
-        return Person(
-            firstname="TEST-{}".format(facts.firstname.value),
-            lastname="TEST-".format(facts.lastname.value),
-        )
+        return Person(firstname=f"TEST-{facts.firstname.value}", lastname=f"TEST-")

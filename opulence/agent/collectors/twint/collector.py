@@ -1,13 +1,13 @@
 from opulence.agent.collectors.docker import DockerCollector
 from opulence.common.utils import get_actual_dir
-from opulence.facts.username import Username
 from opulence.facts.tweet import Tweet
+from opulence.facts.username import Username
 
 
 class Twint(DockerCollector):
     config = {
         "name": "twint",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):

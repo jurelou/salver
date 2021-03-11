@@ -2,7 +2,7 @@ import re
 
 from opulence.agent.collectors.docker import DockerCollector
 from opulence.common.utils import get_actual_dir
-from opulence.facts.account import Account
+from opulence.facts.profile import Profile
 from opulence.facts.username import Username
 
 
@@ -20,4 +20,4 @@ class Sherlock(DockerCollector):
             command=[username.name, "--no-color", "--print-found", "--timeout", "20"],
         )
         for item in self.findall_regex(data, r"\[\+\] .*: (.*)\n"):
-            yield Account(address=item)
+            yield Profile(url=item)

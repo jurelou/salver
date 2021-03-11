@@ -73,4 +73,4 @@ Opulence by examples
     Learn how to add collectors.
 
 :doc:`how-to/token-bucket`
-    How to use token bucket with api's collectors 
+    How to use token bucket with api's collectors

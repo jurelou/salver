@@ -1,6 +1,8 @@
 import unittest
 
-from opulence.common.patterns import Composite, JsonSerializable, Singleton
+from opulence.common.patterns import Composite
+from opulence.common.patterns import JsonSerializable
+from opulence.common.patterns import Singleton
 
 
 class Foobar(JsonSerializable):

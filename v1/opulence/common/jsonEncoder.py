@@ -1,12 +1,13 @@
-import json
 from datetime import datetime
+import json
 from uuid import UUID
 
 from opulence.facts.bases import BaseFact
 
 from .fields import BaseField
 from .job import Result
-from .utils import datetime_to_str, str_to_datetime
+from .utils import datetime_to_str
+from .utils import str_to_datetime
 
 
 class encode(json.JSONEncoder):

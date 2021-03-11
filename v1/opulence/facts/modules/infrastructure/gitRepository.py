@@ -10,11 +10,11 @@ class GitRepository(BaseFact):
 
     def setup(self):
         self.url = StringField(
-            mandatory=True, default="https://github.com/jurelou/opulence.git"
+            mandatory=True, default="https://github.com/jurelou/opulence.git",
         )
         self.host = StringField()
         self.username = StringField()
         self.project = StringField()
 
     def get_summary(self):
-        return "{}".format(self.url.value)
+        return f"{self.url.value}"

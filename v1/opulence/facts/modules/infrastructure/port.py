@@ -1,4 +1,5 @@
-from opulence.common.fields import IntegerField, StringField
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
 from opulence.facts.bases import BaseFact
 
 
@@ -14,4 +15,4 @@ class Port(BaseFact):
         self.transport = StringField()
 
     def get_summary(self):
-        return "{}".format(self.number.value)
+        return f"{self.number.value}"

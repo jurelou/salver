@@ -12,7 +12,7 @@ def configure_celery(config, custom_encoder=True, **kwargs):
             "accept_content": ["customEncoder", "application/json"],
             "task_serializer": "customEncoder",
             "result_serializer": "customEncoder",
-        }
+        },
     )
     app.conf.update(config)
     if custom_encoder:

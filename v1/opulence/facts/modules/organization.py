@@ -12,4 +12,4 @@ class Organization(BaseFact):
         self.name = StringField(mandatory=True, default="Alphabet")
 
     def get_summary(self):
-        return "{}".format(self.name.value)
+        return f"{self.name.value}"

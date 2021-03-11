@@ -14,4 +14,4 @@ class SocialProfile(BaseFact):
         self.url = StringField(default="http://example.com")
 
     def get_summary(self):
-        return "{}".format(self.site.value)
+        return f"{self.site.value}"

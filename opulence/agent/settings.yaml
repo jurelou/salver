@@ -2,6 +2,12 @@ celery:
     broker_url: redis://localhost/0
     result_backend: redis://localhost/0
 
+elasticsearch:
+    endpoint:
+        host: localhost
+        port: 9200
+
+
 collectors:
     # - dummy-docker-collector
     - recon-ng
@@ -14,8 +20,6 @@ collectors:
     - subfinder
     - phone-infoga
     - twint
-
-elasticsearch:
-    endpoint:
-        host: localhost
-        port: 9200
+    - zen
+    # - littlebrother
+    - blackwidow

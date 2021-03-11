@@ -2,9 +2,9 @@ import sys
 
 from dynaconf import settings
 
-import opulence.facts as facts
 from opulence.common.job import Result
 from opulence.common.plugins import PluginManager
+import opulence.facts as facts
 
 COLLECTORS_PATHS = settings.COLLECTORS_MODULES
 
@@ -12,7 +12,7 @@ COLLECTORS_PATHS = settings.COLLECTORS_MODULES
 def _random_input(input):
     random_input = {}
     for i in input().get_fields():
-        random_input.update({i: "test-{}".format(i)})
+        random_input.update({i: f"test-{i}"})
     return input(**random_input)
 
 
@@ -66,14 +66,14 @@ def _exec_collector(collector):
 def print_state(cls):
     print("----------------------------------------------")
     if not cls.errored:
-        print("* Name: {}".format(cls.plugin_name))
-        print("* Description: {}".format(cls.plugin_description))
-        print("* Version: {}".format(cls.plugin_version))
-        print("* Category: {}".format(cls.plugin_category))
+        print(f"* Name: {cls.plugin_name}")
+        print(f"* Description: {cls.plugin_description}")
+        print(f"* Version: {cls.plugin_version}")
+        print(f"* Category: {cls.plugin_category}")
         print("\t-----------")
 
-    print("\n* STATUS: {}".format(cls.status), " **")
-    print("* INPUT: {}".format(cls.allowed_input), " **")
+    print(f"\n* STATUS: {cls.status}", " **")
+    print(f"* INPUT: {cls.allowed_input}", " **")
     print("----------------------------------------------")
 
 
@@ -84,16 +84,16 @@ def main():
         for path in COLLECTORS_PATHS:
             PluginManager().discover(path)
             for plugin in PluginManager().get_plugins(path):
-                print("\t{}".format(plugin.plugin_name))
+                print(f"\t{plugin.plugin_name}")
         return
     for path in COLLECTORS_PATHS:
         PluginManager().discover(path)
         for plugin in PluginManager().get_plugins(path):
             if plugin.plugin_name == sys.argv[1]:
                 _exec_collector(plugin)
-                return "DONE executing {}".format(plugin.plugin_name)
+                return f"DONE executing {plugin.plugin_name}"
             else:
-                print(" - skipped {}".format(plugin.plugin_name))
+                print(f" - skipped {plugin.plugin_name}")
 
 
 if __name__ == "__main__":

@@ -2,10 +2,12 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.passwordstore import Store
-from opulence.common.plugins.dependencies import (
-    BinaryDependency, PasswordDependency
-)
-from opulence.facts import Email, File, GitRepository, Username
+from opulence.common.plugins.dependencies import BinaryDependency
+from opulence.common.plugins.dependencies import PasswordDependency
+from opulence.facts import Email
+from opulence.facts import File
+from opulence.facts import GitRepository
+from opulence.facts import Username
 
 
 class Gitrob(ScriptCollector):
@@ -45,13 +47,13 @@ class Gitrob(ScriptCollector):
 
                 path, repo, _, author, email, comment, file_url, commit_url = r
                 raw_file_url = file_url.replace(
-                    "/github.com/", "/raw.githubusercontent.com/"
+                    "/github.com/", "/raw.githubusercontent.com/",
                 )
                 raw_file_url = raw_file_url.replace("/blob/", "/")
                 raw_file_name = raw_file_url.split("/")[-1]
 
                 yield GitRepository(
-                    url="https://github.com/{}.git".format(repo),
+                    url=f"https://github.com/{repo}.git",
                     host="github.com",
                     username=repo.split("/")[0],
                     project=repo.split("/")[1],
@@ -64,5 +66,5 @@ class Gitrob(ScriptCollector):
                 yield Email(address=email)
                 yield Username(address=author)
                 yield File(
-                    filename=raw_file_name, url=raw_file_url, extension=raw_file_ext
+                    filename=raw_file_name, url=raw_file_url, extension=raw_file_ext,
                 )

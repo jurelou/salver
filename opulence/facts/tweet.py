@@ -10,10 +10,14 @@ class Tweet(BaseFact):
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {"mappings": {"properties": {
-                "content": {"type": "text"},
-                "id": {"type": "keyword"},
-                "date": {"type": "text"},
-                "rt": {"type": "boolean"}
-            }}},
+            {
+                "mappings": {
+                    "properties": {
+                        "content": {"type": "text"},
+                        "id": {"type": "keyword"},
+                        "date": {"type": "text"},
+                        "rt": {"type": "boolean"},
+                    },
+                },
+            },
         )

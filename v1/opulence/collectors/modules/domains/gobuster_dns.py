@@ -1,9 +1,8 @@
 import re
 
 from opulence.collectors.bases.scriptCollector import ScriptCollector
-from opulence.common.plugins.dependencies import (
-    BinaryDependency, FileDependency
-)
+from opulence.common.plugins.dependencies import BinaryDependency
+from opulence.common.plugins.dependencies import FileDependency
 from opulence.facts import Domain
 
 

@@ -12,4 +12,4 @@ class Username(BaseFact):
         self.name = StringField(mandatory=True, default="JohnSnow")
 
     def get_summary(self):
-        return "{}".format(self.name.value)
+        return f"{self.name.value}"

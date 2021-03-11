@@ -4,7 +4,8 @@ from celery.utils.log import get_task_logger
 from dynaconf import settings
 
 from opulence import App
-from opulence.common.job import Result, StatusCode
+from opulence.common.job import Result
+from opulence.common.job import StatusCode
 from opulence.common.plugins import PluginManager
 
 logger = get_task_logger(__name__)
@@ -38,14 +39,14 @@ def list_collectors():
 def execute_collector_by_name(collector_name, fact_or_composite):
     global available_collectors
     logger.info(
-        "Execute collector {} with {}".format(collector_name, type(fact_or_composite))
+        "Execute collector {} with {}".format(collector_name, type(fact_or_composite)),
     )
     result = Result(input=fact_or_composite, status=StatusCode.empty)
     if collector_name in available_collectors:
         return available_collectors[collector_name].run(result)
     result.status = (
         StatusCode.error,
-        "Could not find collector {}".format(collector_name),
+        f"Could not find collector {collector_name}",
     )
     return result
 
@@ -57,7 +58,7 @@ reload_collectors(flush=True)
         "{} ({})".format(
             i["plugin_data"]["name"],
             i["plugin_data"]["error"] if i["plugin_data"]["error"] else "OK",
-        )
+        ),
     )
     for i in list_collectors()
 ]

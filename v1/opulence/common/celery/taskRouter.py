@@ -1,4 +1,4 @@
-class TaskRouter(object):
+class TaskRouter:
     def route_for_task(self, task, *args, **kwargs):
         if ":" not in task:
             return {"queue": "default"}

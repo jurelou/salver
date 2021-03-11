@@ -11,7 +11,7 @@ class BaseField(JsonSerializable):
 
     def __repr__(self):
         return "{}  -> value: {}, default: {}, mandatory: {}".format(
-            self.__class__.__name__, self.value, self._default, self._mandatory
+            self.__class__.__name__, self.value, self._default, self._mandatory,
         )
 
     def __hash__(self):

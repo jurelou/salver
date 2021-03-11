@@ -6,7 +6,7 @@ from opulence.facts.domain import Domain
 class Subfinder(DockerCollector):
     config = {
         "name": "subfinder",
-        "docker": {"build_context": get_actual_dir(),},
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):

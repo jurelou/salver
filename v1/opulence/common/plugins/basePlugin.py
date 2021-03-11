@@ -1,13 +1,14 @@
+from enum import IntEnum
+from importlib import import_module
 import inspect
 import os
 import pkgutil
 import sys
-from enum import IntEnum
-from importlib import import_module
 
 from ..patterns import Singleton
 from ..utils import generate_uuid
-from .exceptions import DependencyMissing, PluginVerifyError
+from .exceptions import DependencyMissing
+from .exceptions import PluginVerifyError
 
 
 class PluginStatus(IntEnum):
@@ -118,7 +119,7 @@ class BasePlugin:
                 "status": self.status[0],
                 "error": self.status[1],
                 "canonical_name": self.plugin_canonical_name,
-            }
+            },
         }
 
 
@@ -147,9 +148,9 @@ class PluginManager(Singleton):
         try:
             module = import_module(plugin)
         except ModuleNotFoundError as err:
-            print("Module not found ({}): {}".format(plugin, err))
+            print(f"Module not found ({plugin}): {err}")
         except Exception as err:
-            print("Import module failed: {}".format(err))
+            print(f"Import module failed: {err}")
         else:
             return module
         return None
@@ -159,7 +160,7 @@ class PluginManager(Singleton):
             path = os.path.dirname(__file__)
         fs_path = path.replace(".", "/")
         for (_, name, ispkg) in pkgutil.iter_modules([fs_path]):
-            pkg_name = "{}.{}".format(path, name)
+            pkg_name = f"{path}.{name}"
             if pkg_name not in sys.modules:
                 module = self._import_module(pkg_name)
             else:
