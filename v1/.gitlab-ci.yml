@@ -1,0 +1,33 @@
+image: python
+
+stages:
+- lint
+- test
+
+before_script:
+- curl -O https://bootstrap.pypa.io/get-pip.py
+- python get-pip.py
+- pip install .
+
+pylama:
+  image: python:3.6
+  stage: lint
+  script: tox -e pylama
+
+isort:
+  image: python:3.6
+  stage: lint
+  script: tox -e isort
+
+python37:
+  image: python:3.7
+  stage: test
+  script: tox -e py37
+
+python36:
+  image: python:3.6
+  stage: test
+  script:
+  - tox -e py36
+  - pip install codecov
+  - codecov --token=$CODECOV_TOKEN

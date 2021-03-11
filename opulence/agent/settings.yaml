@@ -1,0 +1,17 @@
+celery:
+    broker_url: redis://localhost/0
+    result_backend: redis://localhost/0
+
+collectors:
+    - dummy-docker-collector
+    - recon-ng
+    - certificate-transparency
+    - nmap
+    # - dirsearch
+    - sherlock
+    - infoga
+
+elasticsearch:
+    endpoint:
+        host: localhost
+        port: 9200

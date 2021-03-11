@@ -1,0 +1,29 @@
+refresh_agents_interval: 5
+
+celery:
+    queue_name: engine_q
+    broker_url: redis://localhost/0
+    result_backend: redis://localhost/1
+    task_ignore_result: False
+
+    redbeat_redis_url: redis://localhost/2
+    beat_scheduler : redbeat.RedBeatScheduler
+
+
+kibana:
+    url: http://localhost:5601
+
+elasticsearch:
+    endpoint:
+        host: localhost
+        port: 9200
+
+neo4j:
+    endpoint: bolt://localhost:7687
+    username: neo4j
+    password: root
+
+# mongodb:
+#     endpoint: mongodb://localhost:27017
+    # username: root
+    # password: rootroot
