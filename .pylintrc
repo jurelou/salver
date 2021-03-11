@@ -1,0 +1,15 @@
+[MASTER]
+extension-pkg-whitelist=
+    pydantic,
+    ujson
+
+[MESSAGES CONTROL]
+disable=
+    C0103, #Variable name doesn't conform to snake_case naming style (invalid-name)
+    C0116, # Missing function or method docstring (missing-function-docstring)
+    C0114, # Missing module docstring (missing-module-docstring)
+    C0115, # Missing class docstring (missing-class-docstring)
+    R0903, # Too few public methods (0/2) (too-few-public-methods)
+
+[DESIGN]
+max-parents=3
