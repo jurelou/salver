@@ -1,0 +1,38 @@
+default:
+  COLLECTORS_MODULES:
+    - opulence.collectors.modules
+
+  FACTS_MODULES:
+    - opulence.facts.modules
+
+  CELERY_BROKER:
+    broker_url: redis://:thisisaverrygoodpassword@localhost/0
+    result_backend: redis://:thisisaverrygoodpassword@localhost/0
+
+  DATABASE:
+    database: opulence
+    url: mongodb://localhost/
+    connect_timeout: 3
+
+  MONGO:
+    database: opulence
+    url: mongodb://localhost/
+    connect_timeout: 3
+
+
+  GRAPH_DATABASE:
+    url: "bolt://localhost:7687"
+    user: neo4j
+    password: securepassword
+
+  DB_QUERY_LIMIT:
+    mongo_objects: 500
+    neo_max_connections: 30
+
+development:
+  API_KEYS:
+    censys_secret: ""
+    censys_api_id: ""
+    shodan_api: ""
+    github_token: ""
+    github_user: ""

@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Collectors &mdash; opulence  documentation</title>
+
+
+
+
+
+
+
+
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Plugins" href="plugin.html" />
+    <link rel="prev" title="Facts" href="facts.html" />
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+            <a href="../index.html" class="icon icon-home"> opulence
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.42
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../purpose.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to opulence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Basic concepts</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="facts.html">Facts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Collectors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-a-collector">What is a collector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#collector-s-helpers">Collector’s helpers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#naked">Naked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scripts">Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-packages">Python packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugin.html">Plugins</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Technical documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../technical/architecture.html">Scan workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/collectors.html">Available collectors</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Opulence by examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/fact.html">Create a fact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/collector.html">Create a collector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/token-bucket.html">Usage of Token Bucket</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">opulence</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+      <li>Collectors</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+            <a href="../_sources/topics/collector.rst.txt" rel="nofollow"> View page source</a>
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="collectors">
+<span id="my-reference-label"></span><h1>Collectors<a class="headerlink" href="#collectors" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-a-collector">
+<h2>What is a collector<a class="headerlink" href="#what-is-a-collector" title="Permalink to this headline">¶</a></h2>
+<p>Collectors are classes which generate intelligence from facts.
+Collectors allow us to create links between facts (i.e. from an email address find a user’s facebook account, from a telephone number find a user’s name)</p>
+<p>An opulence of collectors have already been developped by the community, opulence provides a central platform to manage them all !</p>
+<p>For opulence, a collector can be seen as a class which takes one or more <code class="xref py py-class docutils literal notranslate"><span class="pre">fact</span></code> as input, and will return some more. See <a class="reference internal" href="facts.html#facts"><span class="std std-ref">Facts</span></a>.</p>
+<p>opulence comes with some pre-made collectors, you may want to add your own collectors, see  <span class="xref std std-ref">Extending collectors</span>.</p>
+</div>
+<div class="section" id="collector-s-helpers">
+<h2>Collector’s helpers<a class="headerlink" href="#collector-s-helpers" title="Permalink to this headline">¶</a></h2>
+<p>In order to simplify the integration of new collectors into opulence, some helpers have been made in order to make your life easier.</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Collectors</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Collector type</p></th>
+<th class="head"><p>When to use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ScriptCollector</p></td>
+<td><p>Usefull for executable files (binaries, python scripts, batch files …)</p></td>
+</tr>
+<tr class="row-odd"><td><p>PyPiCollector</p></td>
+<td><p>Used for importing a python package (installable through the pip command)</p></td>
+</tr>
+<tr class="row-even"><td><p>NakedCollector</p></td>
+<td><p>Depending on your specific needs</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="naked">
+<h3>Naked<a class="headerlink" href="#naked" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opulence.facts.person</span> <span class="kn">import</span> <span class="n">Person</span>
+<span class="kn">from</span> <span class="nn">opulence.collectors</span> <span class="kn">import</span> <span class="n">BaseCollector</span>
+
+<span class="k">class</span> <span class="nc">example</span><span class="p">(</span><span class="n">BaseCollector</span><span class="p">):</span>
+    <span class="c1">###############</span>
+    <span class="c1"># Plugin attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_name_</span> <span class="o">=</span> <span class="s2">&quot;example&quot;</span>
+    <span class="n">_description_</span> <span class="o">=</span> <span class="s2">&quot;This is an example naked collector&quot;</span>
+    <span class="n">_author_</span> <span class="o">=</span> <span class="s2">&quot;??&quot;</span>
+    <span class="n">_version_</span> <span class="o">=</span> <span class="mf">0.42</span>
+    <span class="n">_dependencies_</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">###############</span>
+    <span class="c1"># Collector attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_allowed_input_</span> <span class="o">=</span> <span class="p">(</span><span class="n">Person</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">launch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">facts</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="_name_">
+<code class="sig-name descname">_name_</code><a class="headerlink" href="#_name_" title="Permalink to this definition">¶</a></dt>
+<dd><p>String representating the collector display name.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is only used for display purposes. Duplicates names are allowed</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="_description_">
+<code class="sig-name descname">_description_</code><a class="headerlink" href="#_description_" title="Permalink to this definition">¶</a></dt>
+<dd><p>String containing the collector aim</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="_author_">
+<code class="sig-name descname">_author_</code><a class="headerlink" href="#_author_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Author’s name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="_version_">
+<code class="sig-name descname">_version_</code><a class="headerlink" href="#_version_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of the collector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="_dependencies_">
+<code class="sig-name descname">_dependencies_</code><a class="headerlink" href="#_dependencies_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collectors can contain a list of dependencies.
+See <a class="reference internal" href="../how-to/collector.html#dependencies"><span class="std std-ref">Dependencies</span></a> for the available dependencies.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="_allowed_input_">
+<code class="sig-name descname">_allowed_input_</code><a class="headerlink" href="#_allowed_input_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the types of input the collector can accept.
+It must be a <code class="xref py py-class docutils literal notranslate"><span class="pre">fact</span></code> type or a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">fact</span></code> types.
+(i.e <code class="xref py py-class docutils literal notranslate"><span class="pre">Person</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">[Person,</span> <span class="pre">Email,</span> <span class="pre">Telephone]</span></code>)</p>
+<p>Each time the collector will be executed, one of the <a class="reference internal" href="#_allowed_input_" title="_allowed_input_"><code class="xref py py-class docutils literal notranslate"><span class="pre">_allowed_input_</span></code></a> will be provided as an argument.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You may need multiple facts at once. You can use the <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite</span></code> class.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Composite</span></code> allows you to join multiple facts together. If you need both an email address and a telephone number, you can use the following <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite</span></code> : <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite(Email,</span> <span class="pre">Telephone)</span></code></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="scripts">
+<h3>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opulence.facts.person</span> <span class="kn">import</span> <span class="n">Person</span>
+<span class="kn">from</span> <span class="nn">opulence.collectors.scripts</span> <span class="kn">import</span> <span class="n">ScriptCollector</span>
+
+<span class="k">class</span> <span class="nc">exampleScript</span><span class="p">(</span><span class="n">ScriptCollector</span><span class="p">):</span>
+    <span class="c1">###############</span>
+    <span class="c1"># Plugin attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_name_</span> <span class="o">=</span> <span class="s2">&quot;example&quot;</span>
+    <span class="n">_description_</span> <span class="o">=</span> <span class="s2">&quot;This is an example script collector&quot;</span>
+    <span class="n">_author_</span> <span class="o">=</span> <span class="s2">&quot;Author Name&quot;</span>
+    <span class="n">_version_</span> <span class="o">=</span> <span class="mf">0.42</span>
+    <span class="n">_dependencies_</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">###############</span>
+    <span class="c1"># Collector attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_allowed_input_</span> <span class="o">=</span> <span class="p">(</span><span class="n">Person</span><span class="p">)</span>
+
+    <span class="c1">###############</span>
+    <span class="c1"># Script attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_script_path_</span> <span class="o">=</span> <span class="s2">&quot;echo&quot;</span>
+    <span class="n">_script_arguments_</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;$Person.firstname$&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="_script_path_">
+<code class="sig-name descname">_script_path_</code><a class="headerlink" href="#_script_path_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mandatory string containing the executable path. This command will be automatically executed with the <a class="reference internal" href="#_script_arguments_" title="_script_arguments_"><code class="xref py py-class docutils literal notranslate"><span class="pre">_script_arguments_</span></code></a> parameters.</p>
+<p>It can be a relative path (i.e. <code class="xref py py-class docutils literal notranslate"><span class="pre">&quot;ls&quot;</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">&quot;../ls&quot;</span></code>) or an absolute path (i.e. <code class="xref py py-class docutils literal notranslate"><span class="pre">&quot;/bin/ls&quot;</span></code>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="_script_arguments_">
+<code class="sig-name descname">_script_arguments_</code><a class="headerlink" href="#_script_arguments_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mandatory array containing the arguments to provide to the <a class="reference internal" href="#_script_path_" title="_script_path_"><code class="xref py py-class docutils literal notranslate"><span class="pre">_script_path_</span></code></a>. Scripts argument might be a string (one single argument): <code class="xref py py-class docutils literal notranslate"><span class="pre">&quot;Hello&quot;</span></code>, a list : <code class="xref py py-class docutils literal notranslate"><span class="pre">[&quot;Hello&quot;,</span> <span class="pre">&quot;world&quot;]</span></code>, a tuple : <code class="xref py py-class docutils literal notranslate"><span class="pre">(&quot;Hello&quot;,</span> <span class="pre">&quot;world&quot;)</span></code></p>
+<p>Arguments can contain special variables called sigil. (a “little sign” supposedly having magical power).</p>
+<p>Special characters starts and ends by “$” (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">$Person$</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">$Person.firstname$</span></code>).</p>
+<p>The purpose of those special arguments is to provide to the executable file the correct parameters.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Special arguments should contains a <code class="xref py py-class docutils literal notranslate"><span class="pre">Fact</span></code>, or a <code class="xref py py-class docutils literal notranslate"><span class="pre">Fact.attribute</span></code> provided in the <a class="reference internal" href="#_allowed_input_" title="_allowed_input_"><code class="xref py py-class docutils literal notranslate"><span class="pre">_allowed_input_</span></code></a> attribute.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can provide an empty special argument : <code class="xref py py-class docutils literal notranslate"><span class="pre">$$</span></code>, the core engine will try to guess the correct arguments.
+This can be a great shortcut if you have only one <a class="reference internal" href="#_allowed_input_" title="_allowed_input_"><code class="xref py py-class docutils literal notranslate"><span class="pre">_allowed_input_</span></code></a>, otherwise, it might not work perfectly</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="python-packages">
+<h3>Python packages<a class="headerlink" href="#python-packages" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opulence.facts.person</span> <span class="kn">import</span> <span class="n">Person</span>
+<span class="kn">from</span> <span class="nn">opulence.collectors.pypi</span> <span class="kn">import</span> <span class="n">PypiCollector</span>
+
+<span class="k">class</span> <span class="nc">examplePypi</span><span class="p">(</span><span class="n">PypiCollector</span><span class="p">):</span>
+    <span class="c1">###############</span>
+    <span class="c1"># Plugin attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_name_</span> <span class="o">=</span> <span class="s2">&quot;example&quot;</span>
+    <span class="n">_description_</span> <span class="o">=</span> <span class="s2">&quot;This is an example pypi collector&quot;</span>
+    <span class="n">_author_</span> <span class="o">=</span> <span class="s2">&quot;??&quot;</span>
+    <span class="n">_version_</span> <span class="o">=</span> <span class="mf">0.42</span>
+    <span class="n">_dependencies_</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">###############</span>
+    <span class="c1"># Collector attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_allowed_input_</span> <span class="o">=</span> <span class="p">(</span><span class="n">Person</span><span class="p">)</span>
+
+    <span class="c1">###############</span>
+    <span class="c1"># PyPi attributes</span>
+    <span class="c1">###############</span>
+    <span class="n">_package_name_</span> <span class="o">=</span> <span class="s2">&quot;requests&quot;</span>
+
+    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">facts</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="_package_name_">
+<code class="sig-name descname">_package_name_</code><a class="headerlink" href="#_package_name_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mandatory string attribute containing the python package to load.
+The package will be available under the <code class="xref py py-class docutils literal notranslate"><span class="pre">package</span></code> attribute once loaded.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="plugin.html" class="btn btn-neutral float-right" title="Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="facts.html" class="btn btn-neutral float-left" title="Facts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+
+
+
+
+
+</body>
+</html>

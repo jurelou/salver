@@ -1,16 +1,133 @@
+from celery.result import allow_join_result
+from celery.signals import worker_init
 from celery.signals import worker_ready
+from loguru import logger
 
-from . import collector_tasks, fact_tasks, scan_tasks  # noqa: W0611
-from .scans import tasks as scan_task
+from opulence.common.celery import create_app
+# from opulence.common.database.es import utils as es_utils
+# from opulence.common.database.neo4j import utils as neo4j_utils
+from opulence.config import engine_config
+
+from opulence.engine.database.manager import DatabaseManager
+
+db = DatabaseManager()
+
+db.mongodb.flush()
+# db.flush()
+db.bootstrap()
+
+from opulence.common.models.case import Case
+from opulence.common.models.scan import Scan
+        
+from opulence.facts.company import Company
+from opulence.facts.domain import Domain
+from opulence.facts.person import Person
+from opulence.facts.phone import Phone
+from opulence.facts.username import Username
+
+case = Case(name="tata")
+
+scan = Scan(
+    facts=[
+        Phone(number="+33689181869"),
+        Username(name="jurelou"),
+        Company(name="wavely"),
+        Domain(fqdn="wavely.fr"),
+        Person(
+            firstname="fname",
+            lastname="lname",
+            anther="ldm",
+            first_seen=42,
+            last_seen=200,
+        ),
+    ],
+    scan_type="single_collector",
+    collector_name="dummy-docker-collector",
+)
+a = db.add_case(case)
+print("!!!", a)
+a = db.add_scan(case.external_id)
+# db.add_scan(scan)
 
 
-# Load things on startup
+
+
+# Create celery app
+celery_app = create_app()
+celery_app.conf.update(engine_config.celery)
+
+
+celery_app.conf.update({"imports": "opulence.engine.tasks"})
+
+
+# es_client = es_utils.create_client(engine_config.elasticsearch)
+# neo4j_client = neo4j_utils.create_client(engine_config.neo4j)
+
+
+@worker_init.connect
+def init(sender=None, conf=None, **kwargs):
+    return # TODO remove
+    try:
+        es_utils.remove_indexes(es_client)
+        es_utils.create_indexes(es_client)
+
+        # es_utils.remove_kibana_patterns(es_client, kibana_url=engine_config.kibana.url)
+        es_utils.create_kibana_patterns(es_client, kibana_url=engine_config.kibana.url)
+
+        neo4j_utils.flush(neo4j_client)
+        neo4j_utils.create_constraints(neo4j_client)
+
+        from opulence.engine.controllers import periodic_tasks
+
+        periodic_tasks.flush()
+        from opulence.engine import tasks  # pragma: nocover
+
+        tasks.reload_agents.apply()
+        # tasks.reload_periodic_tasks.apply()
+
+    except Exception as err:
+        logger.critical(f"Error in signal `worker_init`: {err}")
+
+
 @worker_ready.connect
-def startup(sender=None, conf=None, **kwargs):
-    fact_tasks.flush()
-    fact_tasks.load()
+def ready(sender=None, conf=None, **kwargs):
+    #TODO: remove
+    return
+    try:
 
-    scan_task.flush()
+        from opulence.common.models.case import Case
+        from opulence.common.models.scan import Scan
+        from opulence.engine import tasks  # pragma: nocover
+        from opulence.facts.company import Company
+        from opulence.facts.domain import Domain
+        from opulence.facts.person import Person
+        from opulence.facts.phone import Phone
+        from opulence.facts.username import Username
 
-    collector_tasks.flush()
-    collector_tasks.load()
+        case = Case()
+        # scan = Scan(collector_name="lol", facts=[Person(firstname="fname", lastname="lname")])
+
+        scan = Scan(
+            facts=[
+                Phone(number="+33689181869"),
+                Username(name="jurelou"),
+                Company(name="wavely"),
+                Domain(fqdn="wavely.fr"),
+                Person(
+                    firstname="fname",
+                    lastname="lname",
+                    anther="ldm",
+                    first_seen=42,
+                    last_seen=200,
+                ),
+            ],
+            scan_type="single_collector",
+            collector_name="dummy-docker-collector",
+        )
+
+        tasks.add_case.apply(args=[case])
+        tasks.add_scan.apply(args=[case.external_id, scan])
+        tasks.launch_scan.apply(args=[scan.external_id])
+
+    except Exception as err:
+        logger.critical(f"Error in signal `worker_ready`: {err}")

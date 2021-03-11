@@ -1,0 +1,14 @@
+autopep8
+coverage>=4.5.1
+
+flower
+isort>=4.3.4
+pre-commit
+pylama>=7.6.5
+pytest
+sphinx
+sphinx-autobuild
+sphinx-autodoc-typehints>=1.6.0
+sphinx-rtd-theme
+tornado<6.0.0,>=4.2.0
+tox>=3.5.2
