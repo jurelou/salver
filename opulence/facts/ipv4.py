@@ -2,7 +2,7 @@ import ipaddress
 
 from pydantic import validator
 
-from opulence.common.fact import BaseFact
+from opulence.common.models.fact import BaseFact
 
 
 class IPv4(BaseFact):

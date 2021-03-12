@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+/* The grid: Four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 25%;
+  padding: 10px;
+}
+
+/* Style the images inside the grid */
+.column img {
+  opacity: 0.8; 
+  cursor: pointer; 
+}
+
+.column img:hover {
+  opacity: 1;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The expanding image container */
+.container {
+  position: relative;
+  display: none;
+}
+
+/* Expanding image text */
+#imgtext {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+/* Closable button inside the expanded image */
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div style="text-align:center">
+  <h2>SUPER admin interface</h2>
+</div>
+
+
+<div class="row">
+
+  <div style="left:37.5%;width:25%;position:fixed;">
+    <img src="celery.png" style="width:100%" onclick="window.open('http://127.0.0.1:5555');">
+  </div>
+</div>
+
+
+<div class="row">
+
+  <div class="column">
+    <img src="kibana.png" style="width:100%" onclick="window.open('http://127.0.0.1:5601');">
+  </div>
+
+  <div class="column">
+    <img src="neo4j.png" style="width:100%" onclick="window.open('http://127.0.0.1:7474');">
+  </div>
+
+  <div class="column">
+    <img src="mongodb.png" style="width:100%" onclick="window.open('http://127.0.0.1:8081');">
+  </div>
+
+  <div class="column">
+    <img src="redis.png" style="width:100%" onclick="window.open('http://127.0.0.1:8001');">
+  </div>
+</div>
+
+
+
+</body>
+</html>

@@ -5,8 +5,9 @@ from loguru import logger
 
 from opulence.common.database.es import facts as es_facts
 from opulence.common.database.neo4j import facts as neo4j_facts
-from opulence.common.fact import BaseFact
-from opulence.engine.app import es_client, neo4j_client
+from opulence.common.models.fact import BaseFact
+from opulence.engine.app import es_client
+from opulence.engine.app import neo4j_client
 
 
 def add_many(facts: List[BaseFact]):

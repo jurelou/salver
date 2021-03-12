@@ -4,7 +4,7 @@ from uuid import uuid4
 from elasticsearch.helpers import bulk
 from loguru import logger
 
-from opulence.common.fact import BaseFact
+from opulence.common.models.fact import BaseFact
 from opulence.facts import all_facts
 
 replicas = 0

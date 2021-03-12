@@ -35,9 +35,9 @@ class DummyDocker(DockerCollector):
 
     def from_username(self, username):
         data = self.run_container(
-            command=["-m", "profiler", "-o", f"SOURCE={username.name}", "-x",],
+            command=["-m", "profiler", "-o", f"SOURCE={username.name}", "-x"],
         )
         for category, resource, url in self.findall_regex(
-            data, r"Category: (.*)\n.*\n.*Resource: (.*)\n.*Url: (.*)"
+            data, r"Category: (.*)\n.*\n.*Resource: (.*)\n.*Url: (.*)",
         ):
             yield Profile(url=url, category=category, resource=resource)

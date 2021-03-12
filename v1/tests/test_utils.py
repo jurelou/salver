@@ -1,6 +1,7 @@
 import unittest
 
-from opulence.common.utils import is_iterable, is_list
+from opulence.common.utils import is_iterable
+from opulence.common.utils import is_list
 
 
 class TestIsList(unittest.TestCase):

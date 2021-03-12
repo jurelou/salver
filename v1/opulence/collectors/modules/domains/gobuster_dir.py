@@ -1,8 +1,10 @@
 import re
 
 from opulence.collectors.bases import ScriptCollector
-from opulence.common.plugins.dependencies import BinaryDependency, FileDependency
-from opulence.facts import URI, Domain
+from opulence.common.plugins.dependencies import BinaryDependency
+from opulence.common.plugins.dependencies import FileDependency
+from opulence.facts import Domain
+from opulence.facts import URI
 
 
 class GobusterDir(ScriptCollector):

@@ -1,14 +1,14 @@
-import unittest
 from shutil import which
-from unittest.mock import MagicMock, Mock, patch
+import unittest
+from unittest.mock import MagicMock
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import opulence.common.plugins.dependencies as dep
-from opulence.common.plugins.exceptions import (
-    BinaryDependencyMissing,
-    DependencyMissing,
-    FileDependencyMissing,
-    ModuleDependencyMissing,
-)
+from opulence.common.plugins.exceptions import BinaryDependencyMissing
+from opulence.common.plugins.exceptions import DependencyMissing
+from opulence.common.plugins.exceptions import FileDependencyMissing
+from opulence.common.plugins.exceptions import ModuleDependencyMissing
 
 
 class TestPluginDependencies(unittest.TestCase):

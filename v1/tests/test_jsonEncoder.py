@@ -1,11 +1,17 @@
 import json
 import unittest
 
-from opulence.common.fields import IntegerField, StringField
-from opulence.common.job import Composable, Result
-from opulence.common.jsonEncoder import custom_dumps, custom_loads, decode, encode
+from opulence.common.fields import IntegerField
+from opulence.common.fields import StringField
+from opulence.common.job import Composable
+from opulence.common.job import Result
+from opulence.common.jsonEncoder import custom_dumps
+from opulence.common.jsonEncoder import custom_loads
+from opulence.common.jsonEncoder import decode
+from opulence.common.jsonEncoder import encode
 from opulence.common.patterns import Composite
-from opulence.common.plugins import BasePlugin, PluginStatus
+from opulence.common.plugins import BasePlugin
+from opulence.common.plugins import PluginStatus
 from opulence.facts.bases import BaseFact
 
 

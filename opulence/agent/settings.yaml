@@ -9,7 +9,7 @@ elasticsearch:
 
 
 collectors:
-    # - dummy-docker-collector
+    - dummy-docker-collector
     - recon-ng
     - certificate-transparency
     - nmap

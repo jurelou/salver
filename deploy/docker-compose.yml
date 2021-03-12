@@ -2,6 +2,20 @@ version: "3.3"
 
 services:
 ########################
+##  SUPERADMIN
+########################
+  superadmin:
+    image: nginx
+    restart: always
+    ports:
+      - 127.0.0.1:80:80
+    volumes:
+      - ./superadmin:/usr/share/nginx/html
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: rootroot
+
+########################
 ##  MONGODB
 ########################
   mongo:

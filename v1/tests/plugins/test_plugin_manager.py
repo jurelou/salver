@@ -1,13 +1,15 @@
-import unittest
 from inspect import isclass
-from unittest.mock import MagicMock, call, patch
+import unittest
+from unittest.mock import MagicMock
+from unittest.mock import call
+from unittest.mock import patch
 
-from opulence.common.plugins import BasePlugin, PluginManager, PluginStatus
-from opulence.common.plugins.exceptions import (
-    DependencyMissing,
-    ModuleDependencyMissing,
-    PluginVerifyError,
-)
+from opulence.common.plugins import BasePlugin
+from opulence.common.plugins import PluginManager
+from opulence.common.plugins import PluginStatus
+from opulence.common.plugins.exceptions import DependencyMissing
+from opulence.common.plugins.exceptions import ModuleDependencyMissing
+from opulence.common.plugins.exceptions import PluginVerifyError
 
 
 class basePlugin(BasePlugin):

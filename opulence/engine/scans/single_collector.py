@@ -1,6 +1,7 @@
 from opulence.common.exceptions import CollectorNotFound
 from opulence.engine.controllers import agent_tasks
-from opulence.engine.scans.base import BaseScan, BaseScanConfig
+from opulence.engine.scans.base import BaseScan
+from opulence.engine.scans.base import BaseScanConfig
 
 
 class ScanConfig(BaseScanConfig):

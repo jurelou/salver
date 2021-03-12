@@ -1,5 +1,5 @@
-import httpx
 from elasticsearch import Elasticsearch
+import httpx
 from loguru import logger
 
 from opulence.common.database.es import facts

@@ -1,10 +1,11 @@
+from typing import List
+from typing import Optional
 import uuid
-from typing import List, Optional
 
 from pydantic import BaseModel
 
-from opulence.common.fact import BaseFact
-from opulence.engine.models.scan import Scan
+from opulence.common.models.fact import BaseFact
+from opulence.common.models.scan import Scan
 
 
 class BaseScanConfig(BaseModel):

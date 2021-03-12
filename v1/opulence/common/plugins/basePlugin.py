@@ -1,13 +1,14 @@
+from enum import IntEnum
+from importlib import import_module
 import inspect
 import os
 import pkgutil
 import sys
-from enum import IntEnum
-from importlib import import_module
 
 from ..patterns import Singleton
 from ..utils import generate_uuid
-from .exceptions import DependencyMissing, PluginVerifyError
+from .exceptions import DependencyMissing
+from .exceptions import PluginVerifyError
 
 
 class PluginStatus(IntEnum):

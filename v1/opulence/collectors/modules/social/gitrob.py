@@ -2,8 +2,12 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.passwordstore import Store
-from opulence.common.plugins.dependencies import BinaryDependency, PasswordDependency
-from opulence.facts import Email, File, GitRepository, Username
+from opulence.common.plugins.dependencies import BinaryDependency
+from opulence.common.plugins.dependencies import PasswordDependency
+from opulence.facts import Email
+from opulence.facts import File
+from opulence.facts import GitRepository
+from opulence.facts import Username
 
 
 class Gitrob(ScriptCollector):

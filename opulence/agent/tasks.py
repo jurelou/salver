@@ -3,11 +3,12 @@ from typing import List
 from celery import current_task
 from loguru import logger
 
-from opulence.agent import exceptions
-from opulence.agent.app import celery_app, es_client
+from opulence.agent.app import celery_app
+from opulence.agent.app import es_client
 from opulence.agent.collectors.factory import CollectorFactory
+from opulence.agent import exceptions
 from opulence.common.database.es import facts as facts_index
-from opulence.common.fact import BaseFact
+from opulence.common.models.fact import BaseFact
 
 all_collectors = CollectorFactory().items
 

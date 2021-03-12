@@ -1,5 +1,5 @@
-import opulence.collectors.signatures as collectors_s
 from opulence import App
+import opulence.collectors.signatures as collectors_s
 from opulence.engine.database import DataWriter
 
 

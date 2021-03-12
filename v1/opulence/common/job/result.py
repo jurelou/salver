@@ -1,9 +1,13 @@
 from opulence.facts.bases import BaseFact
 from opulence.facts.bases.utils import is_fact_or_composite
 
-from ..patterns import Composite, JsonSerializable, is_composite
+from ..patterns import Composite
+from ..patterns import JsonSerializable
+from ..patterns import is_composite
 from ..timer import Clock
-from ..utils import generate_uuid, hex_to_uuid, is_list
+from ..utils import generate_uuid
+from ..utils import hex_to_uuid
+from ..utils import is_list
 from .status import StatusCode
 
 

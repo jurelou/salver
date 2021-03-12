@@ -2,7 +2,9 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import URI, Email, Username
+from opulence.facts import Email
+from opulence.facts import URI
+from opulence.facts import Username
 
 
 class LittleBrother(ScriptCollector):

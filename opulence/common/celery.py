@@ -1,7 +1,8 @@
 import sys
 
 import celery
-from celery.signals import after_setup_logger, setup_logging
+from celery.signals import after_setup_logger
+from celery.signals import setup_logging
 from kombu.serialization import register
 
 from opulence.common import json_encoder

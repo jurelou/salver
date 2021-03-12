@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from loguru import logger
 
-from opulence.engine.models.scan import Scan
+from opulence.common.models.scan import Scan
 
 
 def get(client, scan_id: uuid4):

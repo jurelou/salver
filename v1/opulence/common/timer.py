@@ -1,5 +1,7 @@
 from .patterns import JsonSerializable
-from .utils import datetime_to_str, now, str_to_datetime
+from .utils import datetime_to_str
+from .utils import now
+from .utils import str_to_datetime
 
 
 class Clock(JsonSerializable):

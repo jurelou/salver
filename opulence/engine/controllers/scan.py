@@ -4,9 +4,9 @@ from uuid import uuid4
 from loguru import logger
 
 from opulence.common.database.neo4j import scans as neo4j_scans
+from opulence.common.models.scan import Scan
 from opulence.engine.app import neo4j_client
 from opulence.engine.controllers import fact as fact_ctrl
-from opulence.engine.models.scan import Scan
 from opulence.engine.scans.factory import ScanFactory
 
 all_scans = ScanFactory().build()

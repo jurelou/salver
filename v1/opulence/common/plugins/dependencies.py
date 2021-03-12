@@ -1,17 +1,15 @@
-import os
-import sys
 from importlib import import_module
+import os
 from shutil import which
+import sys
 
 from opulence.common.passwordstore import Store
 
-from .exceptions import (
-    BinaryDependencyMissing,
-    DependencyMissing,
-    FileDependencyMissing,
-    ModuleDependencyMissing,
-    PasswordDependencyMissing,
-)
+from .exceptions import BinaryDependencyMissing
+from .exceptions import DependencyMissing
+from .exceptions import FileDependencyMissing
+from .exceptions import ModuleDependencyMissing
+from .exceptions import PasswordDependencyMissing
 
 
 class Dependency:

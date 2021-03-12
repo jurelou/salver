@@ -1,6 +1,7 @@
 import unittest
 
-from opulence.common.plugins import BasePlugin, PluginStatus
+from opulence.common.plugins import BasePlugin
+from opulence.common.plugins import PluginStatus
 
 
 class TestBasePlugin(unittest.TestCase):

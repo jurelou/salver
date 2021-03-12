@@ -2,8 +2,8 @@ import hashlib
 
 import requests
 
-from opulence import facts
 from opulence.collectors.bases import HttpCollector
+from opulence import facts
 
 
 class BadIps(HttpCollector):

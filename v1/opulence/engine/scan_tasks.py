@@ -1,8 +1,9 @@
 from celery import group
 
-import opulence.collectors.signatures as remote_ctrl
 from opulence import App
-from opulence.common.utils import generate_uuid, is_list
+import opulence.collectors.signatures as remote_ctrl
+from opulence.common.utils import generate_uuid
+from opulence.common.utils import is_list
 from opulence.engine.database import DataWriter
 from opulence.facts import services as facts_services
 

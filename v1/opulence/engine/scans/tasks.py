@@ -1,5 +1,5 @@
-import json
 from datetime import datetime
+import json
 
 from opulence import App
 from opulence.common.utils import replace_dict_keys

@@ -2,7 +2,10 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import URI, Domain, Email, Phone
+from opulence.facts import Domain
+from opulence.facts import Email
+from opulence.facts import Phone
+from opulence.facts import URI
 
 
 class BlackWidow(ScriptCollector):

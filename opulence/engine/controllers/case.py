@@ -4,10 +4,10 @@ from loguru import logger
 
 from opulence.common.database.neo4j import cases as neo4j_cases
 from opulence.common.database.neo4j import scans as neo4j_scans
+from opulence.common.models.case import Case
+from opulence.common.models.scan import Scan
 from opulence.engine.app import neo4j_client
 from opulence.engine.controllers import agent_tasks
-from opulence.engine.models.case import Case
-from opulence.engine.models.scan import Scan
 
 
 def create(case: Case):

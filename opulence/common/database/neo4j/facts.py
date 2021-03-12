@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from loguru import logger
 
-from opulence.common.fact import BaseFact
+from opulence.common.models.fact import BaseFact
 
 
 def add_many(client, facts: List[BaseFact]):

@@ -2,7 +2,9 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Email, SocialProfile, Username
+from opulence.facts import Email
+from opulence.facts import SocialProfile
+from opulence.facts import Username
 
 
 class Socialscan(ScriptCollector):

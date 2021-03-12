@@ -2,8 +2,8 @@ from uuid import uuid4
 
 from loguru import logger
 
-from opulence.engine.models.case import Case
-from opulence.engine.models.scan import Scan
+from opulence.common.models.case import Case
+from opulence.common.models.scan import Scan
 
 
 def create(client, case: Case):

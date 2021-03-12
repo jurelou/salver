@@ -2,7 +2,9 @@ import re
 
 from opulence.collectors.bases import ScriptCollector
 from opulence.common.plugins.dependencies import BinaryDependency
-from opulence.facts import Domain, IPv4, Waf
+from opulence.facts import Domain
+from opulence.facts import IPv4
+from opulence.facts import Waf
 
 
 class WafWoof(ScriptCollector):

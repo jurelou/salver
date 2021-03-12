@@ -4,7 +4,7 @@ from typing import List
 
 from pydantic import BaseConfig, BaseModel, Field
 
-from opulence.common.fact import BaseFact
+from opulence.common.models.fact import BaseFact
 
 
 class Scan(BaseModel):

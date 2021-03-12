@@ -1,5 +1,5 @@
-import uuid
 from datetime import datetime
+import uuid
 
 from dateutil.parser import parse
 

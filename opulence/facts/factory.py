@@ -1,7 +1,7 @@
 from loguru import logger
 
-from opulence.common.fact import BaseFact
 from opulence.common.factory import Factory
+from opulence.common.models.fact import BaseFact
 
 
 class FactFactory(Factory):
