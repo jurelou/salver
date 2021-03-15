@@ -10,6 +10,8 @@ class Case(BaseModel):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     timestamp: float = Field(default_factory=time)
 
+    name: str
+
     class Config(BaseConfig):
         allow_population_by_alias = True
         extra = "allow"

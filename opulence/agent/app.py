@@ -5,7 +5,6 @@ from loguru import logger
 
 from opulence.agent.collectors.factory import CollectorFactory
 from opulence.common.celery import create_app
-from opulence.common.database.es.utils import create_client
 from opulence.config import agent_config
 
 all_collectors = CollectorFactory().build()
@@ -34,5 +33,9 @@ celery_app.conf.update(
 
 celery_app.conf.update(agent_config.celery)
 
+
+from elasticsearch import Elasticsearch
+
+
 # Create ES instance
-es_client = create_client(agent_config.elasticsearch)
+es_client = Elasticsearch(hosts=[agent_config.elasticsearch.endpoint])

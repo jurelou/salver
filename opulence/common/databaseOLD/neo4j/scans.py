@@ -48,7 +48,8 @@ def add_facts(
 ):
     formated_links = [{"from": scan_id.hex, "to": fact} for fact in facts_ids]
 
-    logger.info(f"Add {len(facts_ids)} facts to {scan_id}")
+    print(formated_links)
+    logger.info(f"Add {len(facts_ids)} facts to {scan_id} with relation {relationship}")
     with client.session() as session:
 
         session.run(

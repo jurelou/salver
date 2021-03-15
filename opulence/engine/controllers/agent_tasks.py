@@ -4,9 +4,10 @@ from celery.result import allow_join_result
 from loguru import logger
 
 from opulence.common.celery import async_call
-from opulence.common.fact import BaseFact
+from opulence.common.models.fact import BaseFact
 from opulence.engine.app import celery_app
 from opulence.engine.controllers.scan import add_facts
+from opulence.engine.controllers.fact import add_many, get_many
 
 # from opulence.engine.controllers.fact import add_many
 
@@ -18,7 +19,7 @@ def scan_success(result, scan_id):
             f"Task success: got {len(result['facts'])} facts in {result['duration']}",
         )
         # print(result)
-        # add_many()
+        # add_many(get_many(result["facts"]))
         add_facts(scan_id, result["facts"])
     except Exception as err:
         logger.critical(err)

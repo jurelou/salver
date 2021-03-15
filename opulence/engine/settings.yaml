@@ -10,20 +10,16 @@ celery:
     beat_scheduler : redbeat.RedBeatScheduler
 
 
-kibana:
-    url: http://localhost:5601
-
 elasticsearch:
     endpoint:
         host: localhost
         port: 9200
+    kibana_endpoint: http://localhost:5601
 
 neo4j:
     endpoint: bolt://localhost:7687
     username: neo4j
     password: root
 
-# mongodb:
-#     endpoint: mongodb://localhost:27017
-    # username: root
-    # password: rootroot
+mongodb:
+    endpoint: mongodb://localhost:27017

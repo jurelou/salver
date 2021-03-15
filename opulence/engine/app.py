@@ -4,10 +4,53 @@ from celery.signals import worker_ready
 from loguru import logger
 
 from opulence.common.celery import create_app
-from opulence.common.database.es import utils as es_utils
-from opulence.common.database.neo4j import utils as neo4j_utils
+# from opulence.common.database.es import utils as es_utils
+# from opulence.common.database.neo4j import utils as neo4j_utils
 from opulence.config import engine_config
-from opulence.engine.controllers import periodic_tasks
+
+from opulence.engine.database.manager import DatabaseManager
+
+db = DatabaseManager()
+
+db.mongodb.flush()
+# db.flush()
+db.bootstrap()
+
+from opulence.common.models.case import Case
+from opulence.common.models.scan import Scan
+        
+from opulence.facts.company import Company
+from opulence.facts.domain import Domain
+from opulence.facts.person import Person
+from opulence.facts.phone import Phone
+from opulence.facts.username import Username
+
+case = Case(name="tata")
+
+scan = Scan(
+    facts=[
+        Phone(number="+33689181869"),
+        Username(name="jurelou"),
+        Company(name="wavely"),
+        Domain(fqdn="wavely.fr"),
+        Person(
+            firstname="fname",
+            lastname="lname",
+            anther="ldm",
+            first_seen=42,
+            last_seen=200,
+        ),
+    ],
+    scan_type="single_collector",
+    collector_name="dummy-docker-collector",
+)
+a = db.add_case(case)
+print("!!!", a)
+a = db.add_scan(case.external_id)
+# db.add_scan(scan)
+
+
+
 
 # Create celery app
 celery_app = create_app()
@@ -17,12 +60,13 @@ celery_app.conf.update(engine_config.celery)
 celery_app.conf.update({"imports": "opulence.engine.tasks"})
 
 
-es_client = es_utils.create_client(engine_config.elasticsearch)
-neo4j_client = neo4j_utils.create_client(engine_config.neo4j)
+# es_client = es_utils.create_client(engine_config.elasticsearch)
+# neo4j_client = neo4j_utils.create_client(engine_config.neo4j)
 
 
 @worker_init.connect
 def init(sender=None, conf=None, **kwargs):
+    return # TODO remove
     try:
         es_utils.remove_indexes(es_client)
         es_utils.create_indexes(es_client)
@@ -32,6 +76,8 @@ def init(sender=None, conf=None, **kwargs):
 
         neo4j_utils.flush(neo4j_client)
         neo4j_utils.create_constraints(neo4j_client)
+
+        from opulence.engine.controllers import periodic_tasks
 
         periodic_tasks.flush()
         from opulence.engine import tasks  # pragma: nocover
@@ -45,6 +91,8 @@ def init(sender=None, conf=None, **kwargs):
 
 @worker_ready.connect
 def ready(sender=None, conf=None, **kwargs):
+    #TODO: remove
+    return
     try:
 
         from opulence.common.models.case import Case
