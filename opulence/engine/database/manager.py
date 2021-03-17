@@ -3,6 +3,7 @@ from opulence.engine.database.neo4j import Neo4jDB
 from opulence.engine.database.elasticsearch import ElasticsearchDB
 from opulence.engine.database.mongodb import MongoDB
 from opulence.common import models
+import uuid
 
 class   DatabaseManager:
     def __init__(self):
@@ -39,6 +40,14 @@ class   DatabaseManager:
         return self.mongodb.add_case(case)
 
     def add_scan(self, scan: models.Scan):
-        self.elasticsearch.add_many_facts(scan.facts)
+        self.elasticsearch.add_facts(scan.facts)
         self.neo4j.add_scan(scan)
         return self.mongodb.add_scan(scan)
+    
+    def get_scan(self, scan_id: uuid.UUID) -> models.Scan:
+        facts_ids = self.neo4j.get_scan_facts(scan_id)
+        facts = list(self.elasticsearch.get_facts(facts_ids))
+
+        scan = self.mongodb.get_scan(scan_id)
+        scan.facts = facts
+        return scan

@@ -76,7 +76,7 @@ class   ElasticsearchDB(BaseDB):
 
         [_delete_index(index) for index in self._kibana_index_patterns]
 
-    def add_many_facts(self, facts: List[models.BaseFact]):
+    def add_facts(self, facts: List[models.BaseFact]):
         def gen_actions(facts):
             for fact in facts:
                 yield {
@@ -88,3 +88,12 @@ class   ElasticsearchDB(BaseDB):
                 }
 
         bulk(client=self._client, actions=gen_actions(facts))
+
+    def get_facts(self, facts):
+        for fact_type, ids in facts.items():
+            logger.info(f"Get {len(ids)} facts{fact_type}")
+            res = self._client.mget(index=fact_to_index(fact_type), body={"ids": ids})
+            for doc in res["docs"]:
+                yield models.BaseFact.from_obj(
+                        fact_type=index_to_fact(doc["_index"]), data=doc["_source"],
+                )

@@ -20,7 +20,7 @@ class Scan(BaseModel):
 
     class Config(BaseConfig):
         allow_population_by_alias = True
-        extra = "allow"
+        extra = "ignore"
         # json_encoders = {
         #     uuid.UUID: lambda u: u.hex
         # }

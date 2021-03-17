@@ -65,6 +65,7 @@ def ready(sender=None, conf=None, **kwargs):
         scan = Scan(
             case_id=case.external_id,
             facts=[
+                Phone(number="+33123123"),
                 Phone(number="+33689181869"),
                 Username(name="jurelou"),
                 Company(name="wavely"),

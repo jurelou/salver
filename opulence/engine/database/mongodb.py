@@ -29,4 +29,10 @@ class   MongoDB(BaseDB):
         res = self._db.scans.insert_one(scan.dict(exclude={"facts"}))
         return res.inserted_id
 
+    def get_scan(self, scan_id) -> models.Scan:
+        scan = self._db.scans.find_one({"external_id": scan_id})
+        if not scan:
+            #TODO: Raise not found
+            return None
+        return models.Scan(**scan)
 

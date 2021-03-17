@@ -15,7 +15,11 @@ def reload_agents():
 @celery_app.task
 def launch_scan(scan_id: UUID):
     logger.debug(f"Launch scan {scan_id}")
-
+    try:
+        scan = db_manager.get_scan(scan_id)
+        print("!!!!", scan)
+    except Exception as err:
+        print("!!!", err)
     # try:
     #     scan = scan_ctrl.get(scan_id)
     #     scan_ctrl.launch(scan)
