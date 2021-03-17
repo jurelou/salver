@@ -1,6 +1,9 @@
 from neo4j import GraphDatabase
 from loguru import logger
 from opulence.engine.database.base import BaseDB
+from opulence.common import models
+from typing import List
+import time
 
 class   Neo4jDB(BaseDB):
     def __init__(self, config):
@@ -23,3 +26,44 @@ class   Neo4jDB(BaseDB):
             session.run(
                 "CREATE CONSTRAINT scan_unique_id IF NOT EXISTS ON (s:Scan) ASSERT s.external_id IS UNIQUE",
             )
+
+    def add_case(self, case: models.Case):
+        with self._client.session() as session:
+            session.run(
+                "CREATE (case: Case {external_id: $external_id}) ",
+                external_id=case.external_id.hex,
+            )
+
+    def add_facts(self, scan_id, facts: List[models.BaseFact], relationship: str = "GIVES"):
+        formated_facts = [
+            {"external_id": fact.hash__, "type": fact.schema()["title"]}
+            for fact in facts
+        ]
+        with self._client.session() as session:
+            session.run(
+                "MATCH (scan:Scan) "
+                "WHERE scan.external_id = $scan_id "
+                "UNWIND $facts as row "
+                "MERGE (fact:Fact {external_id: row.external_id}) "
+                "ON CREATE SET fact.type = row.type "
+                "WITH fact, scan "
+                "CALL apoc.create.relationship(scan, $relationship, {timestamp: $timestamp}, fact) "
+                "YIELD rel "
+                "RETURN rel",
+                scan_id=scan_id.hex,
+                facts=formated_facts,
+                timestamp=time.time(),
+                relationship=relationship
+            )
+
+    def add_scan(self, scan: models.Scan):
+        with self._client.session() as session:
+            session.run(
+                "MATCH (case:Case) "
+                "WHERE case.external_id = $case_id "
+                "CREATE (case)-[r:CONTAINS {timestamp: $timestamp}]->(scan:Scan {external_id: $scan_id})",
+                timestamp=time.time(),
+                case_id=scan.case_id.hex,
+                scan_id=scan.external_id.hex,
+            )
+        self.add_facts(scan.external_id, scan.facts, relationship="INPUTS")

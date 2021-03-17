@@ -35,7 +35,10 @@ class   DatabaseManager:
         return [self.mongodb, self.neo4j, self.elasticsearch]
     
     def add_case(self, case: models.Case):
+        self.neo4j.add_case(case)
         return self.mongodb.add_case(case)
 
     def add_scan(self, scan: models.Scan):
+        self.elasticsearch.add_many_facts(scan.facts)
+        self.neo4j.add_scan(scan)
         return self.mongodb.add_scan(scan)

@@ -12,8 +12,9 @@ from opulence.common.models.fact import BaseFact
 class Scan(BaseModel):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     timestamp: float = Field(default_factory=time)
+    
+    case_id : uuid.UUID
     scan_type: str
-
     facts: List[BaseFact] = []
     # collector_name: str
 

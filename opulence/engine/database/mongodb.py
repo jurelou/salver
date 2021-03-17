@@ -1,5 +1,5 @@
 import pymongo
-
+from typing import List
 from loguru import logger
 from opulence.engine.database.base import BaseDB
 from opulence.common import models
@@ -18,9 +18,7 @@ class   MongoDB(BaseDB):
 
     def bootstrap(self):
         logger.info("Create neo4j constraints")
-        self._db.cases.create_index(
-            "name", unique=True
-        )
+        self._db.cases.create_index("name", unique=True)
 
     def add_case(self, case: models.Case):
         res = self._db.cases.insert_one(case.dict())
@@ -28,4 +26,7 @@ class   MongoDB(BaseDB):
         return res.inserted_id
 
     def add_scan(self, scan: models.Scan):
-        print("GO", scan)
+        res = self._db.scans.insert_one(scan.dict(exclude={"facts"}))
+        return res.inserted_id
+
+
