@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import inspect
 
 from opulence.common.models.fact import BaseFact

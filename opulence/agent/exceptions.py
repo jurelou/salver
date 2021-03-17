@@ -1,14 +1,44 @@
-from opulence.common.exceptions import BaseOpulenceException
+# -*- coding: utf-8 -*-
+from opulence.common.exceptions import OpulenceException
 
 
-# Agents exceptions
-class BaseAgentException(BaseOpulenceException):
-    pass
+class AgentException(OpulenceException):
+    """Base agent exceptions."""
 
 
-class CollectorNotFound(BaseAgentException):
-    pass
+class CollectorException(AgentException):
+    def __init__(self, collector_name):
+        self.collector_name = collector_name
 
 
-class CollectorDisabled(BaseAgentException):
-    pass
+class CollectorNotFound(CollectorException):
+    def __str__(self):
+        return f"Collector {self.collector_name} not found"
+
+
+class CollectorDisabled(CollectorException):
+    def __str__(self):
+        return f"Collector {self.collector_name} is disabled"
+
+
+class InvalidCollectorDefinition(CollectorException):
+    def __init__(self, collector_name, error):
+        self.collector_name = collector_name
+        self.error = error
+
+    def __str__(self):
+        return f"Invalid collector definition for {self.collector_name}: {self.error}"
+
+
+class CollectorRuntimeError(CollectorException):
+    def __init__(self, collector_name, error):
+        self.collector_name = collector_name
+        self.error = error
+
+    def __str__(self):
+        return f"Collector runtime error for {self.collector_name}: {self.error}"
+
+
+class MissingCollectorDefinition(CollectorException):
+    def __str__(self):
+        return f"Can't find `{self.collector_name}`, which is defined in the configuration file. Check your settings.yml file `collectors` section."

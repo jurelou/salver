@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from functools import partial
 import re
 
@@ -15,8 +16,8 @@ from pydantic import BaseModel
 from pydantic import ValidationError
 from pydantic import root_validator
 
-from opulence.agent.collectors.exceptions import CollectorRuntimeError
-from opulence.agent.collectors.exceptions import InvalidCollectorDefinition
+from opulence.agent.exceptions import CollectorRuntimeError
+from opulence.agent.exceptions import InvalidCollectorDefinition
 from opulence.common.models.fact import BaseFact
 from opulence.common.types import BaseSet
 from opulence.common.utils import make_list
@@ -58,7 +59,7 @@ class CollectResult(BaseModel):
 
 class BaseCollector:
 
-    config: Optional[BaseConfig] = None
+    config: BaseConfig
     # dependencies: Optional[List[Dependency]] = None
 
     def __init__(self):
@@ -67,13 +68,14 @@ class BaseCollector:
         try:
             self.configure()
         except ValidationError as err:
-            raise InvalidCollectorDefinition(str(err)) from err
+            raise InvalidCollectorDefinition(self.config.name, err) from err
 
     def configure(self):
         self.config = BaseConfig(**self.config)
 
     def callbacks(self) -> Dict[Union[BaseFact, BaseSet], Callable]:
         raise InvalidCollectorDefinition(
+            self.config.name,
             f"Collector {type(self).__name__} does not have any callbacks",
         )
 
@@ -92,7 +94,7 @@ class BaseCollector:
                     )
         except Exception as err:
             logger.error(f"Error while executing {fn} from {self.config.name}: {err}")
-            raise CollectorRuntimeError(err) from err
+            raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
         self, input_fact: Union[List[BaseFact], BaseFact],

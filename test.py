@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 toto = """
 Google is blocking your ip and the workaround, returning
 Google is blocking your ip and the workaround, returning

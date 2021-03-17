@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hvac
 
 client = hvac.Client(url="http://127.0.0.1:8200")

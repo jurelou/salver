@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from celery.schedules import crontab
 from celery.signals import worker_init
 from kombu import Queue
@@ -32,10 +33,3 @@ celery_app.conf.update(
 
 
 celery_app.conf.update(agent_config.celery)
-
-
-from elasticsearch import Elasticsearch
-
-
-# Create ES instance
-es_client = Elasticsearch(hosts=[agent_config.elasticsearch.endpoint])
