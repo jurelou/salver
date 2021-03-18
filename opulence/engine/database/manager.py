@@ -45,9 +45,14 @@ class   DatabaseManager:
         return self.mongodb.add_scan(scan)
     
     def get_scan(self, scan_id: uuid.UUID) -> models.Scan:
-        facts_ids = self.neo4j.get_scan_facts(scan_id)
+        facts_ids = self.neo4j.get_scan_input_facts(scan_id)
         facts = list(self.elasticsearch.get_facts(facts_ids))
 
         scan = self.mongodb.get_scan(scan_id)
         scan.facts = facts
         return scan
+    
+    def get_case(self, case_id: uuid.UUID) -> models.Case:
+        case = self.mongodb.get_case(case_id)
+        return case
+

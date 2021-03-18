@@ -36,3 +36,10 @@ class   MongoDB(BaseDB):
             return None
         return models.Scan(**scan)
 
+
+    def get_case(self, case_id) -> models.Case:
+        case = self._db.cases.find_one({"external_id": case_id})
+        if not case:
+            #TODO: Raise not found
+            return None
+        return models.Case(**case)

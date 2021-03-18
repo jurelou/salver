@@ -1,21 +1,23 @@
 from opulence.common.exceptions import CollectorNotFound
-from opulence.engine.controllers import agent_tasks
+from opulence.engine.controllers import agents as agents_ctrl
 from opulence.engine.scans.base import BaseScan
-from opulence.engine.scans.base import BaseScanConfig
 
+from opulence.common import models
+from typing import List
 
-class ScanConfig(BaseScanConfig):
+class SingleCollectorConfig(models.ScanConfig):
     collector_name: str
 
 
 class SingleCollector(BaseScan):
     name = "single_collector"
-    config: ScanConfig
+    config: SingleCollectorConfig
 
-    def configure(self, config):
-        self.config = ScanConfig(**config)
+    def configure(self, config: models.ScanConfig):
+        self.config = SingleCollectorConfig(**config.dict())
 
-    def launch(self):
+    def launch(self, facts: List[models.BaseFact]):
+        print("==")
         def check_collector_exists(collector_name):
             from opulence.engine.controllers.agents import (
                 available_agents,
@@ -27,7 +29,7 @@ class SingleCollector(BaseScan):
             raise CollectorNotFound(collector_name)
 
         check_collector_exists(self.config.collector_name)
-
-        agent_tasks.scan(
-            self.config.external_id, self.config.collector_name, self.config.facts,
+        print("DONE")
+        agents_ctrl.scan(
+            "scan_id", self.config.collector_name, facts,
         )

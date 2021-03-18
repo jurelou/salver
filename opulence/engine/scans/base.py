@@ -4,23 +4,17 @@ import uuid
 
 from pydantic import BaseModel
 
-from opulence.common.models.fact import BaseFact
-from opulence.common.models.scan import Scan
-
-
-class BaseScanConfig(BaseModel):
-    external_id: uuid.UUID
-    facts: List[BaseFact]
+from opulence.common import models
 
 
 class BaseScan:
-    name: Optional[str] = None
+    name: str
 
     def __init__(self):
         if not self.name:
             raise ValueError(f"{type(self).__name__} should contain a `name` property")
 
-    def configure(self, config):
+    def configure(self, config: models.ScanConfig):
         pass
 
     def launch(self, facts):

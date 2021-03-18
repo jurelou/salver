@@ -18,10 +18,17 @@ class DummyDocker(DockerCollector):
     }
 
     def callbacks(self):
-        return {Person: self.cb}
+        return {
+            Person: self.cb_person,
+            Email: self.cb_email
+        }
 
-    def cb(self, person):
+    def cb_person(self, person):
         hello = self.run_container(command="whoami")
-        print("exec docker collector")
-        yield Person(firstname="dummy docker collector", lastname=hello)
-        yield Email(address="yes")
+        yield Person(firstname="dummy docker from person", lastname=hello)
+        yield Email(address="yes from person")
+
+    def cb_email(self, email):
+        hello = self.run_container(command="whoami")
+        yield Person(firstname="dummy docker from email", lastname=hello)
+        yield Email(address="yes from email")

@@ -5,6 +5,7 @@ from opulence.common import models
 from typing import List
 import time
 import uuid
+
 class   Neo4jDB(BaseDB):
     def __init__(self, config):
         print(f"Build neo4j with {config}")
@@ -68,13 +69,13 @@ class   Neo4jDB(BaseDB):
             )
         self.add_facts(scan.external_id, scan.facts, relationship="INPUTS")
 
-    def get_scan_facts(self, scan_id: uuid.UUID): # -> Dict[str, List[uuid.UUID]]
+    def get_scan_input_facts(self, scan_id: uuid.UUID): # -> Dict[str, List[uuid.UUID]]
         facts = {}
         with self._client.session() as session:
             result = session.run(
                 "MATCH (scan: Scan {external_id: $external_id})-[r: INPUTS]->(fact:Fact) "
                 "RETURN DISTINCT fact",
-                external_id=scan_id.hex,
+                external_id=scan_id.hex
             )
             for i, record in enumerate(result):
                 for node in record:

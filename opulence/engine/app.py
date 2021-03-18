@@ -59,6 +59,7 @@ def ready(sender=None, conf=None, **kwargs):
         from opulence.facts.person import Person
         from opulence.facts.phone import Phone
         from opulence.facts.username import Username
+        from opulence.facts.email import Email
 
         case = Case(name="tata")
 
@@ -77,9 +78,10 @@ def ready(sender=None, conf=None, **kwargs):
                     first_seen=42,
                     last_seen=200,
                 ),
+                Email(address="test@gmail.test")
             ],
             scan_type="single_collector",
-            collector_name="dummy-docker-collector",
+            config={"collector_name": "dummy-docker-collector"}
         )
         scan2 = Scan(
             case_id=case.external_id,
@@ -88,16 +90,16 @@ def ready(sender=None, conf=None, **kwargs):
             ],
             scan_type="single_collector",
             collector_name="dummy-docker-collector",
+            config ={}
         )
 
 
         a = db_manager.add_case(case)
-        print("!!!", a)
         a = db_manager.add_scan(scan)
         db_manager.add_scan(scan2)
 
-
-
+        case = db_manager.get_scan(scan.external_id)
+        print("!!!!CASE", case)
 
         tasks.launch_scan.apply(args=[scan.external_id])
 
