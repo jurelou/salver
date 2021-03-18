@@ -1,6 +1,0 @@
-*************
-Available collectors
-*************
-
-
-hey
