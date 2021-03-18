@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from typing import List
 
 from celery import current_task
@@ -17,13 +18,13 @@ all_collectors = CollectorFactory().items
 #     print("GOOGOGOOGOG")
 
 
-
 from elasticsearch.helpers import bulk
 from opulence.facts import all_facts
 
 
 __facts_index_mapping = [(fact, f"facts_{fact.lower()}") for fact in all_facts.keys()]
 fact_to_index = lambda fact: [i for f, i in __facts_index_mapping if f == fact][0]
+
 
 def bulk_upsert(client, facts):
     def gen_actions(facts):

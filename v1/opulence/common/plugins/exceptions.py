@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class PluginError(Exception):
     def __init__(self, value=None):
         self.value = value or ""

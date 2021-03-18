@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from uuid import uuid4
 
 from celery.schedules import schedule
@@ -7,6 +8,7 @@ from opulence.common.models.case import Case
 from opulence.common.models.scan import Scan
 from opulence.config import engine_config
 from opulence.engine.app import celery_app
+
 # from opulence.engine.controllers import agents as agents_ctrl
 # from opulence.engine.controllers import case as case_ctrl
 # from opulence.engine.controllers import fact as fact_ctrl

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .modules.geo.country import Country
 from .modules.geo.geoCoordinates import GeoCoordinates
 from .modules.infrastructure.asn import ASN

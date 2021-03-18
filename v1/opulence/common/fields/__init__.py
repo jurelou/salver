@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .baseField import BaseField
 from .fields import BooleanField
 from .fields import DynamicField

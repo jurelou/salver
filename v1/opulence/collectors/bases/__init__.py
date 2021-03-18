@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .baseCollector import BaseCollector
 from .httpCollector import HttpCollector
 from .pypiCollector import PypiCollector

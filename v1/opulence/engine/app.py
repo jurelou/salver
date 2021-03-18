@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from celery.signals import worker_ready
 
 from . import collector_tasks  # noqa: W0611

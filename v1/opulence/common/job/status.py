@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class StatusCode:
     undefined = 0
     empty = 10

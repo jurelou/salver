@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from typing import List
 from uuid import uuid4
 
@@ -12,9 +13,12 @@ from opulence.engine.scans.factory import ScanFactory
 all_scans = ScanFactory().build()
 # from opulence.engine.app import celery_app
 
+
 def schedule():
     # from opulence.engine.controllers.periodic_tasks import add_periodic_task
-    add_periodic_task(app=celery_app, interval=1, task_path="opulence.engine.tasks.toto")
+    add_periodic_task(
+        app=celery_app, interval=1, task_path="opulence.engine.tasks.toto",
+    )
 
 
 # def create(scan: Scan):

@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod, abstractproperty
 
-class   BaseDB(ABC):
 
+class BaseDB(ABC):
     @abstractmethod
     def flush(self) -> None:
         pass

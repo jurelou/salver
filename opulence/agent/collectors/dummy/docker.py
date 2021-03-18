@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.agent.collectors.docker import DockerCollector
 from opulence.common.utils import get_actual_dir
 from opulence.facts.email import Email
@@ -20,7 +21,7 @@ class DummyDocker(DockerCollector):
     def callbacks(self):
         return {
             Person: self.cb_person,
-            Email: self.cb_email
+            Email: self.cb_email,
         }
 
     def cb_person(self, person):

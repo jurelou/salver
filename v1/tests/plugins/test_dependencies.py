@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from shutil import which
 import unittest
 from unittest.mock import MagicMock

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 from opulence.common.patterns import Composite

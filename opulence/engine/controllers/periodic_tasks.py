@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # import celery
 from loguru import logger
 from redbeat import RedBeatSchedulerEntry

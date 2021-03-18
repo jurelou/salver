@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from enum import IntEnum
 from importlib import import_module
 import inspect

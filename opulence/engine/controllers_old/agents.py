@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from loguru import logger
 
 from opulence.config import engine_config

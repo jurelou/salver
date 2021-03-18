@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from dynaconf import settings
 from mongoengine import connect
 

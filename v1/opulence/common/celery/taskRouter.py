@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TaskRouter:
     def route_for_task(self, task, *args, **kwargs):
         if ":" not in task:

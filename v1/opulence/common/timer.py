@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .patterns import JsonSerializable
 from .utils import datetime_to_str
 from .utils import now

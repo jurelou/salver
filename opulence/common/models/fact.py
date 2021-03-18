@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 from time import time
 from typing import Optional

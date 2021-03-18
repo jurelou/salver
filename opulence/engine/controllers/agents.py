@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from loguru import logger
 
 from opulence.config import engine_config
@@ -9,6 +10,7 @@ from typing import List
 
 from opulence.common.celery import async_call
 from opulence.common.models import BaseFact
+
 # from opulence.engine.controllers.scan import add_facts
 # from opulence.engine.controllers.fact import add_many, get_many
 
@@ -27,7 +29,6 @@ def refresh_agents():
 
     available_agents = {agent: config for agent, config in _get_agents()}
     logger.info(f"Available agents: {available_agents.keys()}")
-
 
 
 @celery_app.task(ignore_result=True, acks_late=True)

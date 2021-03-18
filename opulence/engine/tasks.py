@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from celery.schedules import schedule
 from loguru import logger
 
@@ -13,6 +14,7 @@ from opulence.engine.app import db_manager
 def reload_agents():
     logger.debug("Reloading agents")
     agents_ctrl.refresh_agents()
+
 
 @celery_app.task
 def launch_scan(scan_id: UUID):
@@ -35,7 +37,6 @@ def launch_scan(scan_id: UUID):
 
     #     traceback.print_exc(file=sys.stdout)
     #     logger.critical(err)
-
 
     # scan_ctrl.create(scan)
     # case_ctrl.add_scan(case_id, scan.external_id)

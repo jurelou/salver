@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from neo4j import GraphDatabase
 from loguru import logger
 from opulence.engine.database.base import BaseDB
@@ -6,7 +7,8 @@ from typing import List
 import time
 import uuid
 
-class   Neo4jDB(BaseDB):
+
+class Neo4jDB(BaseDB):
     def __init__(self, config):
         print(f"Build neo4j with {config}")
         self._client = GraphDatabase.driver(
@@ -17,7 +19,7 @@ class   Neo4jDB(BaseDB):
         logger.warning("Flush neo4j database")
         with self._client.session() as session:
             session.run("MATCH (n) DETACH DELETE n")
-    
+
     def bootstrap(self):
         logger.info("Create neo4j constraints")
         with self._client.session() as session:
@@ -35,7 +37,9 @@ class   Neo4jDB(BaseDB):
                 external_id=case.external_id.hex,
             )
 
-    def add_facts(self, scan_id, facts: List[models.BaseFact], relationship: str = "GIVES"):
+    def add_facts(
+        self, scan_id, facts: List[models.BaseFact], relationship: str = "GIVES",
+    ):
         formated_facts = [
             {"external_id": fact.hash__, "type": fact.schema()["title"]}
             for fact in facts
@@ -54,7 +58,7 @@ class   Neo4jDB(BaseDB):
                 scan_id=scan_id.hex,
                 facts=formated_facts,
                 timestamp=time.time(),
-                relationship=relationship
+                relationship=relationship,
             )
 
     def add_scan(self, scan: models.Scan):
@@ -69,13 +73,13 @@ class   Neo4jDB(BaseDB):
             )
         self.add_facts(scan.external_id, scan.facts, relationship="INPUTS")
 
-    def get_scan_input_facts(self, scan_id: uuid.UUID): # -> Dict[str, List[uuid.UUID]]
+    def get_scan_input_facts(self, scan_id: uuid.UUID):  # -> Dict[str, List[uuid.UUID]]
         facts = {}
         with self._client.session() as session:
             result = session.run(
                 "MATCH (scan: Scan {external_id: $external_id})-[r: INPUTS]->(fact:Fact) "
                 "RETURN DISTINCT fact",
-                external_id=scan_id.hex
+                external_id=scan_id.hex,
             )
             for i, record in enumerate(result):
                 for node in record:

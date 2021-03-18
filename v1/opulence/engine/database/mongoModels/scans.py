@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import mongoengine
 
 from opulence.common.utils import now

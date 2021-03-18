@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 
 from opulence.collectors.bases.scriptCollector import ScriptCollector

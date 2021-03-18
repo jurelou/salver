@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.common.fields import BaseField
 from opulence.common.fields import DynamicField
 from opulence.common.patterns import JsonSerializable

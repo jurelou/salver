@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from celery.schedules import crontab
 from celery.signals import worker_init
 from kombu import Queue

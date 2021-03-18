@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from loguru import logger
 from neo4j import GraphDatabase
 

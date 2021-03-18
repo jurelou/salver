@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import httpx
 
 from opulence.agent.collectors.base import BaseCollector

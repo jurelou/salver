@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.common.fields import BooleanField
 from opulence.common.fields import IntegerField
 from opulence.common.fields import StringField

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.facts.bases import BaseFact
 from opulence.facts.bases.utils import is_fact_or_composite
 

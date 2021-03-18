@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.collectors.bases import PypiCollector
 from opulence.common.passwordstore import Store
 from opulence.common.plugins.dependencies import ModuleDependency

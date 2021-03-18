@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.collectors.bases import BaseCollector
 from opulence.facts import Person
 

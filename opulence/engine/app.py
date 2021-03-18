@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from celery.result import allow_join_result
 from celery.signals import worker_init
 from celery.signals import worker_ready
 from loguru import logger
 
 from opulence.common.celery import create_app
+
 # from opulence.common.database.es import utils as es_utils
 # from opulence.common.database.neo4j import utils as neo4j_utils
 from opulence.config import engine_config
@@ -11,7 +13,6 @@ from opulence.config import engine_config
 from opulence.engine.database.manager import DatabaseManager
 
 db_manager = DatabaseManager()
-
 
 
 # Create celery app
@@ -22,7 +23,6 @@ celery_app.conf.update(engine_config.celery)
 celery_app.conf.update({"imports": "opulence.engine.tasks"})
 
 
-
 @worker_init.connect
 def init(sender=None, conf=None, **kwargs):
     try:
@@ -30,8 +30,6 @@ def init(sender=None, conf=None, **kwargs):
         db_manager.neo4j.flush()
         # db.flush()
         db_manager.bootstrap()
-
-
 
         from opulence.engine.controllers import periodic_tasks
 
@@ -53,7 +51,7 @@ def ready(sender=None, conf=None, **kwargs):
 
         from opulence.common.models.case import Case
         from opulence.common.models.scan import Scan
-                
+
         from opulence.facts.company import Company
         from opulence.facts.domain import Domain
         from opulence.facts.person import Person
@@ -78,21 +76,18 @@ def ready(sender=None, conf=None, **kwargs):
                     first_seen=42,
                     last_seen=200,
                 ),
-                Email(address="test@gmail.test")
+                Email(address="test@gmail.test"),
             ],
             scan_type="single_collector",
-            config={"collector_name": "dummy-docker-collector"}
+            config={"collector_name": "dummy-docker-collector"},
         )
         scan2 = Scan(
             case_id=case.external_id,
-            facts=[
-                Username(name="jurelou", something="else"),
-            ],
+            facts=[Username(name="jurelou", something="else")],
             scan_type="single_collector",
             collector_name="dummy-docker-collector",
-            config ={}
+            config={},
         )
-
 
         a = db_manager.add_case(case)
         a = db_manager.add_scan(scan)

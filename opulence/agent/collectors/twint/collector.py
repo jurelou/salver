@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.agent.collectors.docker import DockerCollector
 from opulence.common.utils import get_actual_dir
 from opulence.facts.tweet import Tweet

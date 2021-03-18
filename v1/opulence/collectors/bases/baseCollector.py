@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.common.job import StatusCode
 from opulence.common.patterns import is_composite
 from opulence.common.plugins import BasePlugin

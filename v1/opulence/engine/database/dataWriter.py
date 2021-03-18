@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.common.patterns import Singleton
 
 from .mongoDriver import MongoDriver

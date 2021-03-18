@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from opulence.common.exceptions import CollectorNotFound
 from opulence.engine.controllers import agents as agents_ctrl
 from opulence.engine.scans.base import BaseScan
 
 from opulence.common import models
 from typing import List
+
 
 class SingleCollectorConfig(models.ScanConfig):
     collector_name: str
@@ -18,6 +20,7 @@ class SingleCollector(BaseScan):
 
     def launch(self, facts: List[models.BaseFact]):
         print("==")
+
         def check_collector_exists(collector_name):
             from opulence.engine.controllers.agents import (
                 available_agents,

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 from subprocess import PIPE
 from subprocess import Popen

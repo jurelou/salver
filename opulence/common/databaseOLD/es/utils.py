@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from elasticsearch import Elasticsearch
 import httpx
 from loguru import logger

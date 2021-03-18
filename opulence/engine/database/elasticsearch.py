@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from elasticsearch import Elasticsearch
 from loguru import logger
 from opulence.engine.database.base import BaseDB
@@ -11,7 +12,8 @@ __facts_index_mapping = [(fact, f"facts_{fact.lower()}") for fact in all_facts.k
 fact_to_index = lambda fact: [i for f, i in __facts_index_mapping if f == fact][0]
 index_to_fact = lambda index: [f for f, i in __facts_index_mapping if i == index][0]
 
-class   ElasticsearchDB(BaseDB):
+
+class ElasticsearchDB(BaseDB):
     def __init__(self, config):
         print(f"Build elastic with {config}")
         self._client = Elasticsearch(hosts=[config.endpoint])
@@ -27,18 +29,15 @@ class   ElasticsearchDB(BaseDB):
 
     def flush(self):
         self.flush_facts_indexes()
-        self.flush_kibana_patterns(
+        self.flush_kibana_patterns()
 
-        )
     def bootstrap(self):
         self.create_facts_indexes()
         self.create_kibana_patterns()
 
     def create_kibana_patterns(self):
         def _create_index(index_pattern):
-            kibana_endpoint = (
-                f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
-            )
+            kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
             headers = {"kbn-xsrf": "yes", "Content-Type": "application/json"}
             data = {
                 "attributes": {"title": index_pattern},
@@ -63,14 +62,15 @@ class   ElasticsearchDB(BaseDB):
             )
             self._client.indices.put_settings(
                 index=index_name,
-                body={"refresh_interval": self._refresh_interval, "number_of_replicas": self._replicas},
+                body={
+                    "refresh_interval": self._refresh_interval,
+                    "number_of_replicas": self._replicas,
+                },
             )
 
     def flush_kibana_patterns(self):
         def _delete_index(index_pattern):
-            kibana_endpoint = (
-                f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
-            )
+            kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
             r = httpx.delete(kibana_endpoint, headers={"kbn-xsrf": "yes"})
             logger.info(f"Delete kibana index pattern {index_pattern}: {r.status_code}")
 
@@ -95,5 +95,5 @@ class   ElasticsearchDB(BaseDB):
             res = self._client.mget(index=fact_to_index(fact_type), body={"ids": ids})
             for doc in res["docs"]:
                 yield models.BaseFact.from_obj(
-                        fact_type=index_to_fact(doc["_index"]), data=doc["_source"],
+                    fact_type=index_to_fact(doc["_index"]), data=doc["_source"],
                 )

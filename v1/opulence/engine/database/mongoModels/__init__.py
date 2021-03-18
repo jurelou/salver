@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .collectors import Collector
 from .facts import Fact
 from .scans import Collector_result
