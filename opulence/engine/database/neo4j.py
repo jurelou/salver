@@ -29,7 +29,7 @@ class Neo4jDB(BaseDB):
             session.run(
                 "CREATE CONSTRAINT scan_unique_id IF NOT EXISTS ON (s:Scan) ASSERT s.external_id IS UNIQUE",
             )
-        
+
     def add_case(self, case: models.Case):
         with self._client.session() as session:
             session.run(

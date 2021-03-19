@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from opulence.common.exceptions import CollectorNotFound
+# from opulence.common.exceptions import CollectorNotFound
 from opulence.engine.controllers import agents as agents_ctrl
 from opulence.engine.scans.base import BaseScan
 
@@ -29,7 +29,8 @@ class SingleCollector(BaseScan):
             for agent in available_agents.values():
                 if collector_name in agent:
                     return
-            raise CollectorNotFound(collector_name)
+            # raise CollectorNotFound(collector_name)
+            raise ValueError(collector_name)
 
         check_collector_exists(self.config.collector_name)
         print("DONE")

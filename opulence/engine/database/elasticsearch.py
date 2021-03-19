@@ -36,23 +36,19 @@ class ElasticsearchDB(BaseDB):
         self.create_kibana_patterns()
 
     def create_kibana_patterns(self):
-        body = [ {
+        body = [
+            {
                 "type": "index-pattern",
                 "id": index,
-                "attributes": {
-                    "title": f"Fact {index}"
-                }
-        } for index in self._kibana_index_patterns ]
-        
+                "attributes": {"title": f"Fact {index}",},
+            }
+            for index in self._kibana_index_patterns
+        ]
+
         kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/_bulk_create"
         headers = {"kbn-xsrf": "yes", "Content-Type": "application/json"}
         r = httpx.post(kibana_endpoint, json=body, headers=headers)
         logger.info(f"Create kibana index patterns: {r.status_code}")
-
-        
-
-
-
 
     def flush_facts_indexes(self):
         for fact in all_facts.keys():

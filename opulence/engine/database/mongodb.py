@@ -6,6 +6,7 @@ from opulence.engine.database.base import BaseDB
 from opulence.common import models
 from uuid import UUID
 
+
 class MongoDB(BaseDB):
     def __init__(self, config):
         print(f"Build mongodb with {config}")
@@ -41,7 +42,7 @@ class MongoDB(BaseDB):
         return self._db.cases.find({"external_id": case_id}).count() > 0
 
     def get_case(self, case_id) -> models.Case:
-        case = self._db.cases.find_one({"external_id": case_id}) # find().limit(1)
+        case = self._db.cases.find_one({"external_id": case_id})  # find().limit(1)
         if not case:
             # TODO: Raise not found
             return None

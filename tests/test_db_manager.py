@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
 from opulence.engine.database.manager import DatabaseManager
 from opulence.common import models
 import pytest
 from uuid import uuid4
 from opulence.facts.username import Username
 
+
 @pytest.mark.usefixtures("database_manager")
-class   TestDatabaseManager:
-    
+class TestDatabaseManager:
     def test_create_case(self):
         case = models.Case(name="test_case")
         self.database_manager.add_case(case)
@@ -17,17 +18,14 @@ class   TestDatabaseManager:
 
         scan = models.Scan(
             case_id=uuid4(),
-            facts=[
-                Username(name="test username")
-            ],
+            facts=[Username(name="test username"),],
             scan_type="single_collector",
-            config={}
+            config={},
         )
 
         a = self.database_manager.add_scan(scan)
         # case_in_db = self.database_manager.get_case(case.external_id)
         # assert case == case_in_db
-
 
         # from opulence.engine import tasks  # pragma: nocover
 

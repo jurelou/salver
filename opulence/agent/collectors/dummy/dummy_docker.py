@@ -9,13 +9,8 @@ class DummyDocker(DockerCollector):
     config = {
         "name": "dummy-docker-collector",
         "docker": {
-            # "image": "ubuntu:latest"
             "build_context": get_actual_dir(),
         },
-        # "periodic": True,
-        # "schedule": {
-        #     "minute": "*"
-        # }
     }
 
     def callbacks(self):
@@ -25,11 +20,11 @@ class DummyDocker(DockerCollector):
         }
 
     def cb_person(self, person):
-        hello = self.run_container(command="whoami")
-        yield Person(firstname="dummy docker from person", lastname=hello)
-        yield Email(address="yes from person")
+        whoami = self.run_container(command="whoami")
+        yield Person(firstname="dummy docker", lastname=whoami)
+        yield Email(address="dummy@email")
 
     def cb_email(self, email):
-        hello = self.run_container(command="whoami")
-        yield Person(firstname="dummy docker from email", lastname=hello)
-        yield Email(address="yes from email")
+        date = self.run_container(command="date")
+        yield Person(firstname="dummy docker", lastname=date)
+        yield Email(address="dummy@email")

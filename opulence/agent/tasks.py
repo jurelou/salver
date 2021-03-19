@@ -41,17 +41,15 @@ def bulk_upsert(client, facts):
     bulk(client=client, actions=gen_actions(facts))
 
 
-@celery_app.task(name="scan", throws=(exceptions.BaseAgentException))
+@celery_app.task(name="scan", throws=(exceptions.AgentException))
 def scan(facts: List[BaseFact]):
     try:
         collector_name = current_task.request.delivery_info["routing_key"]
 
         if collector_name not in all_collectors:
-            raise exceptions.sllectorNotFound(f"Collector {collector_name} not found.")
+            raise exceptions.CollectorNotFound(collector_name)
         if not all_collectors[collector_name]["active"]:
-            raise exceptions.CollectorDisabled(
-                f"Collector {collector_name} is not enabled.",
-            )
+            raise exceptions.CollectorDisabled(collector_name,)
 
         collect_result = all_collectors[collector_name]["instance"].collect(facts)
 
