@@ -29,23 +29,30 @@ class ElasticsearchDB(BaseDB):
 
     def flush(self):
         self.flush_facts_indexes()
-        self.flush_kibana_patterns()
+        # self.flush_kibana_patterns()
 
     def bootstrap(self):
         self.create_facts_indexes()
         self.create_kibana_patterns()
 
     def create_kibana_patterns(self):
-        def _create_index(index_pattern):
-            kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
-            headers = {"kbn-xsrf": "yes", "Content-Type": "application/json"}
-            data = {
-                "attributes": {"title": index_pattern},
-            }
-            r = httpx.post(kibana_endpoint, json=data, headers=headers)
-            logger.info(f"Create kibana index pattern {index_pattern}: {r.status_code}")
+        body = [ {
+                "type": "index-pattern",
+                "id": index,
+                "attributes": {
+                    "title": f"Fact {index}"
+                }
+        } for index in self._kibana_index_patterns ]
+        
+        kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/_bulk_create"
+        headers = {"kbn-xsrf": "yes", "Content-Type": "application/json"}
+        r = httpx.post(kibana_endpoint, json=body, headers=headers)
+        logger.info(f"Create kibana index patterns: {r.status_code}")
 
-        [_create_index(index) for index in self._kibana_index_patterns]
+        
+
+
+
 
     def flush_facts_indexes(self):
         for fact in all_facts.keys():

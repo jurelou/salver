@@ -14,7 +14,6 @@ class Case(BaseModel):
     name: str
 
     class Config(BaseConfig):
-        allow_population_by_alias = True
         extra = "ignore"
         # json_encoders = {
         #     uuid.UUID: lambda u: u.hex

@@ -29,7 +29,7 @@ class Neo4jDB(BaseDB):
             session.run(
                 "CREATE CONSTRAINT scan_unique_id IF NOT EXISTS ON (s:Scan) ASSERT s.external_id IS UNIQUE",
             )
-
+        
     def add_case(self, case: models.Case):
         with self._client.session() as session:
             session.run(
@@ -66,12 +66,13 @@ class Neo4jDB(BaseDB):
             session.run(
                 "MATCH (case:Case) "
                 "WHERE case.external_id = $case_id "
-                "CREATE (case)-[r:CONTAINS {timestamp: $timestamp}]->(scan:Scan {external_id: $scan_id})",
+                "MERGE (case)-[r:CONTAINS {timestamp: $timestamp}]->(scan:Scan {external_id: $scan_id})",
                 timestamp=time.time(),
                 case_id=scan.case_id.hex,
                 scan_id=scan.external_id.hex,
             )
-        self.add_facts(scan.external_id, scan.facts, relationship="INPUTS")
+        print("ADD scan")
+        return self.add_facts(scan.external_id, scan.facts, relationship="INPUTS")
 
     def get_scan_input_facts(self, scan_id: uuid.UUID):  # -> Dict[str, List[uuid.UUID]]
         facts = {}

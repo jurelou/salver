@@ -31,7 +31,6 @@ class BaseFact(BaseModel):
         return values
 
     class Config(BaseConfig):
-        allow_population_by_alias = True
         extra = "allow"
 
     @staticmethod

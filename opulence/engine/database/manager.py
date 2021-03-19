@@ -42,6 +42,9 @@ class DatabaseManager:
         return self.mongodb.add_case(case)
 
     def add_scan(self, scan: models.Scan):
+        if not self.mongodb.case_exists(scan.case_id):
+            raise ValueError("Case does not exists")
+            #TODO: raise a proper exception
         self.elasticsearch.add_facts(scan.facts)
         self.neo4j.add_scan(scan)
         return self.mongodb.add_scan(scan)

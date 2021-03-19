@@ -4,7 +4,7 @@ from typing import List
 from loguru import logger
 from opulence.engine.database.base import BaseDB
 from opulence.common import models
-
+from uuid import UUID
 
 class MongoDB(BaseDB):
     def __init__(self, config):
@@ -37,8 +37,11 @@ class MongoDB(BaseDB):
             return None
         return models.Scan(**scan)
 
+    def case_exists(self, case_id: UUID) -> bool:
+        return self._db.cases.find({"external_id": case_id}).count() > 0
+
     def get_case(self, case_id) -> models.Case:
-        case = self._db.cases.find_one({"external_id": case_id})
+        case = self._db.cases.find_one({"external_id": case_id}) # find().limit(1)
         if not case:
             # TODO: Raise not found
             return None
