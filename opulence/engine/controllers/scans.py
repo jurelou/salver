@@ -26,4 +26,4 @@ def launch(scan: Scan):
 
     scan_class = all_scans[scan.scan_type]()
     scan_class.configure(scan.config)
-    scan_class.launch(scan.facts)
+    scan_class.scan(scan.facts)

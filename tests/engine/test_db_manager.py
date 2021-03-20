@@ -9,13 +9,13 @@ from opulence.engine.database import exceptions
 @pytest.mark.usefixtures("database_manager")
 class TestDatabaseManager:
     def test_create_case(self):
-        case = models.Case(name="test_case")
+        case = models.Case(name="test_db_case")
         self.database_manager.add_case(case)
         case_in_db = self.database_manager.get_case(case.external_id)
         assert case == case_in_db
 
     def test_create_scan(self):
-        case = models.Case(name="test_case_01")
+        case = models.Case(name="test_db_case_01")
         scan = models.Scan(
             case_id=case.external_id,
             facts=[Username(name="test username")],

@@ -1,5 +1,5 @@
 default:
-    refresh_agents_interval: 5
+    refresh_agents_interval: 30
     celery:
         queue_name: engine_q
         broker_url: redis://localhost/0

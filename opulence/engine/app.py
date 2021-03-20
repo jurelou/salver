@@ -5,6 +5,7 @@ from celery.signals import worker_ready
 from loguru import logger
 
 from opulence.common.celery import create_app
+from opulence.engine.controllers import periodic_tasks
 
 # from opulence.common.database.es import utils as es_utils
 # from opulence.common.database.neo4j import utils as neo4j_utils
@@ -19,8 +20,12 @@ db_manager = DatabaseManager()
 celery_app = create_app()
 celery_app.conf.update(engine_config.celery)
 
-
-celery_app.conf.update({"imports": "opulence.engine.tasks"})
+celery_app.conf.update(
+    {
+        "imports": "opulence.engine.tasks",
+        "task_eager_propagates": True
+    }
+)
 
 
 @worker_init.connect
@@ -31,13 +36,13 @@ def init(sender=None, conf=None, **kwargs):
         # db.flush()
         db_manager.bootstrap()
 
-        from opulence.engine.controllers import periodic_tasks
 
         periodic_tasks.flush()
-        from opulence.engine import tasks  # pragma: nocover
+        periodic_tasks.add_periodic_task(celery_app, "opulence.engine.tasks.reload_agents", engine_config.refresh_agents_interval)
 
+        #debug only
+        from opulence.engine import tasks  # pragma: nocover
         tasks.reload_agents.apply()
-        # tasks.reload_periodic_tasks.apply()
 
     except Exception as err:
         logger.critical(f"Error in signal `worker_init`: {err}")
@@ -81,20 +86,12 @@ def ready(sender=None, conf=None, **kwargs):
             scan_type="single_collector",
             config={"collector_name": "dummy-docker-collector"},
         )
-        scan2 = Scan(
-            case_id=case.external_id,
-            facts=[Username(name="jurelou", something="else")],
-            scan_type="single_collector",
-            collector_name="dummy-docker-collector",
-            config={},
-        )
+
 
         a = db_manager.add_case(case)
         a = db_manager.add_scan(scan)
-        db_manager.add_scan(scan2)
 
         case = db_manager.get_scan(scan.external_id)
-        print("!!!!CASE", case)
 
         tasks.launch_scan.apply(args=[scan.external_id])
 

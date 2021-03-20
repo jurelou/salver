@@ -10,12 +10,14 @@ from typing import List
 
 from opulence.common.celery import async_call
 from opulence.common.models import BaseFact
-
+import multiprocessing
 # from opulence.engine.controllers.scan import add_facts
 # from opulence.engine.controllers.fact import add_many, get_many
 
-available_agents = {}
+manager = multiprocessing.Manager()
+available_agents = manager.dict()
 
+get_agents = lambda : available_agents
 
 def refresh_agents():
     global available_agents

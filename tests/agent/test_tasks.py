@@ -7,11 +7,11 @@ from mock import patch
 import pytest
 from opulence.agent import exceptions
 
-
+@pytest.mark.usefixtures("agent_app")
 class TestScan:
 
     @patch('opulence.agent.tasks.current_task')
-    def test_scan_00(self, mock, agent_app):
+    def test_scan_00(self, mock):
         mock.request.delivery_info = {"routing_key": "dummy-collector"}
         res = tasks.scan.s([
             Email(address="test00")
@@ -23,7 +23,7 @@ class TestScan:
 
 
     @patch('opulence.agent.tasks.current_task')
-    def test_scan_01(self, mock, agent_app):
+    def test_scan_01(self, mock):
         mock.request.delivery_info = {"routing_key": "dummy-docker-collector"}
         res = tasks.scan.s([
             Email(address="test01"),
@@ -35,7 +35,7 @@ class TestScan:
         assert len(res["facts"]) == 4
 
     @patch('opulence.agent.tasks.current_task')
-    def test_scan_100(self, mock, agent_app):
+    def test_scan_100(self, mock):
         mock.request.delivery_info = {"routing_key": "thishouldnotexists"}
         p = Person(firstname="dummy_firstname", lastname="dummy_lastname")
         with pytest.raises(exceptions.CollectorNotFound):

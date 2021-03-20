@@ -84,7 +84,6 @@ class DatabaseManager:
             ScanNotFound: If the scan does not exists.
         """
         scan = self.mongodb.get_scan(scan_id)
-
         facts_ids = self.neo4j.get_scan_input_facts(scan_id)
         facts = list(self.elasticsearch.get_facts(facts_ids))
 
