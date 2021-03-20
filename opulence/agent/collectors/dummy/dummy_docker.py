@@ -8,9 +8,7 @@ from opulence.facts.person import Person
 class DummyDocker(DockerCollector):
     config = {
         "name": "dummy-docker-collector",
-        "docker": {
-            "build_context": get_actual_dir(),
-        },
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):

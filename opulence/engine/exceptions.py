@@ -11,7 +11,6 @@ class EngineException(OpulenceException):
 #         self.collector_name = collector_name
 
 
-
 # class CollectorNotFound(CollectorException):
 #     def __str__(self):
 #         return f"Collector {self.collector_name} not found"

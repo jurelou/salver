@@ -65,7 +65,7 @@ class Limiter:
     ):
         self._validate_rate_list(rates)
         self._rates = rates
-        self._bucket: Bucket = Bucket(maxsize=self._rates[-1].limit,)
+        self._bucket: Bucket = Bucket(maxsize=self._rates[-1].limit)
 
     def _validate_rate_list(self, rates):
         if not rates:

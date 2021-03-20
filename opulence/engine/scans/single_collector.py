@@ -19,8 +19,6 @@ class SingleCollector(BaseScan):
         self.config = SingleCollectorConfig(**config.dict())
 
     def launch(self, facts: List[models.BaseFact]):
-        print("==")
-
         def check_collector_exists(collector_name):
             from opulence.engine.controllers.agents import (
                 available_agents,

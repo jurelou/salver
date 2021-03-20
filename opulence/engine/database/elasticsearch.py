@@ -40,7 +40,7 @@ class ElasticsearchDB(BaseDB):
             {
                 "type": "index-pattern",
                 "id": index,
-                "attributes": {"title": f"Fact {index}",},
+                "attributes": {"title": f"Fact {index}"},
             }
             for index in self._kibana_index_patterns
         ]

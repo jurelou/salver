@@ -33,10 +33,3 @@ celery_app.conf.update(
 
 
 celery_app.conf.update(agent_config.celery)
-
-
-from elasticsearch import Elasticsearch
-
-
-# Create ES instance
-es_client = Elasticsearch(hosts=[agent_config.elasticsearch.endpoint])

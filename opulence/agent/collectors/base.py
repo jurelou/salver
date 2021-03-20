@@ -94,7 +94,7 @@ class BaseCollector:
                     )
         except Exception as err:
             logger.error(f"Error while executing {fn} from {self.config.name}: {err}")
-            raise CollectorRuntimeError(self.config.name, self.err) from err
+            raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
         self, input_fact: Union[List[BaseFact], BaseFact],

@@ -22,7 +22,7 @@ class CollectorFactory(Factory):
         for collector in collector_modules:
             if not hasattr(collector, "config") or not "name" in collector.config:
                 raise InvalidCollectorDefinition(
-                    collector_name, "Missing `name` property"
+                    collector_name, "Missing `name` property",
                 )
 
             collector_name = collector.config["name"]

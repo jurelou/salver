@@ -22,7 +22,6 @@ def launch_scan(scan_id: UUID):
     try:
         scan = db_manager.get_scan(scan_id)
         scans_ctrl.launch(scan)
-
     except Exception as err:
         print("!!!", err)
     # try:

@@ -25,3 +25,8 @@ default:
         # - littlebrother
         - blackwidow
         # - kupa3
+
+testing:
+    collectors:
+    - dummy-docker-collector
+    - dummy-collector

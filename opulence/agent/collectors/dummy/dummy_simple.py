@@ -4,6 +4,7 @@ from opulence.common.utils import get_actual_dir
 from opulence.facts.email import Email
 from opulence.facts.username import Username
 
+
 class Dummy(BaseCollector):
     config = {
         "name": "dummy-collector",
@@ -14,6 +15,5 @@ class Dummy(BaseCollector):
             Email: self.cb_email,
         }
 
-
     def cb_email(self, email):
-        yield Username(address=f"dummy@{email.address}")
+        yield Username(name=f"Mr. {email.address}")
