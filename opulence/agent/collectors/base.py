@@ -19,12 +19,9 @@ from pydantic import root_validator
 from opulence.agent.exceptions import CollectorRuntimeError
 from opulence.agent.exceptions import InvalidCollectorDefinition
 from opulence.common import models
-from opulence.common.types import BaseSet
 from opulence.common.utils import make_list
 from opulence.common.limiter import Limiter, RequestRate
 
-# class CollectItem(BaseModel):
-#     pass
 
 # class Schedule(BaseModel):
 #     minute: Union[str, int] = "*"
@@ -59,9 +56,7 @@ class BaseCollector:
     # dependencies: Optional[List[Dependency]] = None
 
     def __init__(self):
-        self._callbacks: Dict[
-            Union[models.BaseFact, BaseSet], Callable
-        ] = self.callbacks()
+        self._callbacks: Dict[models.BaseFact, Callable] = self.callbacks()
 
         try:
             self.configure()
@@ -81,7 +76,7 @@ class BaseCollector:
             return
         self._limiter.try_acquire()
 
-    def callbacks(self) -> Dict[Union[models.BaseFact, BaseSet], Callable]:
+    def callbacks(self) -> Dict[models.BaseFact, Callable]:
         raise InvalidCollectorDefinition(
             self.config.name,
             f"Collector {type(self).__name__} does not have any callbacks",
@@ -109,11 +104,6 @@ class BaseCollector:
     ) -> Iterator[Callable]:
         callbacks = []
         for cb_type, cb in self._callbacks.items():
-            if isinstance(cb_type, BaseSet):
-                _set = cb_type.select_from(input_fact)
-                if _set:
-                    callbacks.append(partial(cb, _set))
-            else:
                 for fact in input_fact:
                     if cb_type == type(fact):
                         callbacks.append(partial(cb, fact))

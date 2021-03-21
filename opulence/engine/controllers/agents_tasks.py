@@ -7,6 +7,13 @@ from opulence.common.celery import async_call
 from opulence.common import models
 from opulence.engine.app import db_manager
 
+def test():
+    task = async_call(
+        celery_app,
+        "test",
+        queue="dummy-collector",
+    )
+    return task.id
 
 class CallbackTask(celery.Task):
     callback = None
@@ -25,6 +32,8 @@ class CallbackTask(celery.Task):
                 db_manager.update_scan_state(scan_id, models.ScanState.ERRORED)
             else:
                 db_manager.update_scan_state(scan_id, models.ScanState.FINISHED)
+        else:
+            db_manager.update_scan_state(scan_id, models.ScanState.FINISHED)
 
 
 @celery_app.task(base=CallbackTask)

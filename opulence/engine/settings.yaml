@@ -23,3 +23,9 @@ default:
 
     mongodb:
         endpoint: mongodb://localhost:27017
+        database: opulence
+
+testing:
+    mongodb:
+        endpoint: mongodb://localhost:27017
+        database: opulence-test

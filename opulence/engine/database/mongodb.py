@@ -12,12 +12,13 @@ class MongoDB(BaseDB):
     def __init__(self, config):
         print(f"Build mongodb with {config}")
         self._client = pymongo.MongoClient(config.endpoint)
-        self._db = self._client.opulence
+        self._db_name = config.database
+        self._db = self._client[config.database]
         print(self._client.server_info()["version"])
 
     def flush(self):
         logger.warning("Flush neo4j database")
-        self._client.drop_database("opulence")
+        self._client.drop_database(self._db_name)
 
     def bootstrap(self):
         logger.info("Create neo4j constraints")
@@ -55,4 +56,5 @@ class MongoDB(BaseDB):
         )
 
     def add_scan_results(self, scan_id: UUID, result: models.ScanResult):
-        self._db.scans.update_one({"external_id": scan_id}, {"$set": result.dict()})
+        print("============================", result)
+        self._db.scans.update_one({"external_id": scan_id}, {"$set": result.dict(exclude={"facts"})})

@@ -33,3 +33,13 @@ celery_app.conf.update(
 
 
 celery_app.conf.update(agent_config.celery)
+
+
+if __name__ == "__main__":
+    argv = [
+        '-A',
+        'opulence.agent.app',
+        'worker',
+        '--hostname=agent_main'
+    ]
+    celery_app.worker_main(argv)

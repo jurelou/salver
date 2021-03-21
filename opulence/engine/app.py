@@ -37,7 +37,6 @@ def init(sender=None, conf=None, **kwargs):
             "opulence.engine.tasks.reload_agents",
             engine_config.refresh_agents_interval,
         )
-
         # debug only
         from opulence.engine import tasks  # pragma: nocover
 
@@ -52,3 +51,14 @@ def init(sender=None, conf=None, **kwargs):
 #     try:
 #     except Exception as err:
 #         logger.critical(f"Error in signal `worker_ready`: {err}")
+
+
+if __name__ == "__main__":
+    argv = [
+        '-A',
+        'opulence.engine.app',
+        'worker',
+        '--hostname=engine_main',
+        '-B'
+    ]
+    celery_app.worker_main(argv)

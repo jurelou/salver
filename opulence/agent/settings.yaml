@@ -1,7 +1,7 @@
 default:
     celery:
         broker_url: redis://localhost/0
-        result_backend: redis://localhost/0
+        result_backend: redis://localhost/1
 
     elasticsearch:
         endpoint:

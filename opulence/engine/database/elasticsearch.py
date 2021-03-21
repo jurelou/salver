@@ -67,7 +67,7 @@ class ElasticsearchDB(BaseDB):
                 },
             )
 
-    def flush_kibana_patterns(self):
+    def flush_kibana_patterns(self): # pragma: no cover
         def _delete_index(index_pattern):
             kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
             r = httpx.delete(kibana_endpoint, headers={"kbn-xsrf": "yes"})

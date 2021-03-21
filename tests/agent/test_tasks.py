@@ -15,9 +15,8 @@ class TestScan:
         mock.request.delivery_info = {"routing_key": "dummy-collector"}
         res = tasks.scan.s([Email(address="test00"),]).apply().get()
 
-        assert res["collector_config"]["name"] == "dummy-collector"
         assert res["executions_count"] == 1
-        assert len(res["facts"]) == 1
+        assert len(res["facts"]) == 2
 
     @patch("opulence.agent.tasks.current_task")
     def test_scan_01(self, mock):
@@ -33,7 +32,17 @@ class TestScan:
             .get()
         )
 
-        assert res["collector_config"]["name"] == "dummy-docker-collector"
+        assert res["executions_count"] == 2
+        assert len(res["facts"]) == 4
+
+    @patch("opulence.agent.tasks.current_task")
+    def test_scan_02(self, mock):
+        mock.request.delivery_info = {"routing_key": "dummy-collector"}
+        res = tasks.scan.s([
+            Email(address="test02_a"),
+            Email(address="test02_b"),
+            ]).apply().get()
+
         assert res["executions_count"] == 2
         assert len(res["facts"]) == 4
 

@@ -42,9 +42,18 @@ a = db_manager.add_case(case)
 a = db_manager.add_scan(scan)
 
 toto = db_manager.get_scan(scan.external_id)
-print("!!!!", toto.state)
+
+# task = async_call(
+#     celery_app, "opulence.engine.tasks.launch_scan", args=[scan.external_id],
+# )
+# print(task.get())
+
 
 task = async_call(
-    celery_app, "opulence.engine.tasks.launch_scan", args=[scan.external_id],
+    celery_app, "opulence.engine.tasks.test",
 )
+
 print(task.get())
+
+
+
