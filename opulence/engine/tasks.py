@@ -16,11 +16,12 @@ def reload_agents():
     agents_ctrl.refresh_agents()
 
 
-@celery_app.task(name="scan")
+@celery_app.task
 def launch_scan(scan_id: UUID):
-        logger.debug(f"Launch scan {scan_id}")
-        scan = db_manager.get_scan(scan_id)
-        scans_ctrl.launch(scan)
+    logger.info(f"Launch scan {scan_id}")
+    scan = db_manager.get_scan(scan_id)
+    db_manager.update_scan_state(scan.external_id, models.ScanState.STARTING)
+    scans_ctrl.launch(scan)
 
 
     # try:

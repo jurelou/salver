@@ -40,7 +40,7 @@ class ElasticsearchDB(BaseDB):
             {
                 "type": "index-pattern",
                 "id": index,
-                "attributes": {"title": f"Fact {index}"},
+                "attributes": {"title": index},
             }
             for index in self._kibana_index_patterns
         ]
@@ -94,7 +94,7 @@ class ElasticsearchDB(BaseDB):
 
     def get_facts(self, facts):
         for fact_type, ids in facts.items():
-            logger.info(f"Get {len(ids)} facts{fact_type}")
+            # logger.info(f"Get {len(ids)} facts{fact_type}")
             res = self._client.mget(index=fact_to_index(fact_type), body={"ids": ids})
             for doc in res["docs"]:
                 yield models.BaseFact.from_obj(

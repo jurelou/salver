@@ -10,7 +10,7 @@ from typing import Iterator
 from typing import List
 from typing import Optional
 from typing import Union
-
+import json
 from loguru import logger
 from pydantic import BaseModel
 from pydantic import ValidationError
@@ -18,9 +18,10 @@ from pydantic import root_validator
 
 from opulence.agent.exceptions import CollectorRuntimeError
 from opulence.agent.exceptions import InvalidCollectorDefinition
-from opulence.common.models.fact import BaseFact
+from opulence.common import models
 from opulence.common.types import BaseSet
 from opulence.common.utils import make_list
+from opulence.common.limiter import Limiter, RequestRate
 
 # class CollectItem(BaseModel):
 #     pass
@@ -35,7 +36,10 @@ from opulence.common.utils import make_list
 
 class BaseConfig(BaseModel):
     name: str
+    limiter: Optional[List[RequestRate]]
 
+    class Config:
+        use_enum_values = True
     # periodic: bool = False
     # schedule: Optional[Schedule] = None
 
@@ -48,14 +52,6 @@ class BaseConfig(BaseModel):
     #     return values
 
 
-class CollectResult(BaseModel):
-    collector_config: BaseConfig
-    duration: float
-    executions_count: int
-
-    # errors: Optional[List[str]] = None
-    facts: Optional[List[BaseFact]] = None
-
 
 class BaseCollector:
 
@@ -63,17 +59,27 @@ class BaseCollector:
     # dependencies: Optional[List[Dependency]] = None
 
     def __init__(self):
-        self._callbacks: Dict[Union[BaseFact, BaseSet], Callable] = self.callbacks()
+        self._callbacks: Dict[Union[models.BaseFact, BaseSet], Callable] = self.callbacks()
 
         try:
             self.configure()
         except ValidationError as err:
             raise InvalidCollectorDefinition(self.config.name, err) from err
 
+        self._limiter = None
+        if self.config.limiter:
+            self._limiter = Limiter(*self.config.limiter)
+
     def configure(self):
         self.config = BaseConfig(**self.config)
 
-    def callbacks(self) -> Dict[Union[BaseFact, BaseSet], Callable]:
+    def check_rate_limit(self):
+        if not self._limiter:
+            print("no rate limit")
+            return
+        self._limiter.try_acquire()
+
+    def callbacks(self) -> Dict[Union[models.BaseFact, BaseSet], Callable]:
         raise InvalidCollectorDefinition(
             self.config.name,
             f"Collector {type(self).__name__} does not have any callbacks",
@@ -86,7 +92,7 @@ class BaseCollector:
             if not output:
                 return []
             for out in output:
-                if isinstance(out, BaseFact):
+                if isinstance(out, models.BaseFact):
                     yield out
                 else:
                     logger.error(
@@ -97,7 +103,7 @@ class BaseCollector:
             raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
-        self, input_fact: Union[List[BaseFact], BaseFact],
+        self, input_fact: Union[List[models.BaseFact], models.BaseFact],
     ) -> Iterator[Callable]:
         callbacks = []
         for cb_type, cb in self._callbacks.items():
@@ -117,7 +123,7 @@ class BaseCollector:
             facts.extend(list(self._sanitize_output(cb)))
         return facts
 
-    def collect(self, facts: List[BaseFact]) -> Iterator[BaseFact]:
+    def collect(self, facts: List[models.BaseFact]) -> models.ScanResult:
         start_time = timer()
 
         callbacks = self._prepare_callbacks(facts)
@@ -127,12 +133,11 @@ class BaseCollector:
         )
 
         output_facts = self._execute_callbacks(callbacks)
-        return CollectResult(
-            collector_config=self.config,
+        return models.ScanResult(
             duration=timer() - start_time,
             executions_count=len(callbacks),
-            facts=output_facts,
-        )
+            facts=[ f.hash__ for f in output_facts],
+        ), output_facts
 
     @staticmethod
     def findall_regex(data, regex):

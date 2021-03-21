@@ -8,25 +8,6 @@ from kombu.serialization import register
 
 from opulence.common import json_encoder
 
-# class TaskRouter(object):
-#     def route_for_task(self, task, *args, **kwargs):
-#         if ":" not in task:
-#             print("aaaaaaaaaaaaaaaaaaaaaa", task)
-#             return {"queue": "default"}
-#         namespace, rk = task.split(":")
-#         print("===============", namespace, rk)
-#         return {"queue": namespace,"routing_key": rk}
-
-
-# def route_task(name, args, kwargs, options, task=None, **kw):
-#         if ":" not in name:
-#             print("aaaaaaaaaaaaaaaaaaaaaa", name)
-#             return {"queue": "default"}
-#         namespace, rk = name.split(":")
-#         print("===============", namespace, rk)
-#         return {"queue": namespace,"routing_key": rk}
-
-
 def create_app():
     register(
         "customEncoder",
@@ -45,13 +26,11 @@ def create_app():
             "worker_hijack_root_logger": False,
         },
     )
-
     return celery_app
 
 
 @setup_logging.connect
 def on_celery_setup_logging(**kwargs):
-
     pass
 
 

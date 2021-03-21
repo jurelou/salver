@@ -7,10 +7,17 @@ default:
         endpoint:
             host: localhost
             port: 9200
+    collectors:
 
+testing:
+    collectors:
+    - dummy-docker-collector
+    - dummy-collector
 
+dev:
     collectors:
         - dummy-docker-collector
+        - dummy-collector
         - recon-ng
         - certificate-transparency
         - nmap
@@ -25,8 +32,3 @@ default:
         # - littlebrother
         - blackwidow
         # - kupa3
-
-testing:
-    collectors:
-    - dummy-docker-collector
-    - dummy-collector

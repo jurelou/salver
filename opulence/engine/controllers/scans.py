@@ -25,5 +25,6 @@ def launch(scan: Scan):
         raise ValueError(f"Scan {scan.scan_type} not found")
 
     scan_class = all_scans[scan.scan_type]()
+    scan_class.scan_id = scan.external_id
     scan_class.configure(scan.config)
     scan_class.scan(scan.facts)

@@ -28,6 +28,8 @@ class MongoDB(BaseDB):
         return res.inserted_id
 
     def add_scan(self, scan: models.Scan):
+        # scan_dict = scan.dict(exclude={"facts"})
+        # scan_dict["state"] = scan_dict["state"].value
         res = self._db.scans.insert_one(scan.dict(exclude={"facts"}))
         return res.inserted_id
 
@@ -45,3 +47,10 @@ class MongoDB(BaseDB):
         if not case:
             raise exceptions.CaseNotFound(case_id)
         return models.Case(**case)
+
+    def update_scan_state(self, scan_id, state: models.ScanState):
+        self._db.scans.update_one({"external_id": scan_id}, { "$set": { "state": state.value } })
+
+    def add_scan_results(self, scan_id: UUID, result: models.ScanResult):
+        self._db.scans.update_one({"external_id": scan_id}, { "$set": result.dict() })
+

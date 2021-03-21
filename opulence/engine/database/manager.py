@@ -38,6 +38,9 @@ class DatabaseManager:
     def databases(self):
         return [self.mongodb, self.neo4j, self.elasticsearch]
 
+    def update_scan_state(self, scan_id, state: models.ScanState):
+        self.mongodb.update_scan_state(scan_id, state)
+
     def add_case(self, case: models.Case):
         """Adds a Case to the databases.
 
@@ -68,6 +71,7 @@ class DatabaseManager:
         if not self.mongodb.case_exists(scan.case_id):
             raise exceptions.CaseNotFound(scan.case_id)
 
+        scan.state = models.ScanState.CREATED
         self.elasticsearch.add_facts(scan.facts)
         self.neo4j.add_scan(scan)
         return self.mongodb.add_scan(scan)
@@ -103,3 +107,8 @@ class DatabaseManager:
         """
         case = self.mongodb.get_case(case_id)
         return case
+
+    def add_scan_results(self, scan_id: uuid.UUID, scan_result: models.ScanResult):
+        # logger.info(f"Add result to scan {scan_id}")
+        self.mongodb.add_scan_results(scan_id, scan_result)
+        self.neo4j.add_scan_results(scan_id, scan_result)

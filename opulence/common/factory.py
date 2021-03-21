@@ -6,7 +6,7 @@ import inspect
 import os
 import pkgutil
 import sys
-
+import traceback
 from loguru import logger
 
 from opulence.common.singleton import Singleton
@@ -46,7 +46,9 @@ class Factory(ABC, Singleton):
                 try:
                     module = import_module(mod_path)
                 except Exception as err:
-                    logger.error(f"Could not import module {mod_path}: {err}")
+                    traceback.print_exc(file=sys.stdout)
+                    logger.critical(f"Could not import module {mod_path}: {err}")
+
             else:
                 module = sys.modules[mod_path]
             for _, mod_cls in inspect.getmembers(module, inspect.isclass):

@@ -4,13 +4,13 @@ from opulence.common.exceptions import BucketFullException
 from typing import Tuple
 
 from queue import Queue
-from threading import RLock
 
-from enum import Enum
+from enum import IntEnum
 from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-class Duration(Enum):
+class Duration(IntEnum):
     SECOND = 1
     MINUTE = 60
     HOUR = 3600
@@ -18,8 +18,7 @@ class Duration(Enum):
     MONTH = 3600 * 24 * 30
 
 
-@dataclass
-class RequestRate:
+class RequestRate(BaseModel):
     limit: int
     interval: Duration
 
@@ -33,14 +32,12 @@ class Bucket:
         self._q = Queue(maxsize=maxsize)
 
     def inspect_expired_items(self, time: int) -> Tuple[int, int]:
-        """ Find how many items in bucket that have slipped out of the time-window
-        """
+        """ Find how many items in bucket that have slipped out of the time-window."""
         volume = self.size()
 
         for log_idx, log_item in enumerate(list(self._q.queue)):
             if log_item > time:
                 return volume - log_idx, log_item - time
-
         return 0, 0
 
     def size(self):
@@ -58,7 +55,7 @@ class Bucket:
 
 
 class Limiter:
-    """Basic rate-limiter class that makes use of built-in python Queue"""
+    """Basic rate-limiter class that makes use of built-in python Queue."""
 
     def __init__(
         self, *rates: RequestRate,
@@ -81,7 +78,7 @@ class Limiter:
                 raise ValueError(f"{prev_rate} cannot come before {rate}")
 
     def try_acquire(self) -> None:
-        """Acquiring an item or reject it if rate-limit has been exceeded"""
+        """Acquiring an item or reject it if rate-limit has been exceeded."""
         now = int(time())
         for idx, rate in enumerate(self._rates):
             if self._bucket.size() < rate.limit:
@@ -89,7 +86,6 @@ class Limiter:
 
             start_time = now - rate.interval.value
             item_count, remaining_time = self._bucket.inspect_expired_items(start_time)
-
             if item_count >= rate.limit:
                 raise BucketFullException(rate, remaining_time)
             if idx == len(self._rates) - 1:

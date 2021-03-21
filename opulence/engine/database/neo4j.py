@@ -91,3 +91,20 @@ class Neo4jDB(BaseDB):
                     else:
                         facts[fact_type] = [fact_id]
         return facts
+
+    def add_scan_results(self, scan_id: uuid.UUID, result: models.ScanResult, relationship="OUTPUTS"):
+        with self._client.session() as session:
+            session.run(
+                "MATCH (scan:Scan) "
+                "WHERE scan.external_id = $scan_id "
+                "UNWIND $facts as row "
+                "MERGE (fact:Fact {external_id: row}) "
+                "WITH fact, scan "
+                "CALL apoc.create.relationship(scan, $relationship, {timestamp: $timestamp}, fact) "
+                "YIELD rel "
+                "RETURN rel",
+                scan_id=scan_id.hex,
+                facts=result.facts,
+                timestamp=time.time(),
+                relationship=relationship,
+            )

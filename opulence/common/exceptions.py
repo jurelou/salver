@@ -10,16 +10,10 @@ class OpulenceException(Exception):
 #     def __str__(self):
 #         return f"Celery task timeout: ({self.value})"
 
+class BucketFullException(OpulenceException):
+    def __init__(self, rate, remaining_time):
+        self.remaining_time = remaining_time
+        self.rate = rate
 
-# class CollectorNotFound(OpulenceException):
-#     def __init__(self, collector_name):
-#         self.collector_name = collector_name
-
-#     def __str__(self):
-#         return f"Collector {self.collector_name} not found"
-
-# class BucketFullException(BaseOpulenceException):
-#     def __init__(self, rate, remaining_time):
-#         self.remaining_time = remaining_time
-#         self.rate = rate
-#         super().__init__(f"Bucket with Rate {rate} is full")
+    def __str__(self):
+        return f"Bucket with Rate {self.rate.limit}/{self.rate.interval.name} is full"
