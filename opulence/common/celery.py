@@ -31,7 +31,7 @@ def create_app():
 
 
 @setup_logging.connect
-def on_celery_setup_logging(**kwargs):
+def on_celery_setup_logging(**kwargs):  # pragma: no cover
     pass
 
 

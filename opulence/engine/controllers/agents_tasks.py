@@ -7,25 +7,18 @@ from opulence.common.celery import async_call
 from opulence.common import models
 from opulence.engine.app import db_manager
 
-def test():
-    task = async_call(
-        celery_app,
-        "test",
-        queue="dummy-collector",
-    )
-    return task.id
 
 class CallbackTask(celery.Task):
     callback = None
 
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
+    def on_failure(self, exc, task_id, args, kwargs, einfo):  # pragma: no cover
         logger.critical(f"ERROR {exc} {task_id} {args} {kwargs} {einfo}")
 
     def on_success(self, retval, task_id, *args, **kwargs):
         result, scan_id = retval
         if self.callback:
-            logger.info(f"Calling callback {self.callback.__func__}")
             try:
+                logger.info(f"Calling callback {self.callback.__func__}")
                 self.callback(result)
             except Exception as err:
                 logger.critical(f"Callback error: {err}")

@@ -10,11 +10,7 @@ from opulence.engine.controllers import agents as agents_ctrl
 from opulence.engine.controllers import scans as scans_ctrl
 from opulence.engine.app import db_manager
 
-@celery_app.task
-def test():
-    a = agents_tasks.test()
-    print("RES", a)
-    return a
+
 @celery_app.task
 def reload_agents():
     logger.debug("Reloading agents")

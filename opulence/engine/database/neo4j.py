@@ -93,7 +93,7 @@ class Neo4jDB(BaseDB):
         return facts
 
     def add_scan_results(
-        self, scan_id: uuid.UUID, result: models.ScanResult, relationship="OUTPUTS"
+        self, scan_id: uuid.UUID, result: models.ScanResult, relationship="OUTPUTS",
     ):
         with self._client.session() as session:
             session.run(

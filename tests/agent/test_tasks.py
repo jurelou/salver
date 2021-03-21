@@ -13,7 +13,7 @@ class TestScan:
     @patch("opulence.agent.tasks.current_task")
     def test_scan_00(self, mock):
         mock.request.delivery_info = {"routing_key": "dummy-collector"}
-        res = tasks.scan.s([Email(address="test00"),]).apply().get()
+        res = tasks.scan.s([Email(address="test00")]).apply().get()
 
         assert res["executions_count"] == 1
         assert len(res["facts"]) == 2
@@ -26,7 +26,7 @@ class TestScan:
                 [
                     Email(address="test01"),
                     Person(firstname="test_firstname", lastname="test_lastname"),
-                ]
+                ],
             )
             .apply()
             .get()
@@ -38,10 +38,11 @@ class TestScan:
     @patch("opulence.agent.tasks.current_task")
     def test_scan_02(self, mock):
         mock.request.delivery_info = {"routing_key": "dummy-collector"}
-        res = tasks.scan.s([
-            Email(address="test02_a"),
-            Email(address="test02_b"),
-            ]).apply().get()
+        res = (
+            tasks.scan.s([Email(address="test02_a"), Email(address="test02_b")])
+            .apply()
+            .get()
+        )
 
         assert res["executions_count"] == 2
         assert len(res["facts"]) == 4

@@ -13,15 +13,9 @@ from opulence.common.exceptions import BucketFullException
 
 all_collectors = CollectorFactory().items
 
-@celery_app.task(name="test")
-def test():
-    print("YAYYY test agent")
-    return "it works"
-
 
 @celery_app.task(name="scan", bind=True, max_retries=3)
 def scan(self, facts: List[BaseFact]):
-    print("GOOGOGOOGGOGO")
     collector_name = current_task.request.delivery_info["routing_key"]
     if collector_name not in all_collectors:
         raise exceptions.CollectorNotFound(collector_name)

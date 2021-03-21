@@ -18,16 +18,16 @@ class encode(json.JSONEncoder):
             }
         elif isinstance(obj, UUID):
             return {"__type__": "__uuid__", "uuid": obj.hex}
-        elif isinstance(obj, Scan):
-            return {
-                "__type__": "__scan__",
-                "scan": obj.json(),
-            }
-        elif isinstance(obj, Case):
-            return {
-                "__type__": "__case__",
-                "case": obj.json(),
-            }
+        # elif isinstance(obj, Scan):
+        #     return {
+        #         "__type__": "__scan__",
+        #         "scan": obj.json(),
+        #     }
+        # elif isinstance(obj, Case):
+        #     return {
+        #         "__type__": "__case__",
+        #         "case": obj.json(),
+        #     }
 
         return json.JSONEncoder.default(self, obj)
 

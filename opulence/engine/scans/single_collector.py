@@ -23,5 +23,5 @@ class SingleCollector(BaseScan):
 
     def scan(self, facts: List[models.BaseFact]):
         self.launch_collector(
-            self.config.collector_name, facts, cb=self.scan_success_lol
+            self.config.collector_name, facts, cb=self.scan_success_lol,
         )

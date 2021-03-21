@@ -29,7 +29,7 @@ class BaseScan(ABC):
         """Starts the scan"""
 
     def launch_collector(
-        self, collector_name: str, facts: List[models.BaseFact], cb=None
+        self, collector_name: str, facts: List[models.BaseFact], cb=None,
     ):
         def check_collector_exists(collector_name):
             for agent in get_agents().values():

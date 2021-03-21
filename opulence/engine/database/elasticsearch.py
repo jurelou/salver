@@ -37,7 +37,7 @@ class ElasticsearchDB(BaseDB):
 
     def create_kibana_patterns(self):
         body = [
-            {"type": "index-pattern", "id": index, "attributes": {"title": index},}
+            {"type": "index-pattern", "id": index, "attributes": {"title": index}}
             for index in self._kibana_index_patterns
         ]
 
@@ -67,7 +67,7 @@ class ElasticsearchDB(BaseDB):
                 },
             )
 
-    def flush_kibana_patterns(self): # pragma: no cover
+    def flush_kibana_patterns(self):  # pragma: no cover
         def _delete_index(index_pattern):
             kibana_endpoint = f"{self._kibana_endpoint}/api/saved_objects/index-pattern/{index_pattern}"
             r = httpx.delete(kibana_endpoint, headers={"kbn-xsrf": "yes"})

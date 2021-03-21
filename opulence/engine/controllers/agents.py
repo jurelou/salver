@@ -14,6 +14,7 @@ get_agents = lambda: available_agents
 
 def refresh_agents():
     global available_agents
+
     def _get_agents():
         workers = celery_app.control.inspect().active_queues() or {}
         for name in workers.keys():

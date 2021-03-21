@@ -13,7 +13,7 @@ class TestEngineTasks:
         case = models.Case(name="test_engine_case_10")
         scan = models.Scan(
             case_id=case.external_id,
-            facts=[Username(name="test username"),],
+            facts=[Username(name="test username")],
             scan_type="single_collector",
             config={"collector_name": "some-collector"},
         )

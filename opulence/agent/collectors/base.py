@@ -104,9 +104,9 @@ class BaseCollector:
     ) -> Iterator[Callable]:
         callbacks = []
         for cb_type, cb in self._callbacks.items():
-                for fact in input_fact:
-                    if cb_type == type(fact):
-                        callbacks.append(partial(cb, fact))
+            for fact in input_fact:
+                if cb_type == type(fact):
+                    callbacks.append(partial(cb, fact))
         return callbacks
 
     def _execute_callbacks(self, callbacks):

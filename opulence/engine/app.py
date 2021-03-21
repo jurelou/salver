@@ -19,7 +19,7 @@ celery_app = create_app()
 celery_app.conf.update(engine_config.celery)
 
 celery_app.conf.update(
-    {"imports": "opulence.engine.tasks", "task_eager_propagates": True,},
+    {"imports": "opulence.engine.tasks", "task_eager_propagates": True},
 )
 
 
@@ -55,10 +55,10 @@ def init(sender=None, conf=None, **kwargs):
 
 if __name__ == "__main__":
     argv = [
-        '-A',
-        'opulence.engine.app',
-        'worker',
-        '--hostname=engine_main',
-        '-B'
+        "-A",
+        "opulence.engine.app",
+        "worker",
+        "--hostname=engine_main",
+        "-B",
     ]
     celery_app.worker_main(argv)
