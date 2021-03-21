@@ -8,6 +8,7 @@ from kombu.serialization import register
 
 from opulence.common import json_encoder
 
+
 def create_app():
     register(
         "customEncoder",

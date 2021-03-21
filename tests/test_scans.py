@@ -1,4 +1,4 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # from opulence.engine import tasks
 # from opulence.common import models
 # import pytest
@@ -31,5 +31,3 @@
 #     def test_launch_invalid_scan(self):
 #         with pytest.raises(db_exceptions.ScanNotFound):
 #             tasks.launch_scan.s(1).apply()
-
-

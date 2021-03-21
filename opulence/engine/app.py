@@ -19,10 +19,7 @@ celery_app = create_app()
 celery_app.conf.update(engine_config.celery)
 
 celery_app.conf.update(
-    {
-        "imports": "opulence.engine.tasks",
-        "task_eager_propagates": True
-    }
+    {"imports": "opulence.engine.tasks", "task_eager_propagates": True,},
 )
 
 
@@ -34,12 +31,16 @@ def init(sender=None, conf=None, **kwargs):
         # db.flush()
         db_manager.bootstrap()
 
-
         periodic_tasks.flush()
-        periodic_tasks.add_periodic_task(celery_app, "opulence.engine.tasks.reload_agents", engine_config.refresh_agents_interval)
+        periodic_tasks.add_periodic_task(
+            celery_app,
+            "opulence.engine.tasks.reload_agents",
+            engine_config.refresh_agents_interval,
+        )
 
-        #debug only
+        # debug only
         from opulence.engine import tasks  # pragma: nocover
+
         tasks.reload_agents.apply()
 
     except Exception as err:

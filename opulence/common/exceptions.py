@@ -10,6 +10,7 @@ class OpulenceException(Exception):
 #     def __str__(self):
 #         return f"Celery task timeout: ({self.value})"
 
+
 class BucketFullException(OpulenceException):
     def __init__(self, rate, remaining_time):
         self.remaining_time = remaining_time

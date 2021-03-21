@@ -9,7 +9,8 @@ import multiprocessing
 manager = multiprocessing.Manager()
 available_agents = manager.dict()
 
-get_agents = lambda : available_agents
+get_agents = lambda: available_agents
+
 
 def refresh_agents():
     global available_agents

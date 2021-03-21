@@ -13,6 +13,7 @@ class CollectorNotFound(EngineException):
     def __str__(self):
         return f"Collector {self.collector_name} not found"
 
+
 # class CollectorNotFound(CollectorException):
 #     def __str__(self):
 #         return f"Collector {self.collector_name} not found"

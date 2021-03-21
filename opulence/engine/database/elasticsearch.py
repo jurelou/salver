@@ -37,11 +37,7 @@ class ElasticsearchDB(BaseDB):
 
     def create_kibana_patterns(self):
         body = [
-            {
-                "type": "index-pattern",
-                "id": index,
-                "attributes": {"title": index},
-            }
+            {"type": "index-pattern", "id": index, "attributes": {"title": index},}
             for index in self._kibana_index_patterns
         ]
 

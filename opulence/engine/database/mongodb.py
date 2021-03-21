@@ -7,6 +7,7 @@ from opulence.common import models
 from uuid import UUID
 from opulence.engine.database import exceptions
 
+
 class MongoDB(BaseDB):
     def __init__(self, config):
         print(f"Build mongodb with {config}")
@@ -49,8 +50,9 @@ class MongoDB(BaseDB):
         return models.Case(**case)
 
     def update_scan_state(self, scan_id, state: models.ScanState):
-        self._db.scans.update_one({"external_id": scan_id}, { "$set": { "state": state.value } })
+        self._db.scans.update_one(
+            {"external_id": scan_id}, {"$set": {"state": state.value}}
+        )
 
     def add_scan_results(self, scan_id: UUID, result: models.ScanResult):
-        self._db.scans.update_one({"external_id": scan_id}, { "$set": result.dict() })
-
+        self._db.scans.update_one({"external_id": scan_id}, {"$set": result.dict()})

@@ -40,6 +40,7 @@ class BaseConfig(BaseModel):
 
     class Config:
         use_enum_values = True
+
     # periodic: bool = False
     # schedule: Optional[Schedule] = None
 
@@ -52,14 +53,15 @@ class BaseConfig(BaseModel):
     #     return values
 
 
-
 class BaseCollector:
 
     config: BaseConfig
     # dependencies: Optional[List[Dependency]] = None
 
     def __init__(self):
-        self._callbacks: Dict[Union[models.BaseFact, BaseSet], Callable] = self.callbacks()
+        self._callbacks: Dict[
+            Union[models.BaseFact, BaseSet], Callable
+        ] = self.callbacks()
 
         try:
             self.configure()
@@ -133,11 +135,14 @@ class BaseCollector:
         )
 
         output_facts = self._execute_callbacks(callbacks)
-        return models.ScanResult(
-            duration=timer() - start_time,
-            executions_count=len(callbacks),
-            facts=[ f.hash__ for f in output_facts],
-        ), output_facts
+        return (
+            models.ScanResult(
+                duration=timer() - start_time,
+                executions_count=len(callbacks),
+                facts=[f.hash__ for f in output_facts],
+            ),
+            output_facts,
+        )
 
     @staticmethod
     def findall_regex(data, regex):

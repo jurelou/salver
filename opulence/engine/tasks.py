@@ -23,7 +23,6 @@ def launch_scan(scan_id: UUID):
     db_manager.update_scan_state(scan.external_id, models.ScanState.STARTING)
     scans_ctrl.launch(scan)
 
-
     # try:
     #     scan = scan_ctrl.get(scan_id)
     #     scan_ctrl.launch(scan)

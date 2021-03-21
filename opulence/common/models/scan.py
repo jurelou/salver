@@ -9,6 +9,7 @@ from pydantic import Field
 from enum import Enum
 from opulence.common.models.fact import BaseFact
 
+
 class ScanState(str, Enum):
     UNKNOWN = "unknown"
     CREATED = "created"
@@ -18,9 +19,11 @@ class ScanState(str, Enum):
     FINISHED = "finished"
     ERRORED = "errored"
 
+
 class ScanConfig(BaseModel):
     class Config(BaseConfig):
         extra = "allow"
+
 
 class ScanResult(BaseModel):
     duration: float
@@ -28,6 +31,7 @@ class ScanResult(BaseModel):
 
     # errors: Optional[List[str]] = None
     facts: List[str] = []
+
 
 class Scan(BaseModel):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
@@ -42,4 +46,4 @@ class Scan(BaseModel):
 
     class Config(BaseConfig):
         extra = "ignore"
-        use_enum_values= True
+        use_enum_values = True

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from opulence.common import limiter
 from mock import patch
 import time
@@ -9,6 +10,7 @@ from opulence.common.exceptions import BucketFullException
 #     assert (step != 0)
 #     sample_count = int(abs(end - start) / step)
 #     return itertools.islice(itertools.count(start, step), sample_count)
+
 
 def test_limiter_00():
     l = limiter.Limiter(limiter.RequestRate(limit=1, interval=limiter.Duration.SECOND))

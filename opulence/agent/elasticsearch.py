@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from elasticsearch.helpers import bulk
 from opulence.facts import all_facts
 from loguru import logger
@@ -25,4 +26,3 @@ def bulk_upsert(facts):
             }
 
     bulk(client=es_client, actions=gen_actions(facts))
-

@@ -6,12 +6,13 @@ import celery
 from opulence.common.celery import async_call
 from opulence.common import models
 from opulence.engine.app import db_manager
+
+
 class CallbackTask(celery.Task):
     callback = None
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.critical(f"ERROR {exc} {task_id} {args} {kwargs} {einfo}")
-        
 
     def on_success(self, retval, task_id, *args, **kwargs):
         result, scan_id = retval
@@ -24,6 +25,7 @@ class CallbackTask(celery.Task):
                 db_manager.update_scan_state(scan_id, models.ScanState.ERRORED)
             else:
                 db_manager.update_scan_state(scan_id, models.ScanState.FINISHED)
+
 
 @celery_app.task(base=CallbackTask)
 def _scan_success(result, scan_id, collector_name):
@@ -40,13 +42,15 @@ def _scan_success(result, scan_id, collector_name):
 def _scan_error(task_id, scan_id, collector_name):
     result = celery_app.AsyncResult(task_id)
     db_manager.update_scan_state(scan_id, models.ScanState.ERRORED)
-    logger.critical(f"Unexpected error for task {task_id} from scan {scan_id} ({collector_name}) : {result.traceback} {result.state}")
+    logger.critical(
+        f"Unexpected error for task {task_id} from scan {scan_id} ({collector_name}) : {result.traceback} {result.state}"
+    )
 
 
 def scan(scan_id, collector_name: str, facts: List[models.BaseFact], cb=None):
     _scan_success.callback = cb
     logger.info(f"Collecting {collector_name} with {len(facts)} facts")
-    
+
     db_manager.update_scan_state(scan_id, models.ScanState.STARTED)
     task = async_call(
         celery_app,

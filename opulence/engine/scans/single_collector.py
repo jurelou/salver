@@ -10,6 +10,7 @@ from typing import List
 class SingleCollectorConfig(models.ScanConfig):
     collector_name: str
 
+
 class SingleCollector(BaseScan):
     name = "single_collector"
     config: SingleCollectorConfig
@@ -18,7 +19,9 @@ class SingleCollector(BaseScan):
         self.config = SingleCollectorConfig(**config.dict())
 
     def scan_success_lol(self, result):
-        print("CALLBACKKKKKKKKKKKKK", result) 
+        print("CALLBACKKKKKKKKKKKKK", result)
 
     def scan(self, facts: List[models.BaseFact]):
-        self.launch_collector(self.config.collector_name, facts, cb=self.scan_success_lol)
+        self.launch_collector(
+            self.config.collector_name, facts, cb=self.scan_success_lol
+        )

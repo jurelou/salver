@@ -9,9 +9,7 @@ from opulence.common.limiter import Limiter, RequestRate, Duration
 class Dummy(BaseCollector):
     config = {
         "name": "dummy-collector",
-        "limiter": [
-            RequestRate(limit=1, interval=Duration.SECOND)
-        ]
+        "limiter": [RequestRate(limit=1, interval=Duration.SECOND),],
     }
 
     def callbacks(self):
