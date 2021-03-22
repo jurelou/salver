@@ -1,0 +1,5 @@
+default:
+  fastapi:
+    app_name: opulence
+    debug: True
+    api_prefix: /api

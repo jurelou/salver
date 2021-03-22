@@ -1,0 +1,20 @@
+
+version: '3.5'
+
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/opt/backend
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/opt/frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+
