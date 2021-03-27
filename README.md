@@ -9,6 +9,7 @@
 
 *inoma
 
+salver 
 
 binome
 
