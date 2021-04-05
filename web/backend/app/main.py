@@ -1,13 +1,13 @@
+# -*- coding: utf-8 -*-
 from app.config import settings
 from fastapi import FastAPI
 from app.api import router
 from fastapi.middleware.cors import CORSMiddleware
 
+
 def get_app() -> FastAPI:
     """Configure and returns a FastAPI application."""
-    app = FastAPI(
-        title=settings.FASTAPI.APP_NAME, debug=settings.FASTAPI.DEBUG
-    )
+    app = FastAPI(title=settings.FASTAPI.APP_NAME, debug=settings.FASTAPI.DEBUG)
 
     # app.add_event_handler("startup", start_app_handler(app))
     # app.add_event_handler("shutdown", stop_app_handler(app))

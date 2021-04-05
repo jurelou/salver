@@ -17,4 +17,3 @@ services:
       - backend
     ports:
       - "8080:8080"
-

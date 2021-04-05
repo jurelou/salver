@@ -2,7 +2,5 @@
 from dynaconf import Dynaconf
 
 settings = Dynaconf(
-    envvar_prefix="DYNACONF",
-    settings_files=["settings.yml"],
-    environments=True,
+    envvar_prefix="DYNACONF", settings_files=["settings.yml"], environments=True,
 )

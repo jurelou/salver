@@ -1,0 +1,39 @@
+default:
+    collectors_path: ./modules/collectors
+    enabled_collectors:
+
+    celery:
+        broker_url: redis://localhost/0
+        result_backend: redis://localhost/1
+
+    elasticsearch:
+        endpoint:
+            host: localhost
+            port: 9200
+
+testing:
+        collectors_path: ./modules/collectors
+        enabled_collectors:
+            - dummy-docker-collector
+            - dummy-collector
+
+dev:
+        collectors_path: ./modules/collectors
+
+        enabled_collectors:
+            - dummy-docker-collector
+            - dummy-collector
+            - recon-ng
+            - certificate-transparency
+            - nmap
+            # - dirsearch
+            - sherlock
+            - infoga
+            - harvester
+            - subfinder
+            - phone-infoga
+            - twint
+            - zen
+            # - littlebrother
+            - blackwidow
+            # - kupa3

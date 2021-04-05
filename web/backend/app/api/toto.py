@@ -1,13 +1,16 @@
+# -*- coding: utf-8 -*-
 from fastapi import APIRouter, WebSocket
 
 router = APIRouter()
 
-@router.get('/toto')
+
+@router.get("/toto")
 async def test_toto():
     return "toto works wellaa"
 
+
 @router.websocket("/ws")
-async def   test_ws(websocket: WebSocket):
+async def test_ws(websocket: WebSocket):
     print("!!!!!!!!!!!")
     await websocket.accept()
     while True:
