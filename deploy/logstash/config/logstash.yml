@@ -1,0 +1,26 @@
+---
+pipeline:
+  ordered: auto
+  unsafe_shutdown: false
+  workers: 2
+  batch:
+    size: 125
+    delay: 50
+
+log:
+  level: info
+
+config:
+  debug: false
+
+http:
+  host: 127.0.0.1
+  port: 9600
+
+queue:
+  type: memory
+
+dead_letter_queue:
+  enable: false
+
+ 

@@ -9,7 +9,15 @@ from salver.controller.services import agents_tasks
 from salver.controller.services import agents as agents_ctrl
 from salver.controller.services import scans as scans_ctrl
 from salver.controller.app import db_manager
+from celery import group
 
+
+
+@celery_app.task
+def ping(trail=True):
+    logger.debug("ping")
+    from salver.controller.services.agents_tasks import ping
+    return ping()
 
 @celery_app.task
 def reload_agents():

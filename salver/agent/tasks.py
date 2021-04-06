@@ -10,12 +10,24 @@ from salver.agent import exceptions
 from salver.agent.elasticsearch import bulk_upsert
 from salver.common.models.fact import BaseFact
 from salver.common.exceptions import BucketFullException
+from celery import group
 
 all_collectors = CollectorFactory().items
 
 
+                                                            
+@celery_app.task(name="ping")
+def ping():
+    print("pingaaa")
+    for i in range(10):
+        yield "pong" + str(i)
+
+
 @celery_app.task(name="scan", bind=True, max_retries=3)
 def scan(self, facts: List[BaseFact]):
+
+    # return group(B.s(i) for i in range(40))()
+
     collector_name = current_task.request.delivery_info["routing_key"]
     if collector_name not in all_collectors:
         raise exceptions.CollectorNotFound(collector_name)

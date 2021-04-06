@@ -1,6 +1,23 @@
 version: "3.3"
 
 services:
+
+########################
+# logstash (agent side)
+########################
+
+  logstash:
+    image: logstash:7.12.0
+    restart: always
+    ports:
+      - 127.0.0.1:5042:5042
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elastic       
 ########################
 ##  SUPERADMIN
 ########################
@@ -64,9 +81,9 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.1
     ports:
-      - 127.0.0.1:5601:5601
+      - 5601:5601
     volumes:
-     - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
@@ -82,14 +99,16 @@ services:
       - 127.0.0.1:9200:9200
       - 127.0.0.1:9300:9300
     environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
+      discovery.type: single-node
+      #bootstrap.memory_lock: "true"
+      #ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: superpasswd
     networks:
       - elastic
     volumes:
       - elastic:/usr/share/elasticsearch/data
-    depends_on:
-      - kibana
+      #- ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
 
 ########################
 ##  FLOWER

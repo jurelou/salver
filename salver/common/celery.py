@@ -20,10 +20,9 @@ def create_app():
     celery_app = celery.Celery(__name__)
     celery_app.conf.update(
         {
-            #   "task_routes": (route_task,),
-            "accept_content": ["customEncoder", "application/json"],
-            "task_serializer": "customEncoder",
-            "result_serializer": "customEncoder",
+            # "accept_content": ["customEncoder", "application/json"],
+            # "task_serializer": "customEncoder",
+            # "result_serializer": "customEncoder",
             "worker_hijack_root_logger": False,
         },
     )
@@ -47,3 +46,7 @@ def on_celery_setup_logging(**kwargs):  # pragma: no cover
 
 def async_call(app, task_path, **kwargs):
     return app.send_task(task_path, **kwargs)
+
+def sync_call(app, task_path, **kwargs):
+    t = app.send_task(task_path, **kwargs)
+    return t.get()

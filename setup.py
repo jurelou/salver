@@ -27,6 +27,17 @@ setup(
         "pymongo==3.11.3",
         "redis==3.5.3",
     ],
-    extras_require={"dev": ["mock==4.0.3", "coverage==5.5", "pytest==6.2.2"]},
+    extras_require={
+        "dev": [
+            "mock==4.0.3",
+            "coverage==5.5",
+            "pytest==6.2.2",
+            "flake8==3.9.0",
+            "black==20.8b1",
+            "mypy==0.812",
+            "bandit==1.7.0",
+            "pydocstyle==6.0.0"
+        ]
+    },
     python_requires=">=3.8.*, <4",
 )

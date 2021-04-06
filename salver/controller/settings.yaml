@@ -1,5 +1,5 @@
 default:
-    refresh_agents_interval: 30
+    refresh_agents_interval: 10
     salver:
         scans_path: ./modules/scans
     celery:

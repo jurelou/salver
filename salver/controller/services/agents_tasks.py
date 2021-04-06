@@ -3,10 +3,18 @@ from loguru import logger
 from salver.controller.app import celery_app, db_manager
 from typing import List
 import celery
-from salver.common.celery import async_call
+from salver.common.celery import async_call, sync_call
 from salver.common import models
 from salver.controller.app import db_manager
 
+def ping():
+    task = async_call(
+        celery_app,
+        "ping",
+        queue="zen",
+    )
+    print("-----", task)
+    return task
 
 class CallbackTask(celery.Task):
     callback = None
