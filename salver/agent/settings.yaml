@@ -1,5 +1,5 @@
 default:
-    collectors_path: ./modules/collectors
+    collectors_path: salver/modules/collectors
     enabled_collectors:
 
     celery:
@@ -12,21 +12,17 @@ default:
             port: 9200
 
 testing:
-        collectors_path: ./modules/collectors
         enabled_collectors:
             - dummy-docker-collector
             - dummy-collector
 
 dev:
-        collectors_path: ./modules/collectors
-
         enabled_collectors:
             - dummy-docker-collector
             - dummy-collector
             - recon-ng
             - certificate-transparency
-            - nmap
-            # - dirsearch
+            #- nmap
             - sherlock
             - infoga
             - harvester
@@ -34,6 +30,10 @@ dev:
             - phone-infoga
             - twint
             - zen
-            # - littlebrother
             - blackwidow
+            #######################
+            # broken collectors
+            #######################
+            # - dirsearch
+            # - littlebrother
             # - kupa3

@@ -100,7 +100,8 @@ class BaseCollector:
             raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
-        self, input_fact: Union[List[models.BaseFact], models.BaseFact],
+        self,
+        input_fact: Union[List[models.BaseFact], models.BaseFact],
     ) -> Iterator[Callable]:
         callbacks = []
         for cb_type, cb in self._callbacks.items():

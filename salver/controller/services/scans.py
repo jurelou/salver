@@ -4,20 +4,23 @@ from uuid import uuid4
 
 from loguru import logger
 
-from salver.common.models.scan import Scan
+from salver.controller.models import ScanInDB
 from salver.controller.scans.factory import ScanFactory
 
 all_scans = ScanFactory().build()
+print("=>SCANS", all_scans)
 
 
 def schedule():
     # from salver.engine.controllers.periodic_tasks import add_periodic_task
     add_periodic_task(
-        app=celery_app, interval=1, task_path="salver.controller.tasks.toto",
+        app=celery_app,
+        interval=1,
+        task_path="salver.controller.tasks.toto",
     )
 
 
-def launch(scan: Scan):
+def launch(scan: ScanInDB):
     logger.info(f"Launch scan {scan.external_id} of type {scan.scan_type}")
 
     if scan.scan_type not in all_scans:

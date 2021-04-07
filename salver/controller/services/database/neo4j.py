@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from neo4j import GraphDatabase
 from loguru import logger
-from salver.controller.database.base import BaseDB
-from salver.common import models
+from .base import BaseDB
+from salver.common.models import BaseFact, ScanResult
+from salver.controller import models
 from typing import List
 import time
 import uuid
@@ -12,7 +13,8 @@ class Neo4jDB(BaseDB):
     def __init__(self, config):
         print(f"Build neo4j with {config}")
         self._client = GraphDatabase.driver(
-            config.endpoint, auth=(config.username, config.password),
+            config.endpoint,
+            auth=(config.username, config.password),
         )
 
     def flush(self):
@@ -38,7 +40,10 @@ class Neo4jDB(BaseDB):
             )
 
     def add_facts(
-        self, scan_id, facts: List[models.BaseFact], relationship: str = "GIVES",
+        self,
+        scan_id,
+        facts: List[BaseFact],
+        relationship: str = "GIVES",
     ):
         formated_facts = [
             {"external_id": fact.hash__, "type": fact.schema()["title"]}
@@ -61,7 +66,7 @@ class Neo4jDB(BaseDB):
                 relationship=relationship,
             )
 
-    def add_scan(self, scan: models.Scan):
+    def add_scan(self, scan: models.ScanInRequest):
         with self._client.session() as session:
             session.run(
                 "MATCH (case:Case) "
@@ -93,7 +98,10 @@ class Neo4jDB(BaseDB):
         return facts
 
     def add_scan_results(
-        self, scan_id: uuid.UUID, result: models.ScanResult, relationship="OUTPUTS",
+        self,
+        scan_id: uuid.UUID,
+        result: ScanResult,
+        relationship="OUTPUTS",
     ):
         with self._client.session() as session:
             session.run(

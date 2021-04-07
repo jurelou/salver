@@ -3,7 +3,7 @@ from setuptools import find_namespace_packages
 from setuptools import setup
 
 setup(
-    name="opulence",
+    name="salver",
     version="0.0.1",
     description="Yes",
     long_description="long desc",
@@ -11,7 +11,7 @@ setup(
     author_email="contact@opulence.fr",
     url="http://opulence.wtf",
     license="",
-    packages=find_namespace_packages(include=["opulence.*"]),
+    packages=find_namespace_packages(include=["salver.*"]),
     entry_points={},
     install_requires=[
         "celery==5.0.5",
@@ -29,6 +29,7 @@ setup(
     ],
     extras_require={
         "dev": [
+            "tox==3.23.0",
             "mock==4.0.3",
             "coverage==5.5",
             "pytest==6.2.2",
@@ -36,7 +37,10 @@ setup(
             "black==20.8b1",
             "mypy==0.812",
             "bandit==1.7.0",
-            "pydocstyle==6.0.0"
+            "pydocstyle==6.0.0",
+            "pylint==2.7.4",
+            "isort==5.8.0"
+
         ]
     },
     python_requires=">=3.8.*, <4",

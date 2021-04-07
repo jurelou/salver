@@ -9,8 +9,7 @@ class FactFactory(Factory):
     def build(self):
         facts = {
             mod.schema()["title"]: mod
-            for mod in self.load_classes_from_module("./modules/facts", BaseFact)
+            for mod in self.load_classes_from_module("salver/facts/modules/", BaseFact)
         }
         self.items = facts
-        logger.info(f"Loaded facts: {facts.keys()}")
         return facts

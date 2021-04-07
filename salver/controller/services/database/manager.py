@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from salver.config import controller_config
-from salver.controller.database.neo4j import Neo4jDB
-from salver.controller.database.elasticsearch import ElasticsearchDB
-from salver.controller.database.mongodb import MongoDB
-from salver.common import models
-from salver.controller.database import exceptions
+from .neo4j import Neo4jDB
+from .elasticsearch import ElasticsearchDB
+from .mongodb import MongoDB
+from salver.controller import models
+from salver.common.models import ScanResult
+from . import exceptions
 import uuid
 
 
@@ -54,7 +55,7 @@ class DatabaseManager:
         self.neo4j.add_case(case)
         return self.mongodb.add_case(case)
 
-    def add_scan(self, scan: models.Scan):
+    def add_scan(self, scan: models.ScanInDB):
         """Adds a Scan to the databases.
 
         Scans are stored in mongodb and neo4j.
@@ -76,7 +77,7 @@ class DatabaseManager:
         self.neo4j.add_scan(scan)
         return self.mongodb.add_scan(scan)
 
-    def get_scan(self, scan_id: uuid.UUID) -> models.Scan:
+    def get_scan(self, scan_id: uuid.UUID) -> models.ScanInDB:
         """Retrieve a scan by it's ID.
 
         Args:
@@ -108,7 +109,7 @@ class DatabaseManager:
         case = self.mongodb.get_case(case_id)
         return case
 
-    def add_scan_results(self, scan_id: uuid.UUID, scan_result: models.ScanResult):
+    def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
         # logger.info(f"Add result to scan {scan_id}")
         self.mongodb.add_scan_results(scan_id, scan_result)
         self.neo4j.add_scan_results(scan_id, scan_result)

@@ -4,7 +4,7 @@ docker:
 	docker-compose -f deploy/docker-compose.yml up -d
 
 controller:
-	 ENV_FOR_DYNACONF=dev celery  -A salver.controller.app worker --hostname=engine --logfile=/tmp/celery.log --loglevel=INFO -B
+	 ENV_FOR_DYNACONF=dev celery  -A salver.controller.app worker --hostname=engine --logfile=/tmp/celery.log --loglevel=DEBUG -B
 agent:
 	 ENV_FOR_DYNACONF=dev celery  -A salver.agent.app  worker --hostname=agent --logfile=/tmp/celery.log
 
@@ -15,3 +15,10 @@ install:
 	env/bin/pip install -r requirements.txt
 format:
 	tox -e format
+
+bootstrap:
+	python scripts/bootstrap_elasticsearch.py -r
+	python scripts/bootstrap_elasticsearch.py
+
+	python scripts/bootstrap_kibana.py -r
+	python scripts/bootstrap_kibana.py

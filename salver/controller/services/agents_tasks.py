@@ -4,17 +4,21 @@ from salver.controller.app import celery_app, db_manager
 from typing import List
 import celery
 from salver.common.celery import async_call, sync_call
-from salver.common import models
+from salver.controller import models
 from salver.controller.app import db_manager
+from salver.common.models import BaseFact
 
 def ping():
+    from salver.facts import Person
     task = async_call(
         celery_app,
         "ping",
+        args=[Person(firstname="f", lastname="l")],
         queue="zen",
     )
     print("-----", task)
     return task
+
 
 class CallbackTask(celery.Task):
     callback = None
@@ -57,7 +61,7 @@ def _scan_error(task_id, scan_id, collector_name):
     )
 
 
-def scan(scan_id, collector_name: str, facts: List[models.BaseFact], cb=None):
+def scan(scan_id, collector_name: str, facts: List[BaseFact], cb=None):
     _scan_success.callback = cb
     logger.info(f"Collecting {collector_name} with {len(facts)} facts")
 

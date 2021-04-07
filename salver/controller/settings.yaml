@@ -1,7 +1,7 @@
 default:
     refresh_agents_interval: 10
     salver:
-        scans_path: ./modules/scans
+        scans_path: salver/controller/scans/modules/
     celery:
         queue_name: salve_controller
         broker_url: redis://localhost/0
@@ -16,7 +16,7 @@ default:
         endpoint:
             host: localhost
             port: 9200
-        kibana_endpoint: http://localhost:5601
+            #kibana_endpoint: http://localhost:5601
 
     neo4j:
         endpoint: bolt://localhost:7687

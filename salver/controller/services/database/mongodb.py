@@ -2,10 +2,11 @@
 import pymongo
 from typing import List
 from loguru import logger
-from salver.controller.database.base import BaseDB
-from salver.common import models
+from .base import BaseDB
+from salver.common.models import BaseFact, ScanResult
+from salver.controller import models
 from uuid import UUID
-from salver.controller.database import exceptions
+from salver.controller.services.database import exceptions
 
 
 class MongoDB(BaseDB):
@@ -29,17 +30,17 @@ class MongoDB(BaseDB):
         # TODO:catch pymongo.errors.DuplicateKeyError: E11000 duplicate key error collection: salver.cases index: name_1 dup key: { name: "toto" }, full error: {'index': 0, 'code': 11000, 'keyPattern': {'name': 1}, 'keyValue': {'name': 'toto'}, 'errmsg': 'E11000 duplicate key error collection: salver.cases index: name_1 dup key: { name: "toto" }'}
         return res.inserted_id
 
-    def add_scan(self, scan: models.Scan):
+    def add_scan(self, scan: models.ScanInDB):
         # scan_dict = scan.dict(exclude={"facts"})
         # scan_dict["state"] = scan_dict["state"].value
         res = self._db.scans.insert_one(scan.dict(exclude={"facts"}))
         return res.inserted_id
 
-    def get_scan(self, scan_id) -> models.Scan:
+    def get_scan(self, scan_id) -> models.ScanInDB:
         scan = self._db.scans.find_one({"external_id": scan_id})
         if not scan:
             raise exceptions.ScanNotFound(scan_id)
-        return models.Scan(**scan)
+        return models.ScanInDB(**scan)
 
     def case_exists(self, case_id: UUID) -> bool:
         return self._db.cases.count_documents({"external_id": case_id}) > 0
@@ -52,11 +53,13 @@ class MongoDB(BaseDB):
 
     def update_scan_state(self, scan_id, state: models.ScanState):
         self._db.scans.update_one(
-            {"external_id": scan_id}, {"$set": {"state": state.value}},
+            {"external_id": scan_id},
+            {"$set": {"state": state.value}},
         )
 
-    def add_scan_results(self, scan_id: UUID, result: models.ScanResult):
+    def add_scan_results(self, scan_id: UUID, result: ScanResult):
         print("============================", result)
         self._db.scans.update_one(
-            {"external_id": scan_id}, {"$set": result.dict(exclude={"facts"})},
+            {"external_id": scan_id},
+            {"$set": result.dict(exclude={"facts"})},
         )

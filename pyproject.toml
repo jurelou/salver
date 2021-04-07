@@ -5,7 +5,7 @@ target-version = ['py37', 'py38']
 include = '\.pyi?$'
 
 [tool.isort]
-src_paths = ["opulence"]
+src_paths = ["salver"]
 line_length = 88
 multi_line_output = 3
 length_sort = true

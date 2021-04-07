@@ -3,7 +3,7 @@ import os
 from typing import List
 from typing import Optional
 from typing import Union
-
+from loguru import logger
 import docker as docker_cli
 from pydantic import BaseModel
 from pydantic import root_validator
@@ -37,11 +37,14 @@ class DockerCollector(BaseCollector):
         self.config = BaseDockerConfig(**self.config)
         self.__client = docker_cli.from_env()
         if self.config.docker.build_context:
+            logger.info(f"Building docker image {self.config.name} from {self.config.docker.build_context}")
             self.__build_image(
-                self.config.docker.build_context, tag=f"opu_{self.config.name}",
+                self.config.docker.build_context,
+                tag=f"opu_{self.config.name}",
             )
             self.__image = f"opu_{self.config.name}"
         else:
+            logger.info(f"Pulling docker image {self.config.docker.image}")
             self.__pull_image(self.config.docker.image)
             self.__image = self.config.docker.image
 
@@ -53,5 +56,9 @@ class DockerCollector(BaseCollector):
 
     def run_container(self, command: Union[str, List[str]], **kwargs):
         return self.__client.containers.run(
-            self.__image, command, detach=False, remove=True, **kwargs,
+            self.__image,
+            command,
+            detach=False,
+            remove=True,
+            **kwargs,
         ).decode("utf-8")

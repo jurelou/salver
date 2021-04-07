@@ -15,12 +15,18 @@ from celery import group
 all_collectors = CollectorFactory().items
 
 
-                                                            
 @celery_app.task(name="ping")
-def ping():
-    print("pingaaa")
-    for i in range(10):
-        yield "pong" + str(i)
+def ping(toto):
+        print("pingaaa", toto)
+        from salver.common.models import ScanResult
+        from salver.facts import Person
+
+        a = ScanResult(
+            duration=2,
+            executions_count=32,
+            facts=["Perso"]
+        )
+        return a
 
 
 @celery_app.task(name="scan", bind=True, max_retries=3)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from elasticsearch import Elasticsearch
 from loguru import logger
-from salver.controller.database.base import BaseDB
+from .base import BaseDB
 from salver.common import models
 import httpx
 from salver.facts import all_facts
@@ -18,23 +18,27 @@ class ElasticsearchDB(BaseDB):
         print(f"Build elastic with {config}")
         self._client = Elasticsearch(hosts=[config.endpoint])
 
-        self._kibana_endpoint = config.kibana_endpoint
+
+        """
         self._replicas = 0
         self._refresh_interval = "3s"
-
         self._kibana_index_patterns = ["facts_*"]
         self._kibana_index_patterns.extend(
             [fact_to_index(index) for index in all_facts.keys()],
         )
+        """
 
     def flush(self):
-        self.flush_facts_indexes()
+        pass
+        # self.flush_facts_indexes()
         # self.flush_kibana_patterns()
 
     def bootstrap(self):
-        self.create_facts_indexes()
-        self.create_kibana_patterns()
+        pass
+        # self.create_facts_indexes()
+        # self.create_kibana_patterns()
 
+    """
     def create_kibana_patterns(self):
         body = [
             {"type": "index-pattern", "id": index, "attributes": {"title": index}}
@@ -51,6 +55,7 @@ class ElasticsearchDB(BaseDB):
             index_name = fact_to_index(fact)
             logger.info(f"Remove index {index_name}")
             self._client.indices.delete(index=index_name, ignore=[404])
+
 
     def create_facts_indexes(self):
         for fact, body in all_facts.items():
@@ -74,6 +79,7 @@ class ElasticsearchDB(BaseDB):
             logger.info(f"Delete kibana index pattern {index_pattern}: {r.status_code}")
 
         [_delete_index(index) for index in self._kibana_index_patterns]
+    """
 
     def add_facts(self, facts: List[models.BaseFact]):
         def gen_actions(facts):
@@ -94,5 +100,6 @@ class ElasticsearchDB(BaseDB):
             res = self._client.mget(index=fact_to_index(fact_type), body={"ids": ids})
             for doc in res["docs"]:
                 yield models.BaseFact.from_obj(
-                    fact_type=index_to_fact(doc["_index"]), data=doc["_source"],
+                    fact_type=index_to_fact(doc["_index"]),
+                    data=doc["_source"],
                 )

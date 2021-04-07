@@ -24,21 +24,7 @@ class ScanConfig(BaseModel):
     class Config(BaseConfig):
         extra = "allow"
 
-
-class ScanResult(BaseModel):
-    duration: float
-    executions_count: int
-
-    # errors: Optional[List[str]] = None
-    facts: List[str] = []
-
-
 class Scan(BaseModel):
-    external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    timestamp: float = Field(default_factory=time)
-
-    state: ScanState = ScanState.UNKNOWN
-
     case_id: uuid.UUID
     facts: List[BaseFact] = []
     scan_type: str
@@ -47,3 +33,13 @@ class Scan(BaseModel):
     class Config(BaseConfig):
         extra = "ignore"
         use_enum_values = True
+
+
+class ScanInRequest(Scan):
+    pass
+
+class ScanInDB(Scan):
+    timestamp: float = Field(default_factory=time)
+    external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    state: ScanState = ScanState.UNKNOWN
+

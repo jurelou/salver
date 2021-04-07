@@ -3,7 +3,7 @@ from celery.schedules import schedule
 from loguru import logger
 
 from uuid import UUID
-from salver.common import models
+from salver.controller import models
 from salver.controller.app import celery_app
 from salver.controller.services import agents_tasks
 from salver.controller.services import agents as agents_ctrl
@@ -12,18 +12,30 @@ from salver.controller.app import db_manager
 from celery import group
 
 
-
 @celery_app.task
-def ping(trail=True):
+def ping():
     logger.debug("ping")
     from salver.controller.services.agents_tasks import ping
+
     return ping()
 
 @celery_app.task
+def create_case(models.Case):
+    logger.debug("ping")
+    from salver.controller.services.agents_tasks import ping
+
+    return ping()
+
+
+@celery_app.task
 def reload_agents():
+
     logger.debug("Reloading agents")
     agents_ctrl.refresh_agents()
 
+# @celery_app.task
+# def create_scan(scan: models.ScanInRequest):
+#     pass
 
 @celery_app.task
 def launch_scan(scan_id: UUID):

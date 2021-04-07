@@ -25,4 +25,6 @@ def bulk_upsert(facts):
                 "doc": fact.dict(exclude={"first_seen", "hash__"}),
             }
 
+    print("UPSERTTTTTTTTTTTTT", facts)
+    return "ok"
     bulk(client=es_client, actions=gen_actions(facts))

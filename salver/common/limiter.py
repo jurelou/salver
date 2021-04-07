@@ -58,7 +58,8 @@ class Limiter:
     """Basic rate-limiter class that makes use of built-in python Queue."""
 
     def __init__(
-        self, *rates: RequestRate,
+        self,
+        *rates: RequestRate,
     ):
         self._validate_rate_list(rates)
         self._rates = rates

@@ -5,7 +5,8 @@ import uuid
 
 from pydantic import BaseModel
 
-from salver.common import models
+from salver.common.models import BaseFact
+from salver.controller import models
 from salver.controller import exceptions
 from salver.controller.services import agents_tasks
 from salver.controller.services.agents import get_agents
@@ -29,7 +30,10 @@ class BaseScan(ABC):
         """Starts the scan"""
 
     def launch_collector(
-        self, collector_name: str, facts: List[models.BaseFact], cb=None,
+        self,
+        collector_name: str,
+        facts: List[BaseFact],
+        cb=None,
     ):
         def check_collector_exists(collector_name):
             for agent in get_agents().values():
@@ -40,5 +44,8 @@ class BaseScan(ABC):
         check_collector_exists(collector_name)
 
         agents_tasks.scan(
-            self.scan_id, self.config.collector_name, facts, cb=cb,
+            self.scan_id,
+            self.config.collector_name,
+            facts,
+            cb=cb,
         )

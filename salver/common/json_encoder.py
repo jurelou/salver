@@ -2,9 +2,8 @@
 import json
 from uuid import UUID
 
-from salver.common.models.case import Case
 from salver.common.models.fact import BaseFact
-from salver.common.models.scan import Scan
+from salver.common.models.scan_result import ScanResult
 from salver.facts import all_facts
 
 
@@ -18,16 +17,11 @@ class encode(json.JSONEncoder):
             }
         elif isinstance(obj, UUID):
             return {"__type__": "__uuid__", "uuid": obj.hex}
-        # elif isinstance(obj, Scan):
-        #     return {
-        #         "__type__": "__scan__",
-        #         "scan": obj.json(),
-        #     }
-        # elif isinstance(obj, Case):
-        #     return {
-        #         "__type__": "__case__",
-        #         "case": obj.json(),
-        #     }
+        elif isinstance(obj,  ScanResult):
+            return {
+                "__type__": "__scan_result__",
+                "scan_result": obj.json(),
+            }
 
         return json.JSONEncoder.default(self, obj)
 
@@ -38,10 +32,8 @@ def decode(obj):
             return all_facts[obj["fact_type"]].parse_raw(obj["fact"])
         elif obj["__type__"] == "__uuid__":
             return UUID(obj["uuid"])
-        elif obj["__type__"] == "__scan__":
-            return Scan.parse_raw(obj["scan"])
-        elif obj["__type__"] == "__case__":
-            return Case.parse_raw(obj["case"])
+        elif obj["__type__"] == "__scan_result__":
+            return ScanResult.parse_raw(obj["scan_result"])
     return obj
 
 
