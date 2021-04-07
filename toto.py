@@ -21,7 +21,8 @@ from salver.common.json_encoder import json_loads, json_dumps
 
 a = tasks.ping.delay() #send_task()
 res = a.get_leaf()
-print("====", res, type(res)) 
+print("====", res, type(res))
+
 
 
 # case = Case(name="tata")
