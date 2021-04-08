@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from time import time
 import uuid
+from time import time
 
-from pydantic import BaseConfig
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import Field, BaseModel, BaseConfig
 
 
 class Case(BaseModel):

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
+import uuid
+from typing import List
+
 from salver.config import controller_config
-from .neo4j import Neo4jDB
-from .elasticsearch import ElasticsearchDB
-from .mongodb import MongoDB
 from salver.controller import models
 from salver.common.models import ScanResult
-from . import exceptions
-import uuid
 
-from typing import List
+from . import exceptions
+from .neo4j import Neo4jDB
+from .mongodb import MongoDB
+from .elasticsearch import ElasticsearchDB
+
+
 class DatabaseManager:
     def __init__(self):
         self._neo4j = Neo4jDB(config=controller_config.neo4j)
@@ -82,7 +85,6 @@ class DatabaseManager:
         self.neo4j.add_scan(scan_db)
         self.neo4j.add_facts(scan_db.external_id, scan.facts, relationship="INPUTS")
 
-
         self.mongodb.add_scan(scan_db)
         return scan_db.external_id
 
@@ -116,7 +118,6 @@ class DatabaseManager:
             CaseNotFound: If the case does not exists.
         """
         return self.mongodb.get_case(case_id)
-
 
     def get_scans_for_case(self, case_id: uuid.UUID) -> List[uuid.UUID]:
         return self.neo4j.get_scans_for_case(case_id)

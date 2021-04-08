@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-from neo4j import GraphDatabase
-from loguru import logger
-from .base import BaseDB
-from salver.common.models import BaseFact, ScanResult
-from salver.controller import models
-from typing import List
 import time
 import uuid
+from typing import List
+
+from neo4j import GraphDatabase
+from loguru import logger
+
+from salver.controller import models
+from salver.common.models import BaseFact, ScanResult
+
+from .base import BaseDB
 
 
 class Neo4jDB(BaseDB):
@@ -95,8 +98,7 @@ class Neo4jDB(BaseDB):
                         facts[fact_type] = [fact_id]
         return facts
 
-
-    def get_scans_for_case(self, case_id:uuid.UUID) -> List[uuid.UUID]:
+    def get_scans_for_case(self, case_id: uuid.UUID) -> List[uuid.UUID]:
         scans = []
         with self._client.session() as session:
             result = session.run(

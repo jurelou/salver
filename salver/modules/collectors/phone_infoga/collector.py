@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from salver.agent.collectors.docker import DockerCollector
-from salver.common.utils import get_actual_dir
 from salver.facts import Phone
+from salver.common.utils import get_actual_dir
+from salver.agent.collectors.docker import DockerCollector
 
 
 class PhoneInfoga(DockerCollector):

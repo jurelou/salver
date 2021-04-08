@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-from elasticsearch import Elasticsearch
-from loguru import logger
-from .base import BaseDB
-from salver.common import models
-import httpx
-from salver.facts import all_facts
 from typing import List
+
+import httpx
+from loguru import logger
+from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+
+from salver.facts import all_facts
+from salver.common import models
+
+from .base import BaseDB
 
 __facts_index_mapping = [(fact, f"facts_{fact.lower()}") for fact in all_facts.keys()]
 fact_to_index = lambda fact: [i for f, i in __facts_index_mapping if f == fact][0]

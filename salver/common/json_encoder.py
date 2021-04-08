@@ -2,9 +2,9 @@
 import json
 from uuid import UUID
 
+from salver.facts import all_facts
 from salver.common.models.fact import BaseFact
 from salver.common.models.scan_result import ScanResult
-from salver.facts import all_facts
 
 
 class encode(json.JSONEncoder):
@@ -17,7 +17,7 @@ class encode(json.JSONEncoder):
             }
         elif isinstance(obj, UUID):
             return {"__type__": "__uuid__", "uuid": obj.hex}
-        elif isinstance(obj,  ScanResult):
+        elif isinstance(obj, ScanResult):
             return {
                 "__type__": "__scan_result__",
                 "scan_result": obj.json(),

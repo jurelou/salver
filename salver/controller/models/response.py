@@ -5,5 +5,4 @@ from pydantic import BaseModel
 
 
 class UUIDResponse(BaseModel):
-    id: uuid.UUID 
-
+    id: uuid.UUID

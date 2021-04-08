@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # from salver.common.exceptions import CollectorNotFound
+from typing import List
+
+from salver.controller import models
+from salver.common.models import BaseFact
+from salver.controller.app import celery_app
 from salver.controller.services import agents as agents_ctrl
 from salver.controller.scans.base import BaseScan
-from salver.controller.app import celery_app
-from salver.common.models import BaseFact
-from salver.controller import models
-from typing import List
 
 
 class SingleCollectorConfig(models.ScanConfig):

@@ -16,7 +16,9 @@ install:
 	env/bin/pip install -e ".[dev]"
 
 format:
-	tox -e format
+	tox -e black
+	tox -e isort
+
 
 bootstrap:
 	python scripts/bootstrap_elasticsearch.py -r

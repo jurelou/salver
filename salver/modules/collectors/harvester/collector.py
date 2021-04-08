@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
 
-from salver.agent.collectors.docker import DockerCollector
+from salver.facts import IPv4, Email, Domain, Company
 from salver.common.utils import get_actual_dir
-from salver.facts import Company
-from salver.facts import Domain
-from salver.facts import Email
-from salver.facts import IPv4
+from salver.agent.collectors.docker import DockerCollector
 
 
 class TheHarester(DockerCollector):

@@ -2,14 +2,13 @@
 import json
 from uuid import UUID
 
-#from salver.common.models.case import Case
+# from salver.common.models.scan import Scan
+from salver.facts import all_facts
+from salver.controller import models
+
+# from salver.common.models.case import Case
 from salver.common.models.fact import BaseFact
 from salver.common.models.scan_result import ScanResult
-
-
-from salver.controller import models
-#from salver.common.models.scan import Scan
-from salver.facts import all_facts
 
 
 class encode(json.JSONEncoder):
@@ -23,29 +22,26 @@ class encode(json.JSONEncoder):
             }
         elif isinstance(obj, UUID):
             return {"__type__": "__uuid__", "uuid": obj.hex}
-        elif isinstance(obj,  ScanResult):
+        elif isinstance(obj, ScanResult):
             return {
                 "__type__": "__scan_result__",
                 "scan_result": obj.json(),
             }
         elif isinstance(obj, models.UUIDResponse):
-            return {
-                "__type__": "__uuid_response__",
-                "res": obj.json()
-            }
-        
-        elif isinstance(obj,  models.ScanInRequest):
+            return {"__type__": "__uuid_response__", "res": obj.json()}
+
+        elif isinstance(obj, models.ScanInRequest):
 
             return {
                 "__type__": "__scan_req__",
                 "scan": obj.json(),
             }
-        elif isinstance(obj,  models.CaseInRequest):
+        elif isinstance(obj, models.CaseInRequest):
             return {
                 "__type__": "__case_req__",
                 "case": obj.json(),
             }
-        elif isinstance(obj,  models.CaseInResponse):
+        elif isinstance(obj, models.CaseInResponse):
             return {
                 "__type__": "__case_res__",
                 "case": obj.json(),
@@ -63,7 +59,7 @@ def decode(obj):
             return UUID(obj["uuid"])
         elif obj["__type__"] == "__uuid_response__":
             return models.UUIDResponse.parse_raw(obj["res"])
-        #elif obj["__type__"] == "__scan_result__":
+        # elif obj["__type__"] == "__scan_result__":
         #    return ScanResult.parse_raw(obj["scan_result"])
         elif obj["__type__"] == "__scan_req__":
             return models.ScanInRequest.parse_raw(obj["scan"])

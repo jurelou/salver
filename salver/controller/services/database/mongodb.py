@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-import pymongo
-from typing import List
-from loguru import logger
-from .base import BaseDB
-from salver.common.models import BaseFact, ScanResult
-from salver.controller import models
 from uuid import UUID
-from salver.controller.services.database import exceptions
+from typing import List
+
+import pymongo
+from loguru import logger
 from pymongo.errors import DuplicateKeyError
+
+from salver.controller import models
+from salver.common.models import BaseFact, ScanResult
+from salver.controller.services.database import exceptions
+
+from .base import BaseDB
+
 
 class MongoDB(BaseDB):
     def __init__(self, config):
@@ -30,7 +34,6 @@ class MongoDB(BaseDB):
             self._db.cases.insert_one(case.dict())
         except DuplicateKeyError as err:
             raise exceptions.CaseAlreadyExists(case.external_id) from err
-
 
     def add_scan(self, scan: models.ScanInDB):
         self._db.scans.insert_one(scan.dict())

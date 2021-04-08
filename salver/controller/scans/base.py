@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import List
-from typing import Optional
 import uuid
+from abc import ABC, abstractmethod, abstractproperty
+from typing import List, Optional
 
 from pydantic import BaseModel
 
+from salver.controller import models, exceptions
 from salver.common.models import BaseFact
-from salver.controller import models
-from salver.controller import exceptions
 from salver.controller.services import agents_tasks
 from salver.controller.services.agents import get_agents
-from abc import ABC, abstractmethod, abstractproperty
 
 
 class BaseScan(ABC):

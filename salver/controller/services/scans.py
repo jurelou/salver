@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from typing import List
 from uuid import uuid4
+from typing import List
 
 from loguru import logger
 

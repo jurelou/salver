@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-from loguru import logger
-from salver.controller.app import celery_app, db_manager
-from typing import List
-import celery
-from salver.common.celery import async_call, sync_call
-from salver.controller import models
-from salver.controller.app import db_manager
-from salver.common.models import BaseFact
 import uuid
+from typing import List
+
+import celery
+from loguru import logger
+
+from salver.controller import models
+from salver.common.celery import sync_call, async_call
+from salver.common.models import BaseFact
+from salver.controller.app import celery_app, db_manager
+
 
 def ping():
     from salver.facts import Person
@@ -17,9 +19,8 @@ def ping():
         "ping",
         args=[
             Person(firstname="f", lastname="l"),
-            models.CaseInRequest(name="aaaaaaping" + uuid.uuid4().hex)
-
-            ],
+            models.CaseInRequest(name="aaaaaaping" + uuid.uuid4().hex),
+        ],
         queue="zen",
     )
     print("-----", task)

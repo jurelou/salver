@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-from celery.result import allow_join_result
-from celery.signals import worker_init
-from celery.signals import worker_ready
 from loguru import logger
-
-from salver.common.celery import create_app
-from salver.controller.services import periodic_tasks
+from celery.result import allow_join_result
+from celery.signals import worker_init, worker_ready
 
 from salver.config import controller_config
-
-from salver.controller.services import DatabaseManager
+from salver.common.celery import create_app
+from salver.controller.services import DatabaseManager, periodic_tasks
 
 db_manager = DatabaseManager()
 from salver.controller.utils.json_encoder import json_dumps, json_loads
@@ -20,8 +16,9 @@ celery_app.conf.update(controller_config.celery)
 
 celery_app.conf.update(
     {
-        "imports": "salver.controller.tasks", "task_eager_propagates": True,
-        "task_default_queue": 'controller'
+        "imports": "salver.controller.tasks",
+        "task_eager_propagates": True,
+        "task_default_queue": "controller",
     },
 )
 
@@ -50,6 +47,8 @@ def init(sender=None, conf=None, **kwargs):
 @worker_ready.connect
 def ready(sender=None, conf=None, **kwargs):
     print("DB_MANAGER", db_manager)
+
+
 #     except Exception as err:
 #         logger.critical(f"Error in signal `worker_ready`: {err}")
 

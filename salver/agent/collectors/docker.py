@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
-from typing import List
-from typing import Optional
-from typing import Union
-from loguru import logger
-import docker as docker_cli
-from pydantic import BaseModel
-from pydantic import root_validator
+from typing import List, Union, Optional
 
-from salver.agent.collectors.base import BaseCollector
-from salver.agent.collectors.base import BaseConfig
+import docker as docker_cli
+from loguru import logger
+from pydantic import BaseModel, root_validator
+
+from salver.agent.collectors.base import BaseConfig, BaseCollector
 
 
 class DockerConfig(BaseModel):
@@ -37,7 +34,9 @@ class DockerCollector(BaseCollector):
         self.config = BaseDockerConfig(**self.config)
         self.__client = docker_cli.from_env()
         if self.config.docker.build_context:
-            logger.info(f"Building docker image {self.config.name} from {self.config.docker.build_context}")
+            logger.info(
+                f"Building docker image {self.config.name} from {self.config.docker.build_context}"
+            )
             self.__build_image(
                 self.config.docker.build_context,
                 tag=f"opu_{self.config.name}",

@@ -1,32 +1,27 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
-from celery import current_task
+from celery import group, current_task
 from loguru import logger
 
-from salver.agent.app import celery_app
-from salver.agent.collectors.factory import CollectorFactory
 from salver.agent import exceptions
-from salver.agent.elasticsearch import bulk_upsert
-from salver.common.models.fact import BaseFact
+from salver.agent.app import celery_app
 from salver.common.exceptions import BucketFullException
-from celery import group
+from salver.common.models.fact import BaseFact
+from salver.agent.elasticsearch import bulk_upsert
+from salver.agent.collectors.factory import CollectorFactory
 
 all_collectors = CollectorFactory().items
 
 
 @celery_app.task(name="ping")
 def ping(toto, tata):
-        print("pingaaa", toto, "tata", tata)
-        from salver.common.models import ScanResult
-        from salver.facts import Person
+    print("pingaaa", toto, "tata", tata)
+    from salver.facts import Person
+    from salver.common.models import ScanResult
 
-        a = ScanResult(
-            duration=2,
-            executions_count=32,
-            facts=["Perso"]
-        )
-        return a
+    a = ScanResult(duration=2, executions_count=32, facts=["Perso"])
+    return a
 
 
 @celery_app.task(name="scan", bind=True, max_retries=3)

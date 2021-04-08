@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from celery.schedules import crontab
-from celery.signals import worker_init
 from kombu import Queue
 from loguru import logger
+from celery.signals import worker_init
+from celery.schedules import crontab
 
-from salver.agent.collectors.factory import CollectorFactory
-from salver.common.celery import create_app
 from salver.config import agent_config
+from salver.common.celery import create_app
+from salver.agent.collectors.factory import CollectorFactory
 
 all_collectors = CollectorFactory().build()
 print("ALL COLLECTORS", all_collectors)

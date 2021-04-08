@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from time import time
-from salver.common.exceptions import BucketFullException
-from typing import Tuple
-
-from queue import Queue
-
 from enum import IntEnum
+from time import time
+from queue import Queue
+from typing import Tuple
 from dataclasses import dataclass
+
 from pydantic import BaseModel
+
+from salver.common.exceptions import BucketFullException
 
 
 class Duration(IntEnum):

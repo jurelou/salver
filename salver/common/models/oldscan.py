@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
+import uuid
+from enum import Enum
 from time import time
 from typing import List, Optional
-import uuid
 
-from pydantic import BaseConfig
-from pydantic import BaseModel
-from pydantic import Field
-from enum import Enum
+from pydantic import Field, BaseModel, BaseConfig
+
 from salver.common.models.fact import BaseFact
 
 
@@ -23,6 +22,7 @@ class ScanState(str, Enum):
 class ScanConfig(BaseModel):
     class Config(BaseConfig):
         extra = "allow"
+
 
 class Scan(BaseModel):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)

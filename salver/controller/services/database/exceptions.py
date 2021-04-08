@@ -18,6 +18,7 @@ class CaseNotFound(DatabaseException):
     def __str__(self):
         return f"Case {self.item} not found"
 
+
 class CaseAlreadyExists(DatabaseException):
     def __str__(self):
         return f"Case with name {self.item} already exists"

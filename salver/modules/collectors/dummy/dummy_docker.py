@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from salver.agent.collectors.docker import DockerCollector
+from salver.facts import Email, Person
 from salver.common.utils import get_actual_dir
-from salver.facts import Email
-from salver.facts import Person
+from salver.agent.collectors.docker import DockerCollector
 
 
 class DummyDocker(DockerCollector):

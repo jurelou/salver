@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from elasticsearch.helpers import bulk
-from salver.facts import all_facts
 from loguru import logger
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
+
+from salver.facts import all_facts
 from salver.config import agent_config
 
 # Create ES instance
