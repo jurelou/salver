@@ -16,15 +16,25 @@ from celery import group
 def ping():
     logger.debug("ping")
     from salver.controller.services.agents_tasks import ping
-
     return ping()
 
 @celery_app.task
-def create_case(models.Case):
-    logger.debug("ping")
-    from salver.controller.services.agents_tasks import ping
+def get_case(case_id: UUID) -> models.CaseInResponse:
+    case_db = db_manager.get_case(case_id)
+    scans = db_manager.get_scans_for_case(case_id)
+    return models.CaseInResponse(scans=scans, **case_db.dict())
 
-    return ping()
+@celery_app.task
+def create_case(case: models.CaseInRequest) -> models.UUIDResponse:
+    case_id = db_manager.add_case(case)
+    print("CREATE CASE")
+    return models.UUIDResponse(id=case_id)
+
+@celery_app.task
+def create_scan(scan: models.ScanInRequest) -> models.UUIDResponse:
+    scan_id = db_manager.add_scan(scan)
+    print("CREATE SCAN")
+    return models.UUIDResponse(id=scan_id)
 
 
 @celery_app.task

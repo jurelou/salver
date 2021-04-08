@@ -13,16 +13,69 @@ from salver.facts import Person
 from salver.facts import Phone
 from salver.facts import Username
 from salver.facts import Email
-
+import uuid
 
 from salver.common.json_encoder import json_loads, json_dumps
 
+from salver.controller import models
+from salver.controller.services.database import exceptions
 
 
 a = tasks.ping.delay() #send_task()
 res = a.get_leaf()
-print("====", res, type(res))
+print("====PING RESULT", res, type(res))
 
+print("=====================================")
+
+case =  models.CaseInRequest(
+        name="my-casei" + uuid.uuid4().hex
+        )
+try:
+    case_id = tasks.create_case.delay(case)
+    print("aaa", case_id, type(case_id))
+    case_id = case_id.get_leaf()
+    print("CASE ID", case_id, type(case_id))
+except exceptions.CaseAlreadyExists as err:
+    print("CASE ALREADY EXISTS")
+
+print("=====================================")
+try:
+    c = tasks.get_case.delay(case_id.id)
+    c = c.get()
+    print("GET CASE", c)
+except exceptions.CaseNotFound as err:
+    pass
+print("=====================================")
+
+scan = models.ScanInRequest(
+        case_id=case_id.id,
+        facts=[Person(firstname="1st", lastname="last")],
+        scan_type="myscan",
+        config=models.ScanConfig(a="aa")
+)
+
+try:
+    res = tasks.create_scan.delay(scan)
+
+    a = res.get()
+    print("CREATE SCAN", a)
+except exceptions.CaseNotFound as err:
+    print("=>", err)
+
+print("=====================================")
+
+
+
+
+
+print("=====================================")
+try:
+    c = tasks.get_case.delay(case_id.id)
+    c = c.get()
+    print("GET CASE", c)
+except exceptions.CaseNotFound as err:
+    pass
+print("=====================================")
 
 
 # case = Case(name="tata")

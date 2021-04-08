@@ -7,13 +7,19 @@ from salver.common.celery import async_call, sync_call
 from salver.controller import models
 from salver.controller.app import db_manager
 from salver.common.models import BaseFact
+import uuid
 
 def ping():
     from salver.facts import Person
+
     task = async_call(
         celery_app,
         "ping",
-        args=[Person(firstname="f", lastname="l")],
+        args=[
+            Person(firstname="f", lastname="l"),
+            models.CaseInRequest(name="aaaaaaping" + uuid.uuid4().hex)
+
+            ],
         queue="zen",
     )
     print("-----", task)

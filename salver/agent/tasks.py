@@ -16,8 +16,8 @@ all_collectors = CollectorFactory().items
 
 
 @celery_app.task(name="ping")
-def ping(toto):
-        print("pingaaa", toto)
+def ping(toto, tata):
+        print("pingaaa", toto, "tata", tata)
         from salver.common.models import ScanResult
         from salver.facts import Person
 

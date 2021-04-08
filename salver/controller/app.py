@@ -11,7 +11,7 @@ from salver.config import controller_config
 
 from salver.controller.services import DatabaseManager
 
-db_manager = None
+db_manager = DatabaseManager()
 from salver.controller.utils.json_encoder import json_dumps, json_loads
 
 # Create celery app
@@ -29,10 +29,8 @@ celery_app.conf.update(
 @worker_init.connect
 def init(sender=None, conf=None, **kwargs):
     try:
-        global db_manager
-        db_manager = DatabaseManager()
         db_manager.flush()
-        # db_manager.bootstrap()
+        db_manager.bootstrap()
 
         periodic_tasks.flush()
         periodic_tasks.add_periodic_task(
@@ -49,9 +47,9 @@ def init(sender=None, conf=None, **kwargs):
         logger.critical(f"Error in signal `worker_init`: {err}")
 
 
-# @worker_ready.connect
-# def ready(sender=None, conf=None, **kwargs):
-#     try:
+@worker_ready.connect
+def ready(sender=None, conf=None, **kwargs):
+    print("DB_MANAGER", db_manager)
 #     except Exception as err:
 #         logger.critical(f"Error in signal `worker_ready`: {err}")
 

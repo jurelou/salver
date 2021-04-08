@@ -32,7 +32,7 @@ class Neo4jDB(BaseDB):
                 "CREATE CONSTRAINT scan_unique_id IF NOT EXISTS ON (s:Scan) ASSERT s.external_id IS UNIQUE",
             )
 
-    def add_case(self, case: models.Case):
+    def add_case(self, case: models.CaseInDB):
         with self._client.session() as session:
             session.run(
                 "CREATE (case: Case {external_id: $external_id}) ",
@@ -66,7 +66,7 @@ class Neo4jDB(BaseDB):
                 relationship=relationship,
             )
 
-    def add_scan(self, scan: models.ScanInRequest):
+    def add_scan(self, scan: models.ScanInDB):
         with self._client.session() as session:
             session.run(
                 "MATCH (case:Case) "
@@ -76,8 +76,6 @@ class Neo4jDB(BaseDB):
                 case_id=scan.case_id.hex,
                 scan_id=scan.external_id.hex,
             )
-        print("ADD scan")
-        return self.add_facts(scan.external_id, scan.facts, relationship="INPUTS")
 
     def get_scan_input_facts(self, scan_id: uuid.UUID):  # -> Dict[str, List[uuid.UUID]]
         facts = {}
@@ -96,6 +94,20 @@ class Neo4jDB(BaseDB):
                     else:
                         facts[fact_type] = [fact_id]
         return facts
+
+
+    def get_scans_for_case(self, case_id:uuid.UUID) -> List[uuid.UUID]:
+        scans = []
+        with self._client.session() as session:
+            result = session.run(
+                "MATCH (Case {external_id: $case_id})--(scan:Scan) RETURN scan",
+                case_id=case_id.hex,
+            )
+            for record in result:
+                scan = record.get("scan")
+                if scan:
+                    scans.append(scan.get("external_id"))
+        return scans
 
     def add_scan_results(
         self,
