@@ -25,3 +25,6 @@ bootstrap:
 	python scripts/bootstrap_elasticsearch.py
 	python scripts/bootstrap_kibana.py -r
 	python scripts/bootstrap_kibana.py
+
+sloc:
+	pygount --format=summary ./salver
