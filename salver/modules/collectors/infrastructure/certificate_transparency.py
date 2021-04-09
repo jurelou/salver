@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import httpx
 
-from salver.agent.collectors.base import BaseCollector
 from salver.facts import Domain
+from salver.agent.collectors.base import BaseCollector
 
 
 class CertificateTransparency(BaseCollector):

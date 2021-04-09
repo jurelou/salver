@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from loguru import logger
 
+from salver.config import controller_config
 from salver.common.factory import Factory
 from salver.common.models.fact import BaseFact
 from salver.controller.scans.base import BaseScan
-from salver.config import controller_config
 
 
 class ScanFactory(Factory):

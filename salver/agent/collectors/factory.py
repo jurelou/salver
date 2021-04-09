@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from loguru import logger
 
-from salver.agent.collectors.base import BaseCollector
+from salver.config import agent_config
+from salver.common.factory import Factory
 from salver.agent.exceptions import (
     InvalidCollectorDefinition,
     MissingCollectorDefinition,
 )
-from salver.common.factory import Factory
-from salver.config import agent_config
+from salver.agent.collectors.base import BaseCollector
 
 
 class CollectorFactory(Factory):

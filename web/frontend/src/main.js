@@ -12,7 +12,7 @@ import PublicPosts from "./components/PublicPosts";
 Vue.use(VueRouter)
 
 Vue.use(VueAxios, axios.create({
-    baseURL: 'http://localhost:8000/api',
+    baseURL: 'http://sptiv-ubu-sas01:8000/api',
     headers: {
         Authorization: `Bearer ${localStorage.getItem('actoken')}`
     }

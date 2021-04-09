@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-from salver.agent.collectors.docker import DockerCollector
+from salver.facts import Email, Tweet, Company, Username
 from salver.common.utils import get_actual_dir
-from salver.facts import Company
-from salver.facts import Email
-from salver.facts import Tweet
-from salver.facts import Username
+from salver.agent.collectors.docker import DockerCollector
 
 
 class Zen(DockerCollector):

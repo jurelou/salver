@@ -12,8 +12,8 @@ services:
     ports:
       - 127.0.0.1:5042:5042
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./deploy/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./deploy/logstash/pipeline:/usr/share/logstash/pipeline:ro
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
@@ -27,7 +27,7 @@ services:
     ports:
       - 127.0.0.1:80:80
     volumes:
-      - ./superadmin:/usr/share/nginx/html
+      - ./deploy/superadmin:/usr/share/nginx/html
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: root
     #   MONGO_INITDB_ROOT_PASSWORD: rootroot
@@ -51,7 +51,7 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 127.0.0.1:8081:8081
+      - 8081:8081
     # environment:
     #   ME_CONFIG_MONGODB_ADMINUSERNAME: root
     #   ME_CONFIG_MONGODB_ADMINPASSWORD: rootroot
@@ -62,8 +62,8 @@ services:
   neo4j:
     image: neo4j:4.2.1
     ports:
-      - 127.0.0.1:7474:7474
-      - 127.0.0.1:7687:7687
+      - 7474:7474
+      - 7687:7687
     volumes:
       - neo_data:/data
       - neo_plugins:/plugins
@@ -83,7 +83,7 @@ services:
     ports:
       - 5601:5601
     volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./deploy/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
@@ -145,6 +145,30 @@ services:
     networks:
       - admin
 
+
+#######################
+# FRONTEND
+#######################
+  frontend:
+    build: ./web/frontend
+    volumes:
+      - ./web/frontend/src:/opt/frontend/src
+    ports:
+      - 8181:8080
+    networks:
+      - admin
+
+#######################
+# BACKEND
+#######################
+  backend:
+    build: ./web/backend
+    volumes:
+      - ./web/backend:/opt/backend
+    ports:
+      - 8000:8000
+    networks:
+      - admin
 
 networks:
   elastic:

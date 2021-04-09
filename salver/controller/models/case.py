@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
-from time import time
 import uuid
+from time import time
+from typing import List
 
-from pydantic import BaseConfig
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import Field, BaseModel, BaseConfig
 
 
 class Case(BaseModel):
     name: str
 
 
+class CaseInRequest(Case):
+    pass
+
+
+class CaseInResponse(Case):
+    scans: List[uuid.UUID] = []
+
+
 class CaseInDB(Case):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    timestamp: float = Field(default_factory=time)
-
-    name: str
-
-    class Config(BaseConfig):
-        extra = "ignore"
+    created_on: float = Field(default_factory=time)

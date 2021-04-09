@@ -5,6 +5,7 @@ WORKDIR /opt/frontend
 
 COPY package*.json ./
 
-RUN npm install
+
+RUN npm install -g package.json 
 
 ENTRYPOINT [ "npm", "run", "serve" ]

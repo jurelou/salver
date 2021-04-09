@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import multiprocessing
+from typing import List
+
 from loguru import logger
 
 from salver.config import controller_config
 from salver.controller.app import celery_app
-from typing import List
-import multiprocessing
 
 manager = multiprocessing.Manager()
 available_agents = manager.dict()

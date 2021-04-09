@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
 
-from salver.agent.collectors.docker import DockerCollector
+from salver.facts import Domain, Person, Profile, Username
 from salver.common.utils import get_actual_dir
-from salver.facts import Domain
-from salver.facts import Person
-from salver.facts import Profile
-from salver.facts import Username
+from salver.agent.collectors.docker import DockerCollector
 
 
 class DummyDocker(DockerCollector):

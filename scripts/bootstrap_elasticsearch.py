@@ -1,8 +1,12 @@
 import argparse
 
-from salver.facts import all_facts
 from elasticsearch import Elasticsearch
-from salver.controller.services.database.elasticsearch import fact_to_index, index_to_fact
+
+from salver.facts import all_facts
+from salver.controller.services.database.elasticsearch import (
+    fact_to_index,
+    index_to_fact,
+)
 
 client = Elasticsearch(hosts=["localhost:9200"])
 replicas = 0

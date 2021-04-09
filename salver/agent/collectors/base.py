@@ -1,27 +1,19 @@
 # -*- coding: utf-8 -*-
-from functools import partial
 import re
+import json
 
 # from opulence.agent.collectors.dependencies import Dependency
 from timeit import default_timer as timer
-from typing import Callable
-from typing import Dict
-from typing import Iterator
-from typing import List
-from typing import Optional
-from typing import Union
-import json
-from loguru import logger
-from pydantic import BaseModel
-from pydantic import ValidationError
-from pydantic import root_validator
+from typing import Dict, List, Union, Callable, Iterator, Optional
+from functools import partial
 
-from salver.agent.exceptions import CollectorRuntimeError
-from salver.agent.exceptions import InvalidCollectorDefinition
+from loguru import logger
+from pydantic import BaseModel, ValidationError, root_validator
+
 from salver.common import models
 from salver.common.utils import make_list
 from salver.common.limiter import Limiter, RequestRate
-
+from salver.agent.exceptions import CollectorRuntimeError, InvalidCollectorDefinition
 
 # class Schedule(BaseModel):
 #     minute: Union[str, int] = "*"

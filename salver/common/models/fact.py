@@ -3,10 +3,7 @@ import hashlib
 from time import time
 from typing import Optional
 
-from pydantic import BaseConfig
-from pydantic import BaseModel
-from pydantic import Field
-from pydantic import root_validator
+from pydantic import Field, BaseModel, BaseConfig, root_validator
 
 
 class BaseFact(BaseModel):

@@ -3,3 +3,8 @@ default:
     app_name: opulence
     debug: True
     api_prefix: /api
+
+  celery:
+    broker_url: redis://redis/0
+    result_backend: redis://redis/1
+    task_default_queue: controller
