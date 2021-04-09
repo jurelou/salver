@@ -135,6 +135,19 @@ class Neo4jDB(BaseDB):
                     scans.append(scan.get("external_id"))
         return scans
 
+    def get_scans_for_case(self, case_id: uuid.UUID) -> List[uuid.UUID]:
+        scans = []
+        with self._client.session() as session:
+            result = session.run(
+                "MATCH (Case {external_id: $case_id})--(scan:Scan) RETURN scan",
+                case_id=case_id.hex,
+            )
+            for record in result:
+                scan = record.get("scan")
+                if scan:
+                    scans.append(scan.get("external_id"))
+        return scans
+
     def add_scan_results(
         self,
         scan_id: uuid.UUID,

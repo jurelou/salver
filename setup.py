@@ -39,7 +39,8 @@ setup(
             "bandit==1.7.0",
             "pydocstyle==6.0.0",
             "pylint==2.7.4",
-            "isort==5.8.0"
+            "isort==5.8.0",
+            "pygount==1.2.4"
 
         ]
     },

@@ -124,7 +124,6 @@ class DatabaseManager:
 
     def get_input_facts_for_scan(self, scan_id: uuid.UUID) -> List[BaseFact]:
         facts_id = self.neo4j.get_input_facts_for_scan(scan_id)
-        print("============", facts_id)
         return self.elasticsearch.get_facts(facts_id)
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):

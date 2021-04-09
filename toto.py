@@ -45,12 +45,7 @@ try:
     print("GET CASE", c)
 except exceptions.CaseNotFound as err:
     pass
-
-
 print("=====================================")
-
-
-
 
 scan = models.ScanInRequest(
         case_id=case_id.id,
@@ -61,8 +56,9 @@ scan = models.ScanInRequest(
 
 try:
     res = tasks.create_scan.delay(scan)
-    s = res.get()
-    print("CREATE SCAN", s)
+
+    a = res.get()
+    print("CREATE SCAN", a)
 except exceptions.CaseNotFound as err:
     print("=>", err)
 
@@ -80,14 +76,11 @@ except exceptions.ScanNotFound as err:
 print("=====================================")
 try:
     c = tasks.get_case.delay(case_id.id)
-    c = c.get_leaf()
+    c = c.get()
     print("GET CASE", c)
 except exceptions.CaseNotFound as err:
     pass
 print("=====================================")
-
-
-
 
 print("-------------------------------------")
 
