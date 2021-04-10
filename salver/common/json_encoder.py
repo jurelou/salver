@@ -3,37 +3,60 @@ import json
 from uuid import UUID
 
 from salver.facts import all_facts
-from salver.common.models.fact import BaseFact
-from salver.common.models.scan_result import ScanResult
+from salver.common.models import BaseFact, Collector, ScanResult
+
+encode_map = {
+    BaseFact.__module__: {
+        "type": "__fact__",
+        "to_json": lambda obj: {
+            "__salver_type__": "__fact__",
+            "fact": obj.json(),
+            "fact_type": obj.schema()["title"],
+        },
+        "from_json": lambda obj: all_facts[obj["fact_type"]].parse_raw(obj["fact"]),
+    },
+    UUID.__module__: {
+        "type": "__uuid__",
+        "to_json": lambda obj: {"__salver_type__": "__uuid__", "uuid": obj.hex},
+        "from_json": lambda obj: UUID(obj["uuid"]),
+    },
+    ScanResult.__module__: {
+        "type": "__scan_result__",
+        "to_json": lambda obj: {
+            "__salver_type__": "__scan_result__",
+            "scan_result": obj.json(),
+        },
+        "from_json": lambda obj: ScanResult.parse_raw(obj["scan_result"]),
+    },
+    Collector.__module__: {
+        "type": "__collector__",
+        "to_json": lambda obj: {
+            "__salver_type__": "__collector__",
+            "collector": obj.json(),
+        },
+        "from_json": lambda obj: Collector.parse_raw(obj["collector"]),
+    },
+}
 
 
 class encode(json.JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, BaseFact):
-            return {
-                "__type__": "__fact__",
-                "fact": obj.json(),
-                "fact_type": obj.schema()["title"],
-            }
-        elif isinstance(obj, UUID):
-            return {"__type__": "__uuid__", "uuid": obj.hex}
-        elif isinstance(obj, ScanResult):
-            return {
-                "__type__": "__scan_result__",
-                "scan_result": obj.json(),
-            }
-
-        return json.JSONEncoder.default(self, obj)
+        if not hasattr(obj, "__module__"):
+            return json.JSONEncoder.default(self, obj)
+        mod = obj.__module__
+        if mod not in encode_map.keys():
+            return json.JSONEncoder.default(self, obj)
+        return encode_map[mod]["to_json"](obj)
 
 
 def decode(obj):
-    if "__type__" in obj:
-        if obj["__type__"] == "__fact__":
-            return all_facts[obj["fact_type"]].parse_raw(obj["fact"])
-        elif obj["__type__"] == "__uuid__":
-            return UUID(obj["uuid"])
-        elif obj["__type__"] == "__scan_result__":
-            return ScanResult.parse_raw(obj["scan_result"])
+    if "__salver_type__" not in obj:
+        return obj
+    obj_type = obj["__salver_type__"]
+    for item in encode_map.values():
+        if obj_type == item["type"]:
+            return item["from_json"](obj)
+    print(f"@@@ERROR json decode {type(obj)}: {obj}")
     return obj
 
 

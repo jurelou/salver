@@ -23,7 +23,6 @@ from salver.agent.exceptions import CollectorRuntimeError, InvalidCollectorDefin
 #     month_of_year: Union[str, int] = "*"
 
 
-
 class BaseCollector:
 
     config: models.CollectorBaseConfig

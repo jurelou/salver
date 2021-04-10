@@ -4,10 +4,12 @@ from typing import List
 
 from loguru import logger
 from pydantic import ValidationError
-from salver.controller.models import ScanInDB
-from salver.controller.scans.factory import ScanFactory
-from salver.controller.exceptions import InvalidScanConfiguration
+
 from salver.common.models import BaseFact
+from salver.controller.models import ScanInDB
+from salver.controller.exceptions import InvalidScanConfiguration
+from salver.controller.scans.factory import ScanFactory
+
 all_scans = ScanFactory().build()
 
 print("=>SCANS", all_scans)
@@ -34,5 +36,5 @@ def launch(scan: ScanInDB, facts: List[BaseFact]):
         scan_class.scan_id = scan.external_id
         scan_class.configure(scan.config)
     except ValidationError as err:
-        raise InvalidScanConfiguration(str(err))    
+        raise InvalidScanConfiguration(str(err))
     return scan_class.scan(facts)

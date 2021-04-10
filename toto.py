@@ -29,7 +29,6 @@ print("=====================================")
 a = tasks.list_agents.delay()
 res = a.get()
 print("====res", res, type(res))
-sys.exit(0)
 
 print("=====================================")
 print("=     PING")

@@ -27,6 +27,7 @@ def ping(toto, tata):
 @celery_app.task(name="scan", bind=True, max_retries=3)
 def scan(self, facts: List[BaseFact]):
 
+    print("@@@@@@@@@@@@@@@@@", facts)
     # return group(B.s(i) for i in range(40))()
 
     collector_name = current_task.request.delivery_info["routing_key"]

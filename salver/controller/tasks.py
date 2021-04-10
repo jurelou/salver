@@ -19,11 +19,17 @@ def ping():
 
     return ping()
 
+
 @celery_app.task
 def list_agents():
     from salver.controller.services.agents import available_agents
-    return [models.Agent(name=name, collectors=collectors) for name, collectors in available_agents.items()]
-    
+
+    a = [
+        models.Agent(name=name, collectors=collectors)
+        for name, collectors in available_agents.items()
+    ]
+    print("@@@@@@@@@@", a)
+    return a
 
 
 @celery_app.task
@@ -76,9 +82,10 @@ def launch_scan(scan_id: UUID):
     scan = db_manager.get_scan(scan_id)
     db_manager.update_scan_state(scan.external_id, models.ScanState.STARTING)
     scan_facts = db_manager.get_input_facts_for_scan(scan_id)
-    print("))))))))", scan_facts)
-    r = scans_ctrl.launch(scan, scan_facts)
-    print("LAUNCH RES", r)
+    try:
+        r = scans_ctrl.launch(scan, scan_facts)
+    except Exception as err:
+        print("ERR LAUNCH", err)
     return "result ok"
     # try:
     #     scan = scan_ctrl.get(scan_id)

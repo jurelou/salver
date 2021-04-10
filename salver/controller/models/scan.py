@@ -59,6 +59,7 @@ class ScanInDB(Scan):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     state: ScanState = ScanState.UNKNOWN
 
+
 class ScanInResponse(ScanInDB, ScanInRequest):
     def json(self, *_):
         res = self.dict(exclude={"facts", "case_id", "external_id"})

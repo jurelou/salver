@@ -13,6 +13,7 @@ class CollectorNotFound(EngineException):
     def __str__(self):
         return f"Collector {self.collector_name} not found"
 
+
 class InvalidScanConfiguration(EngineException):
     def __init__(self, err):
         super().__init__(err)

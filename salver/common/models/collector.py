@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from typing import List, Optional
-from .fact import BaseFact
+
 from pydantic import BaseModel
+
 from salver.common.limiter import RequestRate
+
+from .fact import BaseFact
 
 
 class CollectorBaseConfig(BaseModel):
@@ -20,12 +23,10 @@ class CollectorBaseConfig(BaseModel):
     #             raise ValueError(f'Schedule should be set for collector {values.get("name")}')
     #     return values
 
-
     class Config:
         use_enum_values = True
-        json_encoders = {
-            RequestRate: lambda v: str(v)
-        }
+        json_encoders = {RequestRate: lambda v: str(v)}
+
 
 class Collector(BaseModel):
     active: bool

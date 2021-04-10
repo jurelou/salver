@@ -74,7 +74,6 @@ def scan(scan_id, collector_name: str, facts: List[BaseFact], cb=None):
     logger.info(f"Collecting {collector_name} with {len(facts)} facts")
     db_manager.update_scan_state(scan_id, models.ScanState.STARTED)
 
-
     task = async_call(
         celery_app,
         "scan",
