@@ -6,8 +6,8 @@ import docker as docker_cli
 from loguru import logger
 from pydantic import BaseModel, root_validator
 
-from salver.agent.collectors.base import BaseConfig, BaseCollector
-
+from salver.agent.collectors.base import BaseCollector
+from salver.common.models import CollectorBaseConfig
 
 class DockerConfig(BaseModel):
     image: Optional[str] = None
@@ -25,7 +25,7 @@ class DockerConfig(BaseModel):
         return values
 
 
-class BaseDockerConfig(BaseConfig):
+class BaseDockerConfig(CollectorBaseConfig):
     docker: DockerConfig
 
 

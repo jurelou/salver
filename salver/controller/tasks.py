@@ -19,12 +19,11 @@ def ping():
 
     return ping()
 
-
 @celery_app.task
-def list_collectors():
+def list_agents():
     from salver.controller.services.agents import available_agents
-    print("!!!!!", available_agents)
-    # return ping()
+    return [models.Agent(name=name, collectors=collectors) for name, collectors in available_agents.items()]
+    
 
 
 @celery_app.task

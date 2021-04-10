@@ -26,7 +26,7 @@ print("=====================================")
 print("=     list collectors")
 print("=====================================")
 
-a = tasks.list_collectors.delay()
+a = tasks.list_agents.delay()
 res = a.get()
 print("====res", res, type(res))
 sys.exit(0)

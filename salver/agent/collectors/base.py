@@ -23,30 +23,10 @@ from salver.agent.exceptions import CollectorRuntimeError, InvalidCollectorDefin
 #     month_of_year: Union[str, int] = "*"
 
 
-class BaseConfig(BaseModel):
-    name: str
-    limiter: Optional[List[RequestRate]]
-
-    class Config:
-        use_enum_values = True
-        json_encoders = {
-            RequestRate: lambda v: str(v)
-        }
-    # periodic: bool = False
-    # schedule: Optional[Schedule] = None
-
-    # @root_validator
-    # def check_schedule(cls, values):
-    #     is_periodic = values.get('periodic')
-    #     if is_periodic:
-    #         if not values.get('schedule'):
-    #             raise ValueError(f'Schedule should be set for collector {values.get("name")}')
-    #     return values
-
 
 class BaseCollector:
 
-    config: BaseConfig
+    config: models.CollectorBaseConfig
     # dependencies: Optional[List[Dependency]] = None
 
     def __init__(self):
@@ -62,7 +42,7 @@ class BaseCollector:
             self._limiter = Limiter(*self.config.limiter)
 
     def configure(self):
-        self.config = BaseConfig(**self.config)
+        self.config = models.CollectorBaseConfig(**self.config)
 
     def check_rate_limit(self):
         if not self._limiter:

@@ -6,7 +6,7 @@ from loguru import logger
 
 from salver.config import controller_config
 from salver.controller.app import celery_app
-
+from salver.common.models import Collector
 manager = multiprocessing.Manager()
 available_agents = manager.dict()
 
@@ -20,8 +20,8 @@ def refresh_agents():
         workers = celery_app.control.inspect().active_queues() or {}
         for name in workers.keys():
             conf = celery_app.control.inspect([name]).conf()[name]
-            if "collectors" in conf:
-                yield name, conf["collectors"]
+
+            yield name, [Collector(**collector) for collector in conf["collectors"]]
 
     available_agents = {agent: config for agent, config in _get_agents()}
     logger.info(f"Available agents: {available_agents.keys()}")

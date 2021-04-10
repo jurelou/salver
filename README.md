@@ -32,9 +32,9 @@
 # TODO:
 agent qui écris dans logstash
 afficher plus d'erreurs dans le scan result (pas de callbacks, erreur docker, ...)
-- exceptions dans common/exceptions + print stacktrace dans l'exception de base
 
-- WEB: fastapi / socket.io / quasar
+optimiser les isinstance json serializer ...
+
 
 https://github.com/saeeddhqan/Maryam
 
