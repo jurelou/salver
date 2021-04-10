@@ -1,4 +1,5 @@
-dd
+
+
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 
@@ -29,7 +30,8 @@ dd
 
 
 # TODO:
-
+agent qui écris dans logstash
+afficher plus d'erreurs dans le scan result (pas de callbacks, erreur docker, ...)
 - exceptions dans common/exceptions + print stacktrace dans l'exception de base
 
 - WEB: fastapi / socket.io / quasar

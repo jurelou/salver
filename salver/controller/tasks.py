@@ -21,6 +21,13 @@ def ping():
 
 
 @celery_app.task
+def list_collectors():
+    from salver.controller.services.agents import available_agents
+    print("!!!!!", available_agents)
+    # return ping()
+
+
+@celery_app.task
 def get_case(case_id: UUID) -> models.CaseInResponse:
     case_db = db_manager.get_case(case_id)
     scans = db_manager.get_scans_for_case(case_id)
@@ -69,8 +76,11 @@ def launch_scan(scan_id: UUID):
     logger.info(f"Launch scan {scan_id}")
     scan = db_manager.get_scan(scan_id)
     db_manager.update_scan_state(scan.external_id, models.ScanState.STARTING)
-    scans_ctrl.launch(scan)
-
+    scan_facts = db_manager.get_input_facts_for_scan(scan_id)
+    print("))))))))", scan_facts)
+    r = scans_ctrl.launch(scan, scan_facts)
+    print("LAUNCH RES", r)
+    return "result ok"
     # try:
     #     scan = scan_ctrl.get(scan_id)
     #     scan_ctrl.launch(scan)

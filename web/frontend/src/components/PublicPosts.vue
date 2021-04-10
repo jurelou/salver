@@ -15,27 +15,44 @@ export default {
       connection: null
     }
   },
-  methods: {
-    sendMessage: function(message) {
-      console.log("Hello")
-      console.log(this.connection);
-      this.connection.send(message);
+  sockets: {
+    connect() {
+      // Fired when the socket connects.
+      this.isConnected = true;
+      console.log("helos")
+    },
+
+    disconnect() {
+      this.isConnected = false;
+    },
+
+    // Fired when the server sends something on the "messageChannel" channel.
+    tofront(data) {
+      console.log("!!!!!!!!!!!!", data)
     }
   },
-  created: function() {
-    console.log("Starting connection to WebSocket Server")
-    this.connection = new WebSocket("wss://localhost:8000/toto/ws")
-
-    this.connection.onmessage = function(event) {
-      console.log(event);
+  methods: {
+    sendMessage: function(message) {
+      this.$socket.emit('chat', "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+      this.axios.get("/toto/tata").then((response) => {
+        console.log("AXIOS GET", response.data)
+      })
     }
+  },
+  // created: function() {
+  //   console.log("Starting connection to WebSocket Server")
+  //   this.connection = new WebSocket("wss://localhost:8000/toto/ws")
 
-    this.connection.onopen = function(event) {
-      console.log(event)
-      console.log("Successfully connected to the echo websocket server...")
-    }
+  //   this.connection.onmessage = function(event) {
+  //     console.log(event);
+  //   }
 
-  }
+  //   this.connection.onopen = function(event) {
+  //     console.log(event)
+  //     console.log("Successfully connected to the echo websocket server...")
+  //   }
+
+  // }
 }
 </script>
 

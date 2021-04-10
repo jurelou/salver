@@ -6,20 +6,32 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 
 import App from './App.vue'
-import PublicPosts from "./components/PublicPosts";
+import PublicPosts from "./components/PublicPosts"
 
+import VueSocketIO from 'vue-socket.io'
 
 Vue.use(VueRouter)
 
 Vue.use(VueAxios, axios.create({
-    baseURL: 'http://sptiv-ubu-sas01:8000/api',
-    headers: {
-        Authorization: `Bearer ${localStorage.getItem('actoken')}`
-    }
+    baseURL: 'http://localhost:8000/api',
+    // headers: {
+    //     Authorization: `Bearer ${localStorage.getItem('actoken')}`
+    // }
+}))
+
+Vue.use(new VueSocketIO({
+    debug: true,
+    connection: 'http://localhost:8000',
+    // vuex: {
+    //     store,
+    //     actionPrefix: 'SOCKET_',
+    //     mutationPrefix: 'SOCKET_'
+    // },
+    options: { path: "/websock/socket.io" } //Optional options
 }))
 
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 
 const routes = [

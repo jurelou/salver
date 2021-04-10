@@ -60,7 +60,6 @@ class MongoDB(BaseDB):
         )
 
     def add_scan_results(self, scan_id: UUID, result: ScanResult):
-        print("============================", result)
         self._db.scans.update_one(
             {"external_id": scan_id},
             {"$set": result.dict(exclude={"facts"})},

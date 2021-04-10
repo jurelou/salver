@@ -29,5 +29,4 @@ class SingleCollector(BaseScan):
             facts,
             cb=self.scan_success_lol,
         )
-
-        print("!!!!", a)
+        return a

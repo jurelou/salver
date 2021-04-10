@@ -27,5 +27,4 @@ def bulk_upsert(facts):
             }
 
     print("UPSERTTTTTTTTTTTTT", facts)
-    return "ok"
     bulk(client=es_client, actions=gen_actions(facts))

@@ -45,5 +45,5 @@ def scan(self, facts: List[BaseFact]):
     collect_result, facts = collector.collect(facts)
     bulk_upsert(facts)
     collect_result.dict()
-
+    print("RETURN", collect_result.dict())
     return collect_result.dict()

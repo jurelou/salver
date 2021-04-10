@@ -22,6 +22,10 @@ class RequestRate(BaseModel):
     limit: int
     interval: Duration
 
+    def __str__(self):
+        print(f"RequestRate {self.limit} every {Duration(self.internal).name}")
+        return f"RequestRate {self.limit} every {Duration(self.internal).name}"
+
 
 class Bucket:
     """A bucket that resides in memory

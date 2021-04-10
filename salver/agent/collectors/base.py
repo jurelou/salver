@@ -29,7 +29,9 @@ class BaseConfig(BaseModel):
 
     class Config:
         use_enum_values = True
-
+        json_encoders = {
+            RequestRate: lambda v: str(v)
+        }
     # periodic: bool = False
     # schedule: Optional[Schedule] = None
 

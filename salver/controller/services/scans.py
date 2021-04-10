@@ -3,11 +3,13 @@ from uuid import uuid4
 from typing import List
 
 from loguru import logger
-
+from pydantic import ValidationError
 from salver.controller.models import ScanInDB
 from salver.controller.scans.factory import ScanFactory
-
+from salver.controller.exceptions import InvalidScanConfiguration
+from salver.common.models import BaseFact
 all_scans = ScanFactory().build()
+
 print("=>SCANS", all_scans)
 
 
@@ -20,7 +22,7 @@ def schedule():
     )
 
 
-def launch(scan: ScanInDB):
+def launch(scan: ScanInDB, facts: List[BaseFact]):
     logger.info(f"Launch scan {scan.external_id} of type {scan.scan_type}")
 
     if scan.scan_type not in all_scans:
@@ -28,6 +30,9 @@ def launch(scan: ScanInDB):
         raise ValueError(f"Scan {scan.scan_type} not found")
 
     scan_class = all_scans[scan.scan_type]()
-    scan_class.scan_id = scan.external_id
-    scan_class.configure(scan.config)
-    scan_class.scan(scan.facts)
+    try:
+        scan_class.scan_id = scan.external_id
+        scan_class.configure(scan.config)
+    except ValidationError as err:
+        raise InvalidScanConfiguration(str(err))    
+    return scan_class.scan(facts)

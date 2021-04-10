@@ -19,70 +19,177 @@ from salver.common.json_encoder import json_loads, json_dumps
 
 from salver.controller import models
 from salver.controller.services.database import exceptions
+import sys
 
+
+print("=====================================")
+print("=     list collectors")
+print("=====================================")
+
+a = tasks.list_collectors.delay()
+res = a.get()
+print("====res", res, type(res))
+sys.exit(0)
+
+print("=====================================")
+print("=     PING")
+print("=====================================")
 
 a = tasks.ping.delay() #send_task()
 res = a.get_leaf()
 print("====PING RESULT", res, type(res))
 
 print("=====================================")
+print("=     create case 1")
+print("=====================================")
 
 case =  models.CaseInRequest(
-        name="my-casei" + uuid.uuid4().hex
+        name="my-case1"
         )
 try:
     case_id = tasks.create_case.delay(case)
-    print("aaa", case_id, type(case_id))
-    case_id = case_id.get_leaf()
-    print("CASE ID", case_id, type(case_id))
+    case1_id = case_id.get_leaf()
+    print("CASE ID", case1_id, type(case1_id))
 except exceptions.CaseAlreadyExists as err:
     print("CASE ALREADY EXISTS")
 
 print("=====================================")
+print("=     create case 2")
+print("=====================================")
+case2 =  models.CaseInRequest(
+        name="my-case2"
+        )
 try:
-    c = tasks.get_case.delay(case_id.id)
+    case_id = tasks.create_case.delay(case2)
+    case2_id = case_id.get_leaf()
+    print("CASE ID", case2_id, type(case2_id))
+except exceptions.CaseAlreadyExists as err:
+    print("CASE ALREADY EXISTS")
+
+
+
+print("=====================================")
+print("=     get case 2")
+print("=====================================")
+
+try:
+    c = tasks.get_case.delay(case2_id.id)
     c = c.get()
     print("GET CASE", c)
 except exceptions.CaseNotFound as err:
     pass
+
+print("=====================================")
+print("=     create scan 1")
 print("=====================================")
 
+
 scan = models.ScanInRequest(
-        case_id=case_id.id,
-        facts=[Person(firstname="1st", lastname="last")],
-        scan_type="myscan",
-        config=models.ScanConfig(a="aa")
+        case_id=case1_id.id,
+        facts=[Email(address="scan1")],
+        scan_type="single_collector",
+        config=models.ScanConfig(collector_name="dummy-collector")
 )
 
 try:
     res = tasks.create_scan.delay(scan)
-
-    a = res.get()
-    print("CREATE SCAN", a)
+    scan1 = res.get()
+    print("CREATE SCAN", scan1)
 except exceptions.CaseNotFound as err:
     print("=>", err)
 
 print("=====================================")
+print("=     create scan 2")
+print("=====================================")
+
+
+scan = models.ScanInRequest(
+        case_id=case1_id.id,
+        facts=[
+            Person(firstname="1st", lastname="last"),
+            Phone(number="+33123123"),
+            Phone(number="+33689181869"),
+            Username(name="jurelou"),
+            Company(name="wavely"),
+            Domain(fqdn="wavely.fr"),
+            Person(
+                firstname="fname",
+                lastname="lname",
+                anther="ldm",
+                first_seen=42,
+                last_seen=200,
+            ),
+            Email(address="test@gmail.test"),
+            ],
+        scan_type="single_collector",
+        config=models.ScanConfig(collector_name="dummy-docker-collector")
+)
 
 try:
-    res = tasks.get_scan.delay(s.id)
+    res = tasks.create_scan.delay(scan)
+    scan2 = res.get()
+    print("CREATE SCAN", scan2)
+except exceptions.CaseNotFound as err:
+    print("=>", err)
+
+
+print("=====================================")
+print("=     launch scan 1")
+print("=====================================")
+
+from salver.controller.exceptions import InvalidScanConfiguration
+
+try:
+    res = tasks.launch_scan.delay(scan1.id)
+    res = res.get()
+    print("LAUNCH", res)
+except exceptions.ScanNotFound as err:
+    print("SCAN NOT FOUND", err)
+except InvalidScanConfiguration as err:
+    print("errrrrINVALID ONCIF", err)
+
+
+
+print("=====================================")
+print("=     launch scan 2")
+print("=====================================")
+
+from salver.controller.exceptions import InvalidScanConfiguration
+
+try:
+    res = tasks.launch_scan.delay(scan2.id)
+    res = res.get()
+    print("LAUNCH", res)
+except exceptions.ScanNotFound as err:
+    print("SCAN NOT FOUND", err)
+except InvalidScanConfiguration as err:
+    print("errrrrINVALID ONCIF", err)
+
+
+
+print("=====================================")
+print("=     get scan 1")
+print("=====================================")
+
+try:
+    res = tasks.get_scan.delay(scan1.id)
     s = res.get()
     print(f"GET SCAN {type(s)} {s}")
     
 except exceptions.ScanNotFound as err:
     print("NF", err)
 
-
 print("=====================================")
+print("=     get case 1")
+print("=====================================")
+
 try:
-    c = tasks.get_case.delay(case_id.id)
+    c = tasks.get_case.delay(case1_id.id)
     c = c.get()
-    print("GET CASE", c)
+    print("GET CASE 1", c)
 except exceptions.CaseNotFound as err:
     pass
-print("=====================================")
 
-print("-------------------------------------")
 
 tasks.reload_agents.delay().get()
 # case = Case(name="tata")

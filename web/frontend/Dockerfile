@@ -6,6 +6,6 @@ WORKDIR /opt/frontend
 COPY package*.json ./
 
 
-RUN npm install -g package.json 
+RUN npm update && npm install
 
 ENTRYPOINT [ "npm", "run", "serve" ]

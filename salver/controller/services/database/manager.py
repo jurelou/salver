@@ -127,6 +127,6 @@ class DatabaseManager:
         return self.elasticsearch.get_facts(facts_id)
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
-        # logger.info(f"Add result to scan {scan_id}")
+        print(f"Add result to scan {scan_id}, {scan_result}")
         self.mongodb.add_scan_results(scan_id, scan_result)
         self.neo4j.add_scan_results(scan_id, scan_result)
