@@ -6,6 +6,7 @@ from uuid import uuid4
 from opulence.facts.username import Username
 from opulence.engine.database import exceptions
 
+
 @pytest.mark.usefixtures("database_manager")
 class TestDatabaseManager:
     def test_create_case(self):
@@ -29,7 +30,6 @@ class TestDatabaseManager:
         assert new_scan.external_id == scan.external_id
         assert new_scan.case_id == case.external_id
         assert new_scan.facts[0].name == "test username"
-
 
     def test_create_scan_invalid_case(self):
         scan = models.Scan(
