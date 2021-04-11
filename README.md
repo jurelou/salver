@@ -222,6 +222,7 @@ http://skidbase.io/
 haveibeenpwned.com
 leakedsource.com
 
+salver 
 
 8: WHOIS/Website
 https://www.whois.net/
