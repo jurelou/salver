@@ -5,9 +5,14 @@ from celery.signals import worker_init, worker_ready
 
 from salver.config import controller_config
 from salver.common.celery import create_app
-from salver.controller.services import DatabaseManager, periodic_tasks
+from salver.controller.services import periodic_tasks
+from salver.common.database.manager import DatabaseManager
 
-db_manager = DatabaseManager()
+db_manager = DatabaseManager(
+    neo4j_config=controller_config.neo4j,
+    elasticsearch_config=controller_config.elasticsearch,
+    mongodb_config=controller_config.mongodb
+)
 from salver.controller.utils.json_encoder import json_dumps, json_loads
 
 # Create celery app

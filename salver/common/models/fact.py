@@ -19,6 +19,9 @@ class BaseFact(BaseModel):
     def set_hash(cls, values):
         values.pop("hash__", None)
         m = hashlib.sha256()
+        print("!!!!!!!", cls, type(cls))
+        if not "required" in cls.schema():
+            print(f"Strange fact ..... {cls.schema()}, {cls}, {type(cls)}")
         required_fields = cls.schema()["required"]
 
         for k in sorted(values):

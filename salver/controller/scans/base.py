@@ -5,7 +5,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from salver.controller import models, exceptions
+from salver.controller import exceptions
+from salver.common.models import ScanConfig
 from salver.common.models import BaseFact
 from salver.controller.services import agents_tasks
 from salver.controller.services.agents import get_collectors_names
@@ -20,7 +21,7 @@ class BaseScan(ABC):
         pass
 
     @abstractmethod
-    def configure(self, config: models.ScanConfig):
+    def configure(self, config: ScanConfig):
         """Configure the scan"""
 
     @abstractmethod

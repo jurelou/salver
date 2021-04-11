@@ -40,6 +40,8 @@ services:
     restart: always
     ports:
       - 127.0.0.1:27017:27017
+    networks:
+      - admin
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: root
     #   MONGO_INITDB_ROOT_PASSWORD: rootroot
@@ -52,6 +54,8 @@ services:
     restart: always
     ports:
       - 8081:8081
+    networks:
+      - admin
     # environment:
     #   ME_CONFIG_MONGODB_ADMINUSERNAME: root
     #   ME_CONFIG_MONGODB_ADMINPASSWORD: rootroot
@@ -73,7 +77,8 @@ services:
       NEO4J_apoc_import_file_enabled: "true"
       NEO4J_apoc_import_file_use__neo4j__config: "true"
       NEO4JLABS_PLUGINS: '["apoc"]'
-
+    networks:
+      - admin
 
 ########################
 ##  KIBANA
@@ -105,6 +110,7 @@ services:
       ELASTIC_PASSWORD: superpasswd
     networks:
       - elastic
+      - admin
     volumes:
       - elastic:/usr/share/elasticsearch/data
       #- ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro

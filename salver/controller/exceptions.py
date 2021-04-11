@@ -17,8 +17,3 @@ class CollectorNotFound(EngineException):
 class InvalidScanConfiguration(EngineException):
     def __init__(self, err):
         super().__init__(err)
-
-
-# class CollectorNotFound(CollectorException):
-#     def __str__(self):
-#         return f"Collector {self.collector_name} not found"

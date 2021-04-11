@@ -1,10 +1,15 @@
-from salver.controller.models import Case
-from pydantic import BaseModel
-
+# -*- coding: utf-8 -*-
+import uuid
+from time import time
 from typing import List
 
-class CaseInResponse(BaseModel):
-    case: Case
+from pydantic import Field, BaseModel, BaseConfig
+from salver.common.models import Case
 
-class CasesInResponse(BaseModel):
-    cases: List[Case]
+
+class CaseInRequest(Case):
+    pass
+
+
+class CaseInResponse(Case):
+    scans: List[uuid.UUID] = []

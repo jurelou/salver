@@ -6,7 +6,7 @@ from loguru import logger
 from pydantic import ValidationError
 
 from salver.common.models import BaseFact
-from salver.controller.models import ScanInDB
+from salver.common.database.models import ScanInDB
 from salver.controller.exceptions import InvalidScanConfiguration
 from salver.controller.scans.factory import ScanFactory
 

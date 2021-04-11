@@ -2,8 +2,8 @@
 import uuid
 from typing import List
 
-from salver.config import controller_config
-from salver.controller import models
+from salver.common import models as common_models
+from salver.common.database import models as db_models
 from salver.common.models import BaseFact, ScanResult
 
 from . import exceptions
@@ -13,10 +13,10 @@ from .elasticsearch import ElasticsearchDB
 
 
 class DatabaseManager:
-    def __init__(self):
-        self._neo4j = Neo4jDB(config=controller_config.neo4j)
-        self._elasticsearch = ElasticsearchDB(config=controller_config.elasticsearch)
-        self._mongodb = MongoDB(config=controller_config.mongodb)
+    def __init__(self, neo4j_config, elasticsearch_config, mongodb_config):
+        self._neo4j = Neo4jDB(config=neo4j_config)
+        self._elasticsearch = ElasticsearchDB(config=elasticsearch_config)
+        self._mongodb = MongoDB(config=mongodb_config)
 
     def flush(self):
         for db in self.databases:
@@ -42,10 +42,10 @@ class DatabaseManager:
     def databases(self):
         return [self.mongodb, self.neo4j, self.elasticsearch]
 
-    def update_scan_state(self, scan_id, state: models.ScanState):
+    def update_scan_state(self, scan_id, state: common_models.ScanState):
         self.mongodb.update_scan_state(scan_id, state)
 
-    def add_case(self, case: models.CaseInRequest) -> uuid.UUID:
+    def add_case(self, case) -> uuid.UUID:
         """Adds a Case to the databases.
 
         Cases are stored in mongodb and neo4j.
@@ -55,14 +55,14 @@ class DatabaseManager:
         Returns:
             uuid.UUID: The case identifier
         """
-        case_db = models.CaseInDB(**case.dict())
+        case_db = db_models.CaseInDB(**case.dict())
 
         self.neo4j.add_case(case_db)
         self.mongodb.add_case(case_db)
 
         return case_db.external_id
 
-    def add_scan(self, scan: models.ScanInRequest) -> uuid.UUID:
+    def add_scan(self, scan) -> uuid.UUID:
         """Adds a Scan to the databases.
 
         Scans are stored in mongodb and neo4j.
@@ -78,8 +78,8 @@ class DatabaseManager:
         if not self.mongodb.case_exists(scan.case_id):
             raise exceptions.CaseNotFound(scan.case_id)
 
-        scan_db = models.ScanInDB(**scan.dict(exclude={"facts"}))
-        scan_db.state = models.ScanState.CREATED
+        scan_db = db_models.ScanInDB(**scan.dict(exclude={"facts"}))
+        scan_db.state = common_models.ScanState.CREATED
 
         self.elasticsearch.add_facts(scan.facts)
         self.neo4j.add_scan(scan_db)
@@ -88,7 +88,7 @@ class DatabaseManager:
         self.mongodb.add_scan(scan_db)
         return scan_db.external_id
 
-    def get_scan(self, scan_id: uuid.UUID) -> models.ScanInDB:
+    def get_scan(self, scan_id: uuid.UUID) -> db_models.ScanInDB:
         """Retrieve a scan by it's ID.
 
         Args:
@@ -106,13 +106,13 @@ class DatabaseManager:
         # scan.facts = facts
         return scan
 
-    def list_scans(self) -> List[models.UUIDResponse]:
+    def list_scans(self) -> List[uuid.UUID]:
         return self.mongodb.list_scans()
 
-    def list_cases(self) -> List[models.UUIDResponse]:
+    def list_cases(self)-> List[uuid.UUID]:
         return self.mongodb.list_cases()
 
-    def get_case(self, case_id: uuid.UUID) -> models.CaseInDB:
+    def get_case(self, case_id: uuid.UUID) -> db_models.CaseInDB:
         """Retrieve a case by it's ID.
 
         Args:
@@ -133,11 +133,11 @@ class DatabaseManager:
             facts_id = self.neo4j.get_input_facts_for_scan(scan_id)
             res = self.elasticsearch.get_facts(facts_id)
         except Exception as err:
-            print("get_input_facts_for_scan!!!!!!!!!!!!", err)
+            print(f"get_input_facts_for_scan!!!!!!!!!!!! {err}")
         return res
 
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
         print(f"Add result to scan {scan_id}, {scan_result}")
-        self.mongodb.add_scan_results(scan_id, scan_result)
+        # self.mongodb.add_scan_results(scan_id, scan_result)
         self.neo4j.add_scan_results(scan_id, scan_result)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from salver.controller.exceptions import EngineException
+from salver.common.exceptions import OpulenceException
 
 
-class DatabaseException(EngineException):
+class DatabaseException(OpulenceException):
     """Base engine exceptions."""
 
     def __init__(self, item):

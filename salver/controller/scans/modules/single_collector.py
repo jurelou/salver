@@ -2,14 +2,13 @@
 # from salver.common.exceptions import CollectorNotFound
 from typing import List
 
-from salver.controller import models
-from salver.common.models import BaseFact
+from salver.common.models import BaseFact, ScanConfig
 from salver.controller.app import celery_app
 from salver.controller.services import agents as agents_ctrl
 from salver.controller.scans.base import BaseScan
 
 
-class SingleCollectorConfig(models.ScanConfig):
+class SingleCollectorConfig(ScanConfig):
     collector_name: str
 
 
@@ -17,7 +16,7 @@ class SingleCollector(BaseScan):
     name = "single_collector"
     config: SingleCollectorConfig
 
-    def configure(self, config: models.ScanConfig):
+    def configure(self, config: ScanConfig):
         self.config = SingleCollectorConfig(**config.dict())
 
     def scan_success_lol(self, result):

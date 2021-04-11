@@ -8,3 +8,17 @@ default:
     broker_url: redis://redis/0
     result_backend: redis://redis/1
     task_default_queue: controller
+
+  elasticsearch:
+      endpoint:
+          host: elasticsearch
+          port: 9200
+
+  neo4j:
+      endpoint: bolt://neo4j:7687
+      username: neo4j
+      password: root
+
+  mongodb:
+      endpoint: mongodb://mongo:27017
+      database: salver

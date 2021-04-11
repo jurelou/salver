@@ -1,4 +1,7 @@
 
+redocker:
+	docker-compose down -v
+	docker-compose up --build --force-recreate -d
 
 docker:
 	docker-compose up -d

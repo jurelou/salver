@@ -10,6 +10,7 @@ from salver.common.celery import sync_call, async_call
 from salver.common.models import BaseFact, ScanResult
 from salver.controller.app import celery_app, db_manager
 
+from salver.common.models import ScanState
 
 def ping():
     from salver.facts import Person
@@ -41,9 +42,9 @@ class CallbackTask(celery.Task):
                 self.callback(result)
             except Exception as err:
                 logger.critical(f"Callback error: {err}")
-                db_manager.update_scan_state(scan_id, models.ScanState.ERRORED)
+                db_manager.update_scan_state(scan_id, ScanState.ERRORED)
                 return
-        db_manager.update_scan_state(scan_id, models.ScanState.FINISHED)
+        db_manager.update_scan_state(scan_id, ScanState.FINISHED)
 
 
 @celery_app.task(base=CallbackTask)
@@ -63,7 +64,7 @@ def _scan_success(result, scan_id, collector_name):
 def _scan_error(task_id, scan_id, collector_name):
     result = celery_app.AsyncResult(task_id)
     print("#############ERRRRRRRRRRRRRRRRR")
-    db_manager.update_scan_state(scan_id, models.ScanState.ERRORED)
+    db_manager.update_scan_state(scan_id, ScanState.ERRORED)
     logger.critical(
         f"Unexpected error for task {task_id} from scan {scan_id} ({collector_name}) : {result.traceback} {result.state}"
     )
@@ -72,7 +73,7 @@ def _scan_error(task_id, scan_id, collector_name):
 def scan(scan_id, collector_name: str, facts: List[BaseFact], cb=None):
     _scan_success.callback = cb
     logger.info(f"Collecting {collector_name} with {len(facts)} facts")
-    db_manager.update_scan_state(scan_id, models.ScanState.STARTED)
+    db_manager.update_scan_state(scan_id, ScanState.STARTED)
 
     task = async_call(
         celery_app,

@@ -4,10 +4,7 @@ from time import time
 from typing import List
 
 from pydantic import Field, BaseModel, BaseConfig
-
-
-class Case(BaseModel):
-    name: str
+from salver.common.models import Case
 
 
 class CaseInRequest(Case):
@@ -16,8 +13,3 @@ class CaseInRequest(Case):
 
 class CaseInResponse(Case):
     scans: List[uuid.UUID] = []
-
-
-class CaseInDB(Case):
-    external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    created_on: float = Field(default_factory=time)

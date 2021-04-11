@@ -8,31 +8,8 @@ from pydantic import Field, BaseModel, BaseConfig
 
 from salver.facts import all_facts
 from salver.common.models.fact import BaseFact
-
-
-class ScanState(str, Enum):
-    UNKNOWN = "unknown"
-    CREATED = "created"
-
-    STARTING = "starting"
-    STARTED = "started"
-    FINISHED = "finished"
-    ERRORED = "errored"
-
-
-class ScanConfig(BaseModel):
-    class Config(BaseConfig):
-        extra = "allow"
-
-
-class Scan(BaseModel):
-    case_id: uuid.UUID
-    scan_type: str
-    config: ScanConfig
-
-    class Config:
-        extra = "ignore"
-        use_enum_values = True
+from salver.common.models.scan import Scan, ScanConfig, ScanState
+from salver.common.database.models.scan import ScanInDB
 
 
 class ScanInRequest(Scan):
@@ -52,12 +29,6 @@ class ScanInRequest(Scan):
             all_facts[f["fact_type"]].parse_raw(f["fact"]) for f in obj.pop("facts")
         ]
         return cls(facts=facts, **obj)
-
-
-class ScanInDB(Scan):
-    created_on: float = Field(default_factory=time)
-    external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    state: ScanState = ScanState.UNKNOWN
 
 
 class ScanInResponse(ScanInDB, ScanInRequest):

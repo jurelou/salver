@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter,Request
 from salver.api.models.agents import AgentsInResponse, AgentInResponse
-from salver.api.services.remote_tasks import sync_call
+from salver.api.services.remote_tasks import sync_call, async_call
 from fastapi import HTTPException
 router = APIRouter()
 
@@ -10,6 +10,11 @@ router = APIRouter()
 async def get_agents():
         agents = sync_call("salver.controller.tasks.list_agents")
         return AgentsInResponse(agents=agents)
+
+@router.get("/reload")
+async def reload_agents():
+        async_call("salver.controller.tasks.reload_agents")
+        return "ok"
 
 @router.get("/{agent_name}", response_model=AgentInResponse)
 async def get_agent(agent_name):

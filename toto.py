@@ -16,9 +16,9 @@ from salver.facts import Email
 import uuid
 
 from salver.common.json_encoder import json_loads, json_dumps
-
+from salver.common.models import ScanConfig
 from salver.controller import models
-from salver.controller.services.database import exceptions
+from salver.common.database import exceptions
 import sys
 
 
@@ -87,7 +87,7 @@ scan = models.ScanInRequest(
         case_id=case1_id.id,
         facts=[Email(address="scan1")],
         scan_type="single_collector",
-        config=models.ScanConfig(collector_name="dummy-collector")
+        config=ScanConfig(collector_name="dummy-collector")
 )
 
 try:
@@ -121,7 +121,7 @@ scan = models.ScanInRequest(
             Email(address="test@gmail.test"),
             ],
         scan_type="single_collector",
-        config=models.ScanConfig(collector_name="dummy-docker-collector")
+        config=ScanConfig(collector_name="dummy-docker-collector")
 )
 
 try:
@@ -195,25 +195,6 @@ tasks.reload_agents.delay().get()
 
 
 
-
-
-
-
-print("=====================================")
-print("=     list scans")
-print("=====================================")
-
-c = tasks.list_scans.delay()
-c = c.get()
-print("LIST SCANS", c)
-
-print("=====================================")
-print("=     list cases")
-print("=====================================")
-
-c = tasks.list_cases.delay()
-c = c.get()
-print("LIST cases", c)
 
 
 # case = Case(name="tata")

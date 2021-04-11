@@ -6,7 +6,7 @@ from typing import Dict, List
 from neo4j import GraphDatabase
 from loguru import logger
 
-from salver.controller import models
+from salver.common.database import models
 from salver.common.models import BaseFact, ScanResult
 
 from .base import BaseDB
