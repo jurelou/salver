@@ -44,11 +44,8 @@ def get_case(case_id: UUID) -> models.CaseInResponse:
 # todel
 @celery_app.task
 def get_scan(scan_id: UUID) -> models.ScanInResponse:
-    try:
-        scan_db = db_manager.get_scan(scan_id)
-        facts = db_manager.get_input_facts_for_scan(scan_id)
-    except Exception as err:
-        logger.error(f"!!!!!getscan error {err}")
+    scan_db = db_manager.get_scan(scan_id)
+    facts = db_manager.get_input_facts_for_scan(scan_id)
     return models.ScanInResponse(
         facts=facts,
         **scan_db.dict(),

@@ -129,11 +129,8 @@ class DatabaseManager:
         return self.neo4j.get_scans_for_case(case_id)
 
     def get_input_facts_for_scan(self, scan_id: uuid.UUID) -> List[BaseFact]:
-        try:
-            facts_id = self.neo4j.get_input_facts_for_scan(scan_id)
-            res = self.elasticsearch.get_facts(facts_id)
-        except Exception as err:
-            print(f"get_input_facts_for_scan!!!!!!!!!!!! {err}")
+        facts_id = self.neo4j.get_input_facts_for_scan(scan_id)
+        res = self.elasticsearch.get_facts(facts_id)
         return res
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):

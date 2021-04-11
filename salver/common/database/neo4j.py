@@ -84,22 +84,25 @@ class Neo4jDB(BaseDB):
         self, scan_id: uuid.UUID
     ) -> Dict[str, List[uuid.UUID]]:
         facts = {}
-        with self._client.session() as session:
-            result = session.run(
-                "MATCH (scan:Scan {external_id: $external_id})-[:INPUTS]->(fact:Fact) RETURN DISTINCT fact",
-                external_id=scan_id.hex,
-            )
-            for record in result:
-                fact = record.get("fact")
-                if not fact:
-                    continue
+        try:
+            with self._client.session() as session:
+                result = session.run(
+                    "MATCH (scan:Scan {external_id: $external_id})-[:INPUTS]->(fact:Fact) RETURN DISTINCT fact",
+                    external_id=scan_id.hex,
+                )
+                for record in result:
+                    fact = record.get("fact")
+                    if not fact:
+                        continue
 
-                fact_type = fact.get("type")
-                fact_id = fact.get("external_id")
-                if fact_type in facts:
-                    facts[fact_type].append(fact_id)
-                else:
-                    facts[fact_type] = [fact_id]
+                    fact_type = fact.get("type")
+                    fact_id = fact.get("external_id")
+                    if fact_type in facts:
+                        facts[fact_type].append(fact_id)
+                    else:
+                        facts[fact_type] = [fact_id]
+        except Exception as err:
+            print("get_input_facts_for_scanNEO4JJJJJ", err)
         return facts
 
     """

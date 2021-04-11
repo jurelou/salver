@@ -13,8 +13,6 @@ from salver.common.database.exceptions import CaseNotFound
 # from salver.api.models.cases import CaseInResponse, CasesInResponse
 
 
-
-
 router = APIRouter()
 
 
