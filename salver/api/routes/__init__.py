@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
-# from .toto import router as toto_router
-from .agents import router as agents_router
 from .cases import router as cases_router
 from .scans import router as scans_router
+
+# from .toto import router as toto_router
+from .agents import router as agents_router
 
 router = APIRouter()
 

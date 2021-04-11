@@ -8,7 +8,7 @@ from pydantic import Field, BaseModel, BaseConfig
 
 from salver.facts import all_facts
 from salver.common.models.fact import BaseFact
-from salver.common.models.scan import Scan, ScanConfig, ScanState
+from salver.common.models.scan import Scan, ScanState, ScanConfig
 from salver.common.database.models.scan import ScanInDB
 
 

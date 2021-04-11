@@ -18,4 +18,3 @@ api_config = Dynaconf(
     settings_files=["salver/api/settings.yaml"],
     environments=True,
 )
-

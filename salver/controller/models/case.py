@@ -4,6 +4,7 @@ from time import time
 from typing import List
 
 from pydantic import Field, BaseModel, BaseConfig
+
 from salver.common.models import Case
 
 

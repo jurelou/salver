@@ -6,8 +6,8 @@ import pymongo
 from loguru import logger
 from pymongo.errors import DuplicateKeyError
 
+from salver.common.models import BaseFact, ScanState, ScanResult
 from salver.common.database import models as db_models
-from salver.common.models import BaseFact, ScanResult, ScanState
 from salver.common.database import exceptions
 
 from .base import BaseDB
@@ -64,7 +64,6 @@ class MongoDB(BaseDB):
     #         {"external_id": scan_id},
     #         {"$set": result.dict(exclude={"facts"})},
     #     )
-
 
     def list_scans(self) -> List[UUID]:
         ids = self._db.scans.find({}, {"external_id": True, "_id": False})

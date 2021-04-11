@@ -6,8 +6,8 @@ from typing import Dict, List
 from neo4j import GraphDatabase
 from loguru import logger
 
-from salver.common.database import models
 from salver.common.models import BaseFact, ScanResult
+from salver.common.database import models
 
 from .base import BaseDB
 

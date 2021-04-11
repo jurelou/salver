@@ -3,8 +3,8 @@ import uuid
 from typing import List
 
 from salver.common import models as common_models
-from salver.common.database import models as db_models
 from salver.common.models import BaseFact, ScanResult
+from salver.common.database import models as db_models
 
 from . import exceptions
 from .neo4j import Neo4jDB
@@ -109,7 +109,7 @@ class DatabaseManager:
     def list_scans(self) -> List[uuid.UUID]:
         return self.mongodb.list_scans()
 
-    def list_cases(self)-> List[uuid.UUID]:
+    def list_cases(self) -> List[uuid.UUID]:
         return self.mongodb.list_cases()
 
     def get_case(self, case_id: uuid.UUID) -> db_models.CaseInDB:
@@ -135,7 +135,6 @@ class DatabaseManager:
         except Exception as err:
             print(f"get_input_facts_for_scan!!!!!!!!!!!! {err}")
         return res
-
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
         print(f"Add result to scan {scan_id}, {scan_result}")

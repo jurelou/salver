@@ -11,7 +11,7 @@ from salver.common.database.manager import DatabaseManager
 db_manager = DatabaseManager(
     neo4j_config=controller_config.neo4j,
     elasticsearch_config=controller_config.elasticsearch,
-    mongodb_config=controller_config.mongodb
+    mongodb_config=controller_config.mongodb,
 )
 from salver.controller.utils.json_encoder import json_dumps, json_loads
 

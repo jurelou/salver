@@ -7,10 +7,10 @@ from typing import List, Optional
 from pydantic import Field, BaseModel, BaseConfig
 
 from salver.facts import all_facts
-from .facts import FactInResponse
-from salver.common.models.scan import Scan, ScanConfig, ScanState
+from salver.common.models.scan import Scan, ScanState, ScanConfig
 from salver.common.database.models.scan import ScanInDB
 
+from .facts import FactInResponse
 
 # class ScanInRequest(Scan):
 #     facts: List[BaseFact] = []

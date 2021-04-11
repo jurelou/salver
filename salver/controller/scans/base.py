@@ -6,8 +6,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from salver.controller import exceptions
-from salver.common.models import ScanConfig
-from salver.common.models import BaseFact
+from salver.common.models import BaseFact, ScanConfig
 from salver.controller.services import agents_tasks
 from salver.controller.services.agents import get_collectors_names
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from uuid import UUID
+from typing import List
 
 from celery import group
 from loguru import logger
@@ -11,7 +12,7 @@ from salver.controller.app import celery_app, db_manager
 from salver.controller.services import scans as scans_ctrl
 from salver.controller.services import agents as agents_ctrl
 from salver.controller.services import agents_tasks
-from typing import List
+
 
 @celery_app.task
 def ping():
@@ -31,12 +32,14 @@ def list_agents():
     ]
     return a
 
-#todel
+
+# todel
 @celery_app.task
 def get_case(case_id: UUID) -> models.CaseInResponse:
     case_db = db_manager.get_case(case_id)
     scans = db_manager.get_scans_for_case(case_id)
     return models.CaseInResponse(scans=scans, **case_db.dict())
+
 
 # todel
 @celery_app.task
@@ -102,6 +105,7 @@ def launch_scan(scan_id: UUID):
 
     # scan_ctrl.create(scan)
     # case_ctrl.add_scan(case_id, scan.external_id)
+
 
 # @celery_app.task
 # def list_scans() -> List[models.UUIDResponse]:

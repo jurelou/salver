@@ -7,10 +7,9 @@ from loguru import logger
 
 from salver.controller import models
 from salver.common.celery import sync_call, async_call
-from salver.common.models import BaseFact, ScanResult
+from salver.common.models import BaseFact, ScanState, ScanResult
 from salver.controller.app import celery_app, db_manager
 
-from salver.common.models import ScanState
 
 def ping():
     from salver.facts import Person
