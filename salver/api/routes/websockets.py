@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from app.config import settings
+from salver.config import api_config
 
 import socketio    
 

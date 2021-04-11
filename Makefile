@@ -3,6 +3,9 @@
 docker:
 	docker-compose up -d
 
+api:
+	uvicorn salver.api.main:app --reload
+
 controller:
 	 ENV_FOR_DYNACONF=dev celery  -A salver.controller.app worker --hostname=engine --logfile=/tmp/celery.log --loglevel=DEBUG -B
 

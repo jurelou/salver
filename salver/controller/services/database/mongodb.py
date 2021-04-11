@@ -64,3 +64,12 @@ class MongoDB(BaseDB):
             {"external_id": scan_id},
             {"$set": result.dict(exclude={"facts"})},
         )
+
+
+    def list_scans(self) -> List[models.UUIDResponse]:
+        ids = self._db.scans.find({}, {"external_id": True, "_id": False})
+        return [models.UUIDResponse(id=i["external_id"]) for i in ids]
+
+    def list_cases(self) -> List[models.UUIDResponse]:
+        ids = self._db.cases.find({}, {"external_id": True, "_id": False})
+        return [models.UUIDResponse(id=i["external_id"]) for i in ids]

@@ -191,6 +191,31 @@ except exceptions.CaseNotFound as err:
 
 
 tasks.reload_agents.delay().get()
+
+
+
+
+
+
+
+
+print("=====================================")
+print("=     list scans")
+print("=====================================")
+
+c = tasks.list_scans.delay()
+c = c.get()
+print("LIST SCANS", c)
+
+print("=====================================")
+print("=     list cases")
+print("=====================================")
+
+c = tasks.list_cases.delay()
+c = c.get()
+print("LIST cases", c)
+
+
 # case = Case(name="tata")
 
 # # db_manager.flush()

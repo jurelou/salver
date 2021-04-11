@@ -162,9 +162,9 @@ services:
 # BACKEND
 #######################
   backend:
-    build: ./web/backend
+    build: .
     volumes:
-      - ./web/backend:/opt/backend
+      - ./salver/api:/opt/api/salver/api
     ports:
       - 8000:8000
     networks:

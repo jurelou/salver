@@ -33,7 +33,7 @@
 agent qui écris dans logstash
 afficher plus d'erreurs dans le scan result (pas de callbacks, erreur docker, ...)
 
-optimiser les isinstance json serializer ...
+fuzzing test generateur random de scan, cases, ...
 
 
 https://github.com/saeeddhqan/Maryam

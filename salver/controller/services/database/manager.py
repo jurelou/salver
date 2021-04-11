@@ -106,6 +106,12 @@ class DatabaseManager:
         # scan.facts = facts
         return scan
 
+    def list_scans(self) -> List[models.UUIDResponse]:
+        return self.mongodb.list_scans()
+
+    def list_cases(self) -> List[models.UUIDResponse]:
+        return self.mongodb.list_cases()
+
     def get_case(self, case_id: uuid.UUID) -> models.CaseInDB:
         """Retrieve a case by it's ID.
 
@@ -123,8 +129,13 @@ class DatabaseManager:
         return self.neo4j.get_scans_for_case(case_id)
 
     def get_input_facts_for_scan(self, scan_id: uuid.UUID) -> List[BaseFact]:
-        facts_id = self.neo4j.get_input_facts_for_scan(scan_id)
-        return self.elasticsearch.get_facts(facts_id)
+        try:
+            facts_id = self.neo4j.get_input_facts_for_scan(scan_id)
+            res = self.elasticsearch.get_facts(facts_id)
+        except Exception as err:
+            print("get_input_facts_for_scan!!!!!!!!!!!!", err)
+        return res
+
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
         print(f"Add result to scan {scan_id}, {scan_result}")
