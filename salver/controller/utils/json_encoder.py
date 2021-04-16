@@ -15,22 +15,22 @@ encode_map.update(
             },
             "from_json": lambda obj: models.UUIDResponse.parse_raw(obj["res"]),
         },
-        models.CaseInRequest.__module__: {
-            "type": "__case_req__",
-            "to_json": lambda obj: {
-                "__salver_type__": "__case_req__",
-                "case": obj.json(),
-            },
-            "from_json": lambda obj: models.CaseInRequest.parse_raw(obj["case"]),
-        },
-        models.CaseInResponse.__module__: {
-            "type": "__case_res__",
-            "to_json": lambda obj: {
-                "__salver_type__": "__case_res__",
-                "case": obj.json(),
-            },
-            "from_json": lambda obj: models.CaseInResponse.parse_raw(obj["case"]),
-        },
+        # models.CaseInRequest.__module__: {
+        #     "type": "__case_req__",
+        #     "to_json": lambda obj: {
+        #         "__salver_type__": "__case_req__",
+        #         "case": obj.json(),
+        #     },
+        #     "from_json": lambda obj: models.CaseInRequest.parse_raw(obj["case"]),
+        # },
+        # models.CaseInResponse.__module__: {
+        #     "type": "__case_res__",
+        #     "to_json": lambda obj: {
+        #         "__salver_type__": "__case_res__",
+        #         "case": obj.json(),
+        #     },
+        #     "from_json": lambda obj: models.CaseInResponse.parse_raw(obj["case"]),
+        # },
         models.Agent.__module__: {
             "type": "__agent__",
             "to_json": lambda obj: {

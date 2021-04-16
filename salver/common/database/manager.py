@@ -50,7 +50,7 @@ class DatabaseManager:
 
         Cases are stored in mongodb and neo4j.
         Args:
-            case (CaseInRequest): a Case instance to store.
+            case (Case): a Case instance to store.
 
         Returns:
             uuid.UUID: The case identifier
@@ -99,7 +99,9 @@ class DatabaseManager:
         Raises:
             ScanNotFound: If the scan does not exists.
         """
+        print("MONGODB", scan_id, type(scan_id))
         scan = self.mongodb.get_scan(scan_id)
+        print("-azeaze", scan)
         # facts_ids = self.neo4j.get_scan_input_facts(scan_id)
         # facts = list(self.elasticsearch.get_facts(facts_ids))
 

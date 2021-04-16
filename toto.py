@@ -17,7 +17,7 @@ import uuid
 import httpx
 
 from salver.common.json_encoder import json_loads, json_dumps
-from salver.common.models import ScanConfig
+from salver.common.models import ScanConfig, Case
 from salver.controller import models
 from salver.api import models as api_models
 from salver.common.database import exceptions
@@ -54,7 +54,7 @@ print("=====================================")
 print("=     create case 1")
 print("=====================================")
 
-case =  models.CaseInRequest(
+case =  Case(
         name="my-case1" + uuid.uuid4().hex
         )
 a = httpx.post(API_ENDPOINT + f"/cases", data=case.json())
@@ -76,7 +76,7 @@ print("=====================================")
 print("=     create case 2")
 print("=====================================")
 
-case2 =  models.CaseInRequest(
+case2 =  Case(
         name="my-case2" + uuid.uuid4().hex
         )
 
@@ -175,7 +175,7 @@ print("=====================================")
 from salver.controller.exceptions import InvalidScanConfiguration
 
 try:
-    res = tasks.launch_scan.delay(scan_1)
+    res = tasks.launch_scan.delay(uuid.UUID(scan_1))
     res = res.get()
     print("LAUNCH", res)
 except exceptions.ScanNotFound as err:
