@@ -3,10 +3,7 @@ import argparse
 import httpx
 
 from salver.facts import all_facts
-from salver.controller.services.database.elasticsearch import (
-    fact_to_index,
-    index_to_fact,
-)
+from salver.common.database.elasticsearch import fact_to_index, index_to_fact
 
 kibana_url = "http://localhost:5601"
 kibana_index_patterns = ["facts_*"]

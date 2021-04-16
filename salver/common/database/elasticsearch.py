@@ -31,6 +31,8 @@ class ElasticsearchDB(BaseDB):
         pass
 
     def add_facts(self, facts: List[models.BaseFact]):
+        print("ADD FACTS", facts)
+
         def gen_actions(facts):
             for fact in facts:
                 yield {

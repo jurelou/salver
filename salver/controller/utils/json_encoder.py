@@ -15,14 +15,6 @@ encode_map.update(
             },
             "from_json": lambda obj: models.UUIDResponse.parse_raw(obj["res"]),
         },
-        models.ScanInRequest.__module__: {
-            "type": "__scan_req__",
-            "to_json": lambda obj: {
-                "__salver_type__": "__scan_req__",
-                "scan": obj.json(),
-            },
-            "from_json": lambda obj: models.ScanInRequest.parse_raw(obj["scan"]),
-        },
         models.CaseInRequest.__module__: {
             "type": "__case_req__",
             "to_json": lambda obj: {

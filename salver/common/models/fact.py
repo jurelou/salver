@@ -17,21 +17,16 @@ class BaseFact(BaseModel):
 
     @root_validator
     def set_hash(cls, values):
+        if not "required" in cls.schema():
+            return values
         values.pop("hash__", None)
         m = hashlib.sha256()
-        print("!!!!!!!", cls, type(cls))
-        if not "required" in cls.schema():
-            print(f"Strange fact ..... {cls.schema()}, {cls}, {type(cls)}")
         required_fields = cls.schema()["required"]
-
         for k in sorted(values):
             if k in required_fields:
                 m.update(str(k).encode() + str(values[k]).encode())
         values["hash__"] = m.hexdigest()
         return values
-
-    class Config(BaseConfig):
-        extra = "allow"
 
     @staticmethod
     def make_mapping(m):
@@ -42,6 +37,9 @@ class BaseFact(BaseModel):
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping({"mappings": {"properties": {}}})
+
+    class Config(BaseConfig):
+        extra = "allow"
 
     @staticmethod
     def from_obj(fact_type: str, data):

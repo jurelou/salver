@@ -78,15 +78,15 @@ class DatabaseManager:
         if not self.mongodb.case_exists(scan.case_id):
             raise exceptions.CaseNotFound(scan.case_id)
 
-        scan_db = db_models.ScanInDB(**scan.dict(exclude={"facts"}))
+        scan_db = db_models.ScanInDB(**scan.dict())
         scan_db.state = common_models.ScanState.CREATED
-
-        self.elasticsearch.add_facts(scan.facts)
         self.neo4j.add_scan(scan_db)
-        self.neo4j.add_facts(scan_db.external_id, scan.facts, relationship="INPUTS")
-
         self.mongodb.add_scan(scan_db)
         return scan_db.external_id
+
+    def add_scan_input_facts(self, scan_id: uuid.UUID, facts: List[BaseFact]):
+        self.elasticsearch.add_facts(facts)
+        self.neo4j.add_facts(scan_id, facts, relationship="INPUTS")
 
     def get_scan(self, scan_id: uuid.UUID) -> db_models.ScanInDB:
         """Retrieve a scan by it's ID.

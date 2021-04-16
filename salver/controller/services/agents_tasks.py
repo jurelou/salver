@@ -17,10 +17,7 @@ def ping():
     task = async_call(
         celery_app,
         "ping",
-        args=[
-            Person(firstname="f", lastname="l"),
-            models.CaseInRequest(name="aaaaaaping" + uuid.uuid4().hex),
-        ],
+        args=[Person(firstname="f", lastname="l")],
         queue="zen",
     )
     print("-----", task)
