@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
-
 from salver.facts import Profile, Username
 from salver.common.utils import get_actual_dir
 from salver.agent.collectors.docker import DockerCollector

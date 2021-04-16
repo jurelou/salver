@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from uuid import uuid4
 from typing import List
 
 from loguru import logger
@@ -18,9 +17,7 @@ print("=>SCANS", all_scans)
 def schedule():
     # from salver.engine.controllers.periodic_tasks import add_periodic_task
     add_periodic_task(
-        app=celery_app,
-        interval=1,
-        task_path="salver.controller.tasks.toto",
+        app=celery_app, interval=1, task_path="salver.controller.tasks.toto",
     )
 
 

@@ -4,8 +4,8 @@ from salver.controller.app import celery_app, db_manager
 from salver.controller import tasks
 
 
-#from salver.common.models.case import Case
-#from salver.common.models.scan import Scan
+# from salver.common.models.case import Case
+# from salver.common.models.scan import Scan
 
 from salver.facts import Company
 from salver.facts import Domain
@@ -37,7 +37,6 @@ assert a.status_code == 200
 assert len(res["agents"]) == 1
 
 
-
 a = tasks.list_agents.delay()
 res = a.get()
 print("====res", res, type(res))
@@ -46,7 +45,7 @@ print("=====================================")
 print("=     PING")
 print("=====================================")
 
-a = tasks.ping.delay() #send_task()
+a = tasks.ping.delay()  # send_task()
 res = a.get_leaf()
 print("====PING RESULT", res, type(res))
 
@@ -54,9 +53,7 @@ print("=====================================")
 print("=     create case 1")
 print("=====================================")
 
-case =  Case(
-        name="my-case1" + uuid.uuid4().hex
-        )
+case = Case(name="my-case1" + uuid.uuid4().hex)
 a = httpx.post(API_ENDPOINT + f"/cases", data=case.json())
 print("!!!!", a.json(), a)
 case1_id = a.json()
@@ -76,9 +73,7 @@ print("=====================================")
 print("=     create case 2")
 print("=====================================")
 
-case2 =  Case(
-        name="my-case2" + uuid.uuid4().hex
-        )
+case2 = Case(name="my-case2" + uuid.uuid4().hex)
 
 a = httpx.post(API_ENDPOINT + f"/cases", data=case2.json())
 assert a.status_code == 200
@@ -112,20 +107,15 @@ print("=     create scan 1")
 print("=====================================")
 
 scan = {
-  "case_id": case1_id["id"],
-  "facts": [
-    {
-      "fact_type": "Person",
-      "fact": {
-        "firstname": "aaaaaaJoazehn",
-        "lastname": "bbbbbbDoe",
-      }
-    }
-  ],
-  "scan_type": "single_collector",
-  "config": {
-    "collector_name": "dummy-docker-collector"
-  }
+    "case_id": case1_id["id"],
+    "facts": [
+        {
+            "fact_type": "Person",
+            "fact": {"firstname": "aaaaaaJoazehn", "lastname": "bbbbbbDoe"},
+        },
+    ],
+    "scan_type": "single_collector",
+    "config": {"collector_name": "dummy-docker-collector"},
 }
 
 a = httpx.post(API_ENDPOINT + f"/scans", json=scan)
@@ -184,7 +174,6 @@ except InvalidScanConfiguration as err:
     print("errrrrINVALID ONCIF", err)
 
 
-
 print("=====================================")
 print("=     launch scan 2")
 print("=====================================")
@@ -201,7 +190,6 @@ print("=====================================")
 #     print("errrrrINVALID ONCIF", err)
 
 
-
 print("=====================================")
 print("=     get scan 1")
 print("=====================================")
@@ -211,7 +199,7 @@ try:
     res = tasks.get_scan.delay(scan1.id)
     s = res.get()
     print(f"GET SCAN {type(s)} {s}")
-    
+
 except exceptions.ScanNotFound as err:
     print("NF", err)
 """
@@ -221,7 +209,6 @@ assert a.status_code == 200
 
 res = a.json()
 assert res["case_id"] == case1_id["id"]
-
 
 
 print("=====================================")
@@ -245,10 +232,6 @@ print(res)
 
 
 tasks.reload_agents.delay().get()
-
-
-
-
 
 
 # case = Case(name="tata")

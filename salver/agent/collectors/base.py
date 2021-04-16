@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 import re
-import json
 
 # from opulence.agent.collectors.dependencies import Dependency
 from timeit import default_timer as timer
-from typing import Dict, List, Union, Callable, Iterator, Optional
+from typing import Dict, List, Union, Callable, Iterator
 from functools import partial
 
 from loguru import logger
-from pydantic import BaseModel, ValidationError, root_validator
+from pydantic import ValidationError
 
 from salver.common import models
 from salver.common.utils import make_list
-from salver.common.limiter import Limiter, RequestRate
+from salver.common.limiter import Limiter
 from salver.agent.exceptions import CollectorRuntimeError, InvalidCollectorDefinition
 
 # class Schedule(BaseModel):
@@ -66,15 +65,15 @@ class BaseCollector:
                     yield out
                 else:
                     logger.error(
-                        f"Found unknown output from collector {self.config.name}: {out}",
+                        f"Found unknown output from collector \
+                        {self.config.name}: {out}",
                     )
         except Exception as err:
             logger.error(f"Error while executing {fn} from {self.config.name}: {err}")
             raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
-        self,
-        input_fact: Union[List[models.BaseFact], models.BaseFact],
+        self, input_fact: Union[List[models.BaseFact], models.BaseFact],
     ) -> Iterator[Callable]:
         callbacks = []
         for cb_type, cb in self._callbacks.items():
@@ -95,7 +94,8 @@ class BaseCollector:
         callbacks = self._prepare_callbacks(facts)
 
         logger.info(
-            f"Execute collector {self.config.name} with {len(facts)} facts and {len(callbacks)} callbacks",
+            f"Execute collector {self.config.name} with \
+            {len(facts)} facts and {len(callbacks)} callbacks",
         )
 
         output_facts = self._execute_callbacks(callbacks)

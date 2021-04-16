@@ -3,7 +3,6 @@ from enum import IntEnum
 from time import time
 from queue import Queue
 from typing import Tuple
-from dataclasses import dataclass
 
 from pydantic import BaseModel
 
@@ -62,8 +61,7 @@ class Limiter:
     """Basic rate-limiter class that makes use of built-in python Queue."""
 
     def __init__(
-        self,
-        *rates: RequestRate,
+        self, *rates: RequestRate,
     ):
         self._validate_rate_list(rates)
         self._rates = rates

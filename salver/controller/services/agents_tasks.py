@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import uuid
 from typing import List
 
 import celery
 from loguru import logger
 
-from salver.controller import models
-from salver.common.celery import sync_call, async_call
+from salver.common.celery import async_call
 from salver.common.models import BaseFact, ScanState, ScanResult
 from salver.controller.app import celery_app, db_manager
 
@@ -15,10 +13,7 @@ def ping():
     from salver.facts import Person
 
     task = async_call(
-        celery_app,
-        "ping",
-        args=[Person(firstname="f", lastname="l")],
-        queue="zen",
+        celery_app, "ping", args=[Person(firstname="f", lastname="l")], queue="zen",
     )
     print("-----", task)
     return task
@@ -46,7 +41,8 @@ class CallbackTask(celery.Task):
 @celery_app.task(base=CallbackTask)
 def _scan_success(result, scan_id, collector_name):
     logger.info(
-        f"Task success: got {len(result['facts'])} facts in {result['duration']} from {collector_name}",
+        f"Task success: got {len(result['facts'])} facts in \
+        {result['duration']} from {collector_name}",
     )
     try:
         scan_result = ScanResult(**result)
@@ -62,7 +58,8 @@ def _scan_error(task_id, scan_id, collector_name):
     print("#############ERRRRRRRRRRRRRRRRR")
     db_manager.update_scan_state(scan_id, ScanState.ERRORED)
     logger.critical(
-        f"Unexpected error for task {task_id} from scan {scan_id} ({collector_name}) : {result.traceback} {result.state}"
+        f"Unexpected error for task {task_id} from scan {scan_id}  \
+        ({collector_name}) : {result.traceback} {result.state}",
     )
 
 

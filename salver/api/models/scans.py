@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-import uuid
-from enum import Enum
-from time import time
-from typing import List, Optional
+from typing import List
 
-from pydantic import Field, BaseModel, BaseConfig
+from pydantic import BaseModel
 
-from salver.facts import Person, all_facts
-from salver.common.models import Scan, BaseFact, ScanState, ScanConfig
+from salver.common.models import Scan, BaseFact
 from salver.common.database.models.scan import ScanInDB
 
-from .facts import FactInRequest, FactInResponse
+from .facts import FactInResponse
 
 # from salver.controller.models import ScanInRequest as ControlerScanInRequest
-
 
 
 class GenericFact(BaseModel):
@@ -32,11 +27,11 @@ class ScanInRequest(Scan):
                     {
                         "fact_type": "Person",
                         "fact": {"firstname": "John", "lastname": "Doe", "age": 42},
-                    }
+                    },
                 ],
                 "scan_type": "single_collector",
                 "config": {"collector_name": "dummy-docker-collector"},
-            }
+            },
         }
 
 

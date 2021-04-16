@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 
 from salver.facts import IPv4, Email, Domain, Company
 from salver.common.utils import get_actual_dir
@@ -30,13 +29,16 @@ class TheHarester(DockerCollector):
                 "-d",
                 target,
                 "--source",
-                "baidu,bing,bufferoverun,certspotter,crtsh,dnsdumpster,duckduckgo,exalead,google,linkedin,linkedin_links,netcraft,omnisint,otx,qwant,rapiddns,threatminer,twitter,urlscan,yahoo",
+                "baidu,bing,bufferoverun,certspotter,crtsh,dnsdumpster,duckduckgo,\
+                exalead,google,linkedin,linkedin_links,netcraft,\
+                omnisint,otx,qwant,rapiddns,threatminer,twitter,urlscan,yahoo",
             ],
         )
 
         for item, _ in self.findall_regex(
             data,
-            r"\[\*\] IPs found: \d+\n-------------------\n((.|\n)*)\n\[\*\] Emails found",
+            r"\[\*\] IPs found: \d+\n-------------------\
+            \n((.|\n)*)\n\[\*\] Emails found",
         ):
             for ip in item.split("\n"):
                 if ip:
@@ -51,8 +53,7 @@ class TheHarester(DockerCollector):
                     yield Email(address=email)
 
         for item, _ in self.findall_regex(
-            data,
-            r"\[\*\] Hosts found: \d+\n---------------------\n((.|\n)*)",
+            data, r"\[\*\] Hosts found: \d+\n---------------------\n((.|\n)*)",
         ):
             for host in item.split("\n"):
                 if not host:

@@ -18,13 +18,18 @@ class PhoneInfoga(DockerCollector):
 
         for item in self.findall_regex(
             data,
-            r"\[i\] Running local scan...\n\[\+\] Local format: (.*)\n\[\+\] E164 format:.*\n\[\+\] International format: (.*)\n\[\+\] Country found:.*\((.*)\)\n\[\+\] Carrier: (.*)",
+            r"\[i\] Running local scan...\n\[\+\] Local format: (.*)\n\[\+\] \
+            E164 format:.*\n\[\+\] International format: (.*)\n\[\+\] \
+            Country found:.*\((.*)\)\n\[\+\] Carrier: (.*)",
         ):
             local_format, international_format, country_code, carrier = item
 
         for item in self.findall_regex(
             data,
-            r"\[i\] Running Numverify.com scan...\n\[\+\] Valid: (.*)\n\[\+\] Number:.*\n\[\+\] Local format: (.*)\n\[\+\] International format: (.*)\n\[\+\] Country code: (.*) \(.*\n\[\+\] Country: (.*)\n\[\+\] Location: (.*)\n\[\+\] Carrier: (.*)\n\[\+\] Line type: (.*)\n",
+            r"\[i\] Running Numverify.com scan...\n\[\+\] Valid: \
+            (.*)\n\[\+\] Number:.*\n\[\+\] Local format: (.*)\n\[\+\] International format: \
+            (.*)\n\[\+\] Country code: (.*) \(.*\n\[\+\] Country: (.*)\n\[\+\] Location: \
+            (.*)\n\[\+\] Carrier: (.*)\n\[\+\] Line type: (.*)\n",
         ):
             (
                 valid,

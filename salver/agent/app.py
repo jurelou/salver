@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from kombu import Queue
 from loguru import logger
-from celery.signals import worker_init
 from celery.schedules import crontab
 
 from salver.config import agent_config

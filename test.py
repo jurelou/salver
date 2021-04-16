@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import socketio
 
 sio = socketio.Client()
@@ -19,5 +20,5 @@ def disconnect():
     print("disconnected from server")
 
 
-sio.connect("http://127.0.0.1:8000/websock", socketio_path='/websock/socket.io')
+sio.connect("http://127.0.0.1:8000/websock", socketio_path="/websock/socket.io")
 sio.wait()

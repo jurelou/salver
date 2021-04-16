@@ -17,7 +17,7 @@ class BaseFact(BaseModel):
 
     @root_validator
     def set_hash(cls, values):
-        if not "required" in cls.schema():
+        if "required" not in cls.schema():
             return values
         values.pop("hash__", None)
         m = hashlib.sha256()

@@ -40,8 +40,7 @@ setup(
             "pydocstyle==6.0.0",
             "pylint==2.7.4",
             "isort==5.8.0",
-            "pygount==1.2.4"
-
+            "pygount==1.2.4",
         ],
         "api": [
             "dynaconf==3.1.4",
@@ -49,8 +48,8 @@ setup(
             "uvicorn[standard]==0.13.4",
             "celery==5.0.5",
             "redis==3.5.3",
-            "python-socketio==4.6.1"
-        ]
+            "python-socketio==4.6.1",
+        ],
     },
     python_requires=">=3.8.*, <4",
 )

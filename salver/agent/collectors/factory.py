@@ -13,16 +13,14 @@ from salver.agent.collectors.base import BaseCollector
 class CollectorFactory(Factory):
     def build(self):
         collector_modules = self.load_classes_from_module(
-            root_path=agent_config.collectors_path,
-            parent_class=BaseCollector,
+            root_path=agent_config.collectors_path, parent_class=BaseCollector,
         )
         enabled_collectors = set(agent_config.enabled_collectors or [])
         collector_instances = {}
         for collector in collector_modules:
-            if not hasattr(collector, "config") or not "name" in collector.config:
+            if not hasattr(collector, "config") or "name" not in collector.config:
                 raise InvalidCollectorDefinition(
-                    collector_name,
-                    "Missing `name` property",
+                    collector, "Missing `name` property",
                 )
 
             collector_name = collector.config["name"]
@@ -38,7 +36,8 @@ class CollectorFactory(Factory):
                 raise InvalidCollectorDefinition(collector, err)
 
             logger.debug(
-                f"Loaded collector {collector_name} with config: {collector_instance.config}",
+                f"Loaded collector {collector_name} \
+                with config: {collector_instance.config}",
             )
             collector_instances[collector_name] = {
                 "instance": collector_instance,

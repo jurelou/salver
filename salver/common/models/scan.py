@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import uuid
 from enum import Enum
-from time import time
-from typing import List, Optional
 
-from pydantic import Field, BaseModel, BaseConfig
+from pydantic import BaseModel, BaseConfig
 
 
 class ScanState(str, Enum):

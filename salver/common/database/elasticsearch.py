@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
-import httpx
 from loguru import logger
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
@@ -12,8 +11,20 @@ from salver.common import models
 from .base import BaseDB
 
 __facts_index_mapping = [(fact, f"facts_{fact.lower()}") for fact in all_facts.keys()]
-fact_to_index = lambda fact: [i for f, i in __facts_index_mapping if f == fact][0]
-index_to_fact = lambda index: [f for f, i in __facts_index_mapping if i == index][0]
+
+
+def fact_to_index(input_fact):
+    for fact, index in __facts_index_mapping:
+        if fact == input_fact:
+            return index
+    return None
+
+
+def index_to_fact(input_index):
+    for fact, index in __facts_index_mapping:
+        if index == input_index:
+            return fact
+    return None
 
 
 class ElasticsearchDB(BaseDB):
@@ -53,8 +64,7 @@ class ElasticsearchDB(BaseDB):
             for doc in res["docs"]:
                 facts.append(
                     models.BaseFact.from_obj(
-                        fact_type=index_to_fact(doc["_index"]),
-                        data=doc["_source"],
-                    )
+                        fact_type=index_to_fact(doc["_index"]), data=doc["_source"],
+                    ),
                 )
         return facts

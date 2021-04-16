@@ -41,4 +41,5 @@ class CollectorRuntimeError(CollectorException):
 
 class MissingCollectorDefinition(CollectorException):
     def __str__(self):
-        return f"Can't find `{self.collector_name}`, which is defined in the configuration file. Check your settings.yml file `collectors` section."
+        return f"Can't find `{self.collector_name}`, which is defined \
+        in the configuration file. Check your settings.yml file `collectors` section."

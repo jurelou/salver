@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .uuid import UUIDInResponse, UUIDsInResponse
 from .cases import CaseInRequest, CaseInResponse
 from .facts import FactInResponse, FactsInResponse

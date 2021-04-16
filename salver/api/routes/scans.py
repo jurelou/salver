@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from uuid import UUID
 
-from fastapi import Depends, Request, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException
 
 from salver.api import models
 from salver.facts import all_facts
-from salver.common.models import Scan, BaseFact
+from salver.common.models import Scan
 from salver.common.database import DatabaseManager
 from salver.common.database import exceptions as db_exceptions
 from salver.api.services.database import get_database
@@ -37,7 +37,7 @@ async def get_scan(scan_id: UUID, db: DatabaseManager = Depends(get_database)):
 
 @router.post("/", response_model=models.UUIDInResponse)
 async def create_scan(
-    scan_request: models.ScanInRequest, db: DatabaseManager = Depends(get_database)
+    scan_request: models.ScanInRequest, db: DatabaseManager = Depends(get_database),
 ):
     scan = Scan(**scan_request.dict(exclude={"facts"}))
     facts = [all_facts[f.fact_type](**f.fact.dict()) for f in scan_request.facts]

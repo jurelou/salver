@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
-from pydantic import Field, BaseModel, BaseConfig
+from pydantic import BaseModel
 
 from salver.common.models import Collector
 

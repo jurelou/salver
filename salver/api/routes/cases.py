@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from uuid import UUID
 
-from fastapi import Depends, Request, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException
 
 from salver.api import models
 from salver.common.database import DatabaseManager
 from salver.common.database import exceptions as db_exceptions
 from salver.api.services.database import get_database
-from salver.api.services.remote_tasks import sync_call
-
-# from salver.api.models.cases import CaseInResponse, CasesInResponse
-
 
 router = APIRouter()
 
@@ -33,7 +29,7 @@ async def get_case(case_id: UUID, db: DatabaseManager = Depends(get_database)):
 
 @router.post("/", response_model=models.UUIDInResponse)
 async def create_case(
-    case: models.CaseInRequest, db: DatabaseManager = Depends(get_database)
+    case: models.CaseInRequest, db: DatabaseManager = Depends(get_database),
 ):
     try:
         case_id = db.add_case(case)

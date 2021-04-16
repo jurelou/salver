@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from typing import List, Union, Optional
 
 import docker as docker_cli
@@ -36,11 +35,11 @@ class DockerCollector(BaseCollector):
         self.__client = docker_cli.from_env()
         if self.config.docker.build_context:
             logger.info(
-                f"Building docker image {self.config.name} from {self.config.docker.build_context}"
+                f"Building docker image {self.config.name} \
+                from {self.config.docker.build_context}"
             )
             self.__build_image(
-                self.config.docker.build_context,
-                tag=f"opu_{self.config.name}",
+                self.config.docker.build_context, tag=f"opu_{self.config.name}",
             )
             self.__image = f"opu_{self.config.name}"
         else:
@@ -56,9 +55,5 @@ class DockerCollector(BaseCollector):
 
     def run_container(self, command: Union[str, List[str]], **kwargs):
         return self.__client.containers.run(
-            self.__image,
-            command,
-            detach=False,
-            remove=True,
-            **kwargs,
+            self.__image, command, detach=False, remove=True, **kwargs,
         ).decode("utf-8")

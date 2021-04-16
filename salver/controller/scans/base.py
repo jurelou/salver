@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import uuid
 from abc import ABC, abstractmethod, abstractproperty
-from typing import List, Optional
-
-from pydantic import BaseModel
+from typing import List
 
 from salver.controller import exceptions
 from salver.common.models import BaseFact, ScanConfig
@@ -28,10 +25,7 @@ class BaseScan(ABC):
         """Starts the scan"""
 
     def launch_collector(
-        self,
-        collector_name: str,
-        facts: List[BaseFact],
-        cb=None,
+        self, collector_name: str, facts: List[BaseFact], cb=None,
     ):
 
         print("===========", get_collectors_names())
@@ -39,8 +33,5 @@ class BaseScan(ABC):
             raise exceptions.CollectorNotFound(collector_name)
 
         agents_tasks.scan(
-            self.scan_id,
-            self.config.collector_name,
-            facts,
-            cb=cb,
+            self.scan_id, self.config.collector_name, facts, cb=cb,
         )

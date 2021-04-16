@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import multiprocessing
-from typing import List
 
 from loguru import logger
 
-from salver.config import controller_config
 from salver.common.models import Collector
 from salver.controller.app import celery_app
 
@@ -13,8 +11,13 @@ available_agents = manager.dict()
 
 collectors_names = manager.list()
 
-get_agents = lambda: available_agents
-get_collectors_names = lambda: collectors_names
+
+def get_agents():
+    return available_agents
+
+
+def get_collectors_names():
+    return collectors_names
 
 
 def refresh_agents():

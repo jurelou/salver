@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from fastapi import Request, APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from salver.api.models.agents import AgentInResponse, AgentsInResponse
 from salver.api.services.remote_tasks import sync_call, async_call

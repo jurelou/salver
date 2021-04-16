@@ -22,5 +22,3 @@ queue:
 
 dead_letter_queue:
   enable: false
-
- 

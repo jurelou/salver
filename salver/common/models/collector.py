@@ -5,8 +5,6 @@ from pydantic import BaseModel
 
 from salver.common.limiter import RequestRate
 
-from .fact import BaseFact
-
 
 class CollectorBaseConfig(BaseModel):
     name: str

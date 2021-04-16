@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 from typing import List
 
 from pydantic import BaseModel, BaseConfig
-
-from salver.controller.models import Agent
 
 
 class GenericFact(BaseModel):

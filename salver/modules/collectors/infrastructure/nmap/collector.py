@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import re
 
-from salver.facts import IPv4, Domain, Person, Socket
+from salver.facts import IPv4, Domain, Socket
 from salver.common.utils import get_actual_dir
 from salver.agent.collectors.docker import DockerCollector
 
@@ -23,7 +22,8 @@ class Nmap(DockerCollector):
         yield
         for proto, port, service in self.findall_regex(
             data,
-            r'port protocol="(.*)" portid="(.*)"><state state=.* reason=.*service name="(.*)" method=',
+            r'port protocol="(.*)" portid="(.*)"><state \
+            state=.* reason=.*service name="(.*)" method=',
         ):
             yield Socket(proto=proto, port=port, service_name=service)
 

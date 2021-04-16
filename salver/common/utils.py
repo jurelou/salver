@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 import inspect
-import pkgutil
-from importlib import import_module
 
 
 def get_actual_dir():
     frame = inspect.stack()[1]
     module = inspect.getmodule(frame[0])
-    filename = module.__file__
     return os.path.dirname(os.path.abspath(module.__file__))
 
 

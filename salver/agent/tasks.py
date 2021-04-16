@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
-from celery import group, current_task
+from celery import current_task
 from loguru import logger
 
 from salver.agent import exceptions

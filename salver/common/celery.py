@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys
 
 import celery
-from celery.signals import setup_logging, after_setup_logger
+from celery.signals import setup_logging
 from kombu.serialization import register
 
 from salver.common import json_encoder as default_encoder
@@ -35,16 +34,6 @@ def create_app(json_encoder=None, json_decoder=None):
 @setup_logging.connect
 def on_celery_setup_logging(**kwargs):  # pragma: no cover
     pass
-
-
-# @after_setup_logger.connect
-# def setup_loggers(logger, *args, **kwargs):
-#     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-#     # FileHandler
-#     fh = logging.FileHandler('logs.log')
-#     fh.setFormatter(formatter)
-#     logger.addHandler(fh)
 
 
 def async_call(app, task_path, **kwargs):

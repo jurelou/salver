@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 
 from salver.facts import Email, Domain
 from salver.common.utils import get_actual_dir

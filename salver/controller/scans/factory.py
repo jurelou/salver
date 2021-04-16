@@ -3,7 +3,6 @@ from loguru import logger
 
 from salver.config import controller_config
 from salver.common.factory import Factory
-from salver.common.models.fact import BaseFact
 from salver.controller.scans.base import BaseScan
 
 
@@ -12,7 +11,7 @@ class ScanFactory(Factory):
         scans = {
             mod.name: mod
             for mod in self.load_classes_from_module(
-                controller_config.salver.scans_path, BaseScan
+                controller_config.salver.scans_path, BaseScan,
             )
         }
         self.items = scans

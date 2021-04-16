@@ -16,8 +16,7 @@ class Neo4jDB(BaseDB):
     def __init__(self, config):
         print(f"Build neo4j with {config}")
         self._client = GraphDatabase.driver(
-            config.endpoint,
-            auth=(config.username, config.password),
+            config.endpoint, auth=(config.username, config.password),
         )
 
     def flush(self):
@@ -29,10 +28,12 @@ class Neo4jDB(BaseDB):
         logger.info("Create neo4j constraints")
         with self._client.session() as session:
             session.run(
-                "CREATE CONSTRAINT case_unique_id IF NOT EXISTS ON (c:Case) ASSERT c.external_id IS UNIQUE",
+                "CREATE CONSTRAINT case_unique_id \
+                IF NOT EXISTS ON (c:Case) ASSERT c.external_id IS UNIQUE",
             )
             session.run(
-                "CREATE CONSTRAINT scan_unique_id IF NOT EXISTS ON (s:Scan) ASSERT s.external_id IS UNIQUE",
+                "CREATE CONSTRAINT scan_unique_id \
+                IF NOT EXISTS ON (s:Scan) ASSERT s.external_id IS UNIQUE",
             )
 
     def add_case(self, case: models.CaseInDB):
@@ -43,10 +44,7 @@ class Neo4jDB(BaseDB):
             )
 
     def add_facts(
-        self,
-        scan_id,
-        facts: List[BaseFact],
-        relationship: str = "GIVES",
+        self, scan_id, facts: List[BaseFact], relationship: str = "GIVES",
     ):
         formated_facts = [
             {"external_id": fact.hash__, "type": fact.schema()["title"]}
@@ -60,35 +58,35 @@ class Neo4jDB(BaseDB):
                 "MERGE (fact:Fact {external_id: row.external_id}) "
                 "ON CREATE SET fact.type = row.type "
                 "WITH fact, scan "
-                "CALL apoc.create.relationship(scan, $relationship, {timestamp: $timestamp}, fact) "
+                "CALL apoc.create.relationship(scan, $reltype, {timestamp: $ts}, fact) "
                 "YIELD rel "
                 "RETURN rel",
                 scan_id=scan_id.hex,
                 facts=formated_facts,
-                timestamp=time.time(),
-                relationship=relationship,
+                ts=time.time(),
+                reltype=relationship,
             )
 
     def add_scan(self, scan: models.ScanInDB):
         with self._client.session() as session:
             session.run(
                 "MATCH (case:Case) "
-                "WHERE case.external_id = $case_id "
-                "MERGE (case)-[r:CONTAINS {timestamp: $timestamp}]->(scan:Scan {external_id: $scan_id})",
-                timestamp=time.time(),
-                case_id=scan.case_id.hex,
-                scan_id=scan.external_id.hex,
+                "WHERE case.external_id = $cid "
+                "MERGE (case)-[r:CONTAINS {timestamp: $ts}]->(scan:Scan {external_id: $sid})",
+                ts=time.time(),
+                cid=scan.case_id.hex,
+                sid=scan.external_id.hex,
             )
 
     def get_input_facts_for_scan(
-        self, scan_id: uuid.UUID
+        self, scan_id: uuid.UUID,
     ) -> Dict[str, List[uuid.UUID]]:
         facts = {}
         try:
             with self._client.session() as session:
                 result = session.run(
-                    "MATCH (scan:Scan {external_id: $external_id})-[:INPUTS]->(fact:Fact) RETURN DISTINCT fact",
-                    external_id=scan_id.hex,
+                    "MATCH (scan:Scan {external_id: $eid})-[:INPUTS]->(fact:Fact) RETURN DISTINCT fact",
+                    eid=scan_id.hex,
                 )
                 for record in result:
                     fact = record.get("fact")
@@ -105,39 +103,6 @@ class Neo4jDB(BaseDB):
             print("get_input_facts_for_scanNEO4JJJJJ", err)
         return facts
 
-    """
-    def get_scan_input_facts(self, scan_id: uuid.UUID):  # -> Dict[str, List[uuid.UUID]]
-        facts = {}
-        with self._client.session() as session:
-            result = session.run(
-                "MATCH (scan: Scan {external_id: $external_id})-[r: INPUTS]->(fact:Fact) "
-                "RETURN DISTINCT fact",
-                external_id=scan_id.hex,
-            )
-            for i, record in enumerate(result):
-                for node in record:
-                    fact_type = node.get("type")
-                    fact_id = node.get("external_id")
-                    if fact_type in facts:
-                        facts[fact_type].append(fact_id)
-                    else:
-                        facts[fact_type] = [fact_id]
-        return facts
-    """
-
-    def get_scans_for_case(self, case_id: uuid.UUID) -> List[uuid.UUID]:
-        scans = []
-        with self._client.session() as session:
-            result = session.run(
-                "MATCH (Case {external_id: $case_id})--(scan:Scan) RETURN scan",
-                case_id=case_id.hex,
-            )
-            for record in result:
-                scan = record.get("scan")
-                if scan:
-                    scans.append(scan.get("external_id"))
-        return scans
-
     def get_scans_for_case(self, case_id: uuid.UUID) -> List[uuid.UUID]:
         scans = []
         with self._client.session() as session:
@@ -152,10 +117,7 @@ class Neo4jDB(BaseDB):
         return scans
 
     def add_scan_results(
-        self,
-        scan_id: uuid.UUID,
-        result: ScanResult,
-        relationship="OUTPUTS",
+        self, scan_id: uuid.UUID, result: ScanResult, relationship="OUTPUTS",
     ):
         with self._client.session() as session:
             session.run(
