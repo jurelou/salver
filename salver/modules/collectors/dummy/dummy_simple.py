@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from salver.facts import Email, Username
-from salver.common.utils import get_actual_dir
-from salver.common.limiter import Limiter, Duration, RequestRate
+from salver.common.limiter import Duration, RequestRate
 from salver.agent.collectors.base import BaseCollector
 
 

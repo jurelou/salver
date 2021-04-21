@@ -12,7 +12,6 @@ class SingleCollectorConfig(ScanConfig):
 
 class SingleCollector(BaseScan):
     name = "single_collector"
-    config: SingleCollectorConfig
 
     def configure(self, config: ScanConfig):
         self.config = SingleCollectorConfig(**config.dict())
@@ -22,6 +21,8 @@ class SingleCollector(BaseScan):
 
     def scan(self, facts: List[BaseFact]):
         a = self.launch_collector(
-            self.config.collector_name, facts, cb=self.scan_success_lol,
+            self.config.collector_name,
+            facts,
+            cb=self.scan_success_lol,
         )
         return a

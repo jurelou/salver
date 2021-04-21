@@ -13,7 +13,10 @@ def ping():
     from salver.facts import Person
 
     task = async_call(
-        celery_app, "ping", args=[Person(firstname="f", lastname="l")], queue="zen",
+        celery_app,
+        "ping",
+        args=[Person(firstname="f", lastname="l")],
+        queue="zen",
     )
     print("-----", task)
     return task

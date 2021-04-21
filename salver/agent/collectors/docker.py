@@ -13,6 +13,7 @@ class DockerConfig(BaseModel):
     image: Optional[str] = None
     build_context: Optional[str] = None
 
+    @classmethod
     @root_validator
     def check_passwords_match(cls, values):
         image = values.get("image")
@@ -39,7 +40,8 @@ class DockerCollector(BaseCollector):
                 from {self.config.docker.build_context}"
             )
             self.__build_image(
-                self.config.docker.build_context, tag=f"opu_{self.config.name}",
+                self.config.docker.build_context,
+                tag=f"opu_{self.config.name}",
             )
             self.__image = f"opu_{self.config.name}"
         else:
@@ -55,5 +57,9 @@ class DockerCollector(BaseCollector):
 
     def run_container(self, command: Union[str, List[str]], **kwargs):
         return self.__client.containers.run(
-            self.__image, command, detach=False, remove=True, **kwargs,
+            self.__image,
+            command,
+            detach=False,
+            remove=True,
+            **kwargs,
         ).decode("utf-8")

@@ -3,21 +3,16 @@ from typing import List
 
 from pydantic import BaseModel
 
-from salver.common.models import Scan, BaseFact
+from salver.common.models import Scan
 from salver.common.database.models.scan import ScanInDB
 
-from .facts import FactInResponse
+from .facts import FactInRequest, FactInResponse
 
 # from salver.controller.models import ScanInRequest as ControlerScanInRequest
 
 
-class GenericFact(BaseModel):
-    fact_type: str
-    fact: BaseFact
-
-
 class ScanInRequest(Scan):
-    facts: List[GenericFact] = []
+    facts: List[FactInRequest] = []
 
     class Config:
         schema_extra = {

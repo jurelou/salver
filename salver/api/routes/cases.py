@@ -22,14 +22,18 @@ async def get_case(case_id: UUID, db: DatabaseManager = Depends(get_database)):
     try:
         case = db.get_case(case_id)
         scans = db.get_scans_for_case(case_id)
-        return models.CaseInResponse(scans=scans, **case.dict())
+
+        return models.CaseInResponse(
+            case=models.CaseResponse(scans=scans, **case.dict())
+        )
     except db_exceptions.CaseNotFound as err:
         raise HTTPException(status_code=404, detail=str(err))
 
 
 @router.post("/", response_model=models.UUIDInResponse)
 async def create_case(
-    case: models.CaseInRequest, db: DatabaseManager = Depends(get_database),
+    case: models.CaseInRequest,
+    db: DatabaseManager = Depends(get_database),
 ):
     try:
         case_id = db.add_case(case)

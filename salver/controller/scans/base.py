@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from abc import ABC, abstractmethod, abstractproperty
+from uuid import UUID
 from typing import List
 
 from salver.controller import exceptions
@@ -8,30 +8,33 @@ from salver.controller.services import agents_tasks
 from salver.controller.services.agents import get_collectors_names
 
 
-class BaseScan(ABC):
+class BaseScan:
+    name: str = ""
+    config: ScanConfig = None
+    scan_id: UUID = None
 
-    scan_id = None
-
-    @abstractproperty
+    @property
     def name(self):
         pass
 
-    @abstractmethod
     def configure(self, config: ScanConfig):
-        """Configure the scan"""
+        self.config = config
 
-    @abstractmethod
     def scan(self, facts):
-        """Starts the scan"""
+        raise NotImplementedError(f"{type(self)} does not implements `scan`")
 
     def launch_collector(
-        self, collector_name: str, facts: List[BaseFact], cb=None,
+        self,
+        collector_name: str,
+        facts: List[BaseFact],
+        cb=None,
     ):
-
-        print("===========", get_collectors_names())
         if collector_name not in get_collectors_names():
             raise exceptions.CollectorNotFound(collector_name)
 
         agents_tasks.scan(
-            self.scan_id, self.config.collector_name, facts, cb=cb,
+            self.scan_id,
+            self.config.collector_name,
+            facts,
+            cb=cb,
         )

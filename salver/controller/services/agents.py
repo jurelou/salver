@@ -7,22 +7,22 @@ from salver.common.models import Collector
 from salver.controller.app import celery_app
 
 manager = multiprocessing.Manager()
-available_agents = manager.dict()
+AVAILABLE_AGENTS = manager.dict()
 
-collectors_names = manager.list()
+COLLECTORS_NAMES = manager.list()
 
 
 def get_agents():
-    return available_agents
+    return AVAILABLE_AGENTS
 
 
 def get_collectors_names():
-    return collectors_names
+    return COLLECTORS_NAMES
 
 
 def refresh_agents():
-    global available_agents
-    global collectors_names
+    global AVAILABLE_AGENTS
+    global COLLECTORS_NAMES
 
     workers = celery_app.control.inspect().active_queues() or {}
     agents = {}
@@ -35,6 +35,6 @@ def refresh_agents():
         c_names.extend([c.config.name for c in collectors])
         agents[name] = collectors
 
-    available_agents = agents
-    collectors_names = c_names
-    logger.info(f"Available agents: {available_agents.keys()}")
+    AVAILABLE_AGENTS = agents
+    COLLECTORS_NAMES = c_names
+    logger.info(f"Available agents: {AVAILABLE_AGENTS.keys()}")

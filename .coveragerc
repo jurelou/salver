@@ -1,0 +1,11 @@
+[run]
+branch = true
+source = salver
+omit =
+    salver/modules/*
+    salver/facts/*
+
+[report]
+fail_under = 80
+show_missing = true
+sort = Miss

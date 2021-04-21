@@ -16,7 +16,8 @@ class Neo4jDB(BaseDB):
     def __init__(self, config):
         print(f"Build neo4j with {config}")
         self._client = GraphDatabase.driver(
-            config.endpoint, auth=(config.username, config.password),
+            config.endpoint,
+            auth=(config.username, config.password),
         )
 
     def flush(self):
@@ -44,7 +45,10 @@ class Neo4jDB(BaseDB):
             )
 
     def add_facts(
-        self, scan_id, facts: List[BaseFact], relationship: str = "GIVES",
+        self,
+        scan_id,
+        facts: List[BaseFact],
+        relationship: str = "GIVES",
     ):
         formated_facts = [
             {"external_id": fact.hash__, "type": fact.schema()["title"]}
@@ -79,7 +83,8 @@ class Neo4jDB(BaseDB):
             )
 
     def get_input_facts_for_scan(
-        self, scan_id: uuid.UUID,
+        self,
+        scan_id: uuid.UUID,
     ) -> Dict[str, List[uuid.UUID]]:
         facts = {}
         try:
@@ -117,7 +122,10 @@ class Neo4jDB(BaseDB):
         return scans
 
     def add_scan_results(
-        self, scan_id: uuid.UUID, result: ScanResult, relationship="OUTPUTS",
+        self,
+        scan_id: uuid.UUID,
+        result: ScanResult,
+        relationship="OUTPUTS",
     ):
         with self._client.session() as session:
             session.run(

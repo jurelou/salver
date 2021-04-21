@@ -55,7 +55,8 @@ class MongoDB(BaseDB):
 
     def update_scan_state(self, scan_id, state: ScanState):
         self._db.scans.update_one(
-            {"external_id": scan_id}, {"$set": {"state": state.value}},
+            {"external_id": scan_id},
+            {"$set": {"state": state.value}},
         )
 
     # def add_scan_results(self, scan_id: UUID, result: ScanResult):

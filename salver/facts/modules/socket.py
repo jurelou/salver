@@ -3,7 +3,7 @@ from salver.common.models.fact import BaseFact
 
 
 class Socket(BaseFact):
-    port: int
+    port_number: int
     proto: str
 
     @classmethod

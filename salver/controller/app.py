@@ -48,13 +48,9 @@ def init(sender=None, conf=None, **kwargs):
         logger.critical(f"Error in signal `worker_init`: {err}")
 
 
-@worker_ready.connect
-def ready(sender=None, conf=None, **kwargs):
-    print("DB_MANAGER", db_manager)
-
-
-#     except Exception as err:
-#         logger.critical(f"Error in signal `worker_ready`: {err}")
+# @worker_ready.connect
+# def ready(sender=None, conf=None, **kwargs):
+#     print("DB_MANAGER", db_manager)
 
 
 if __name__ == "__main__":

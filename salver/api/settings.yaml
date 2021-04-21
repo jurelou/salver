@@ -22,3 +22,23 @@ default:
   mongodb:
       endpoint: mongodb://mongo:27017
       database: salver
+
+testing:
+  celery:
+    broker_url: redis://localhost/0
+    result_backend: redis://localhost/1
+    task_default_queue: controller
+
+  neo4j:
+      endpoint: bolt://localhost:7687
+      username: neo4j
+      password: root
+
+  mongodb:
+      endpoint: mongodb://localhost:27017
+      database: salver-test
+
+  elasticsearch:
+      endpoint:
+          host: localhost
+          port: 9200

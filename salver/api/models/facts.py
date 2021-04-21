@@ -3,6 +3,8 @@ from typing import List
 
 from pydantic import BaseModel, BaseConfig
 
+from salver.common.models import BaseFact
+
 
 class GenericFact(BaseModel):
     fact_type: str
@@ -20,4 +22,4 @@ class FactsInResponse(BaseModel):
 
 
 class FactInRequest(GenericFact):
-    pass
+    fact: BaseFact

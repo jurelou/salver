@@ -21,10 +21,6 @@ class RequestRate(BaseModel):
     limit: int
     interval: Duration
 
-    def __str__(self):
-        print(f"RequestRate {self.limit} every {Duration(self.internal).name}")
-        return f"RequestRate {self.limit} every {Duration(self.internal).name}"
-
 
 class Bucket:
     """A bucket that resides in memory
@@ -34,13 +30,13 @@ class Bucket:
     def __init__(self, maxsize=0):
         self._q = Queue(maxsize=maxsize)
 
-    def inspect_expired_items(self, time: int) -> Tuple[int, int]:
+    def inspect_expired_items(self, start_time: int) -> Tuple[int, int]:
         """ Find how many items in bucket that have slipped out of the time-window."""
         volume = self.size()
 
         for log_idx, log_item in enumerate(list(self._q.queue)):
-            if log_item > time:
-                return volume - log_idx, log_item - time
+            if log_item > start_time:
+                return volume - log_idx, log_item - start_time
         return 0, 0
 
     def size(self):
@@ -61,13 +57,15 @@ class Limiter:
     """Basic rate-limiter class that makes use of built-in python Queue."""
 
     def __init__(
-        self, *rates: RequestRate,
+        self,
+        *rates: RequestRate,
     ):
         self._validate_rate_list(rates)
         self._rates = rates
         self._bucket: Bucket = Bucket(maxsize=self._rates[-1].limit)
 
-    def _validate_rate_list(self, rates):
+    @staticmethod
+    def _validate_rate_list(rates):
         if not rates:
             raise ValueError("Rate(s) must be provided")
 

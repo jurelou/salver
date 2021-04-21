@@ -5,7 +5,7 @@ from salver.common.utils import get_actual_dir
 from salver.agent.collectors.docker import DockerCollector
 
 
-class DummyDocker(DockerCollector):
+class ReconNG(DockerCollector):
     config = {
         "name": "recon-ng",
         "docker": {"build_context": get_actual_dir()},
@@ -35,6 +35,7 @@ class DummyDocker(DockerCollector):
             command=["-m", "profiler", "-o", f"SOURCE={username.name}", "-x"],
         )
         for category, resource, url in self.findall_regex(
-            data, r"Category: (.*)\n.*\n.*Resource: (.*)\n.*Url: (.*)",
+            data,
+            r"Category: (.*)\n.*\n.*Resource: (.*)\n.*Url: (.*)",
         ):
             yield Profile(url=url, category=category, resource=resource)

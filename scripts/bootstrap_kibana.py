@@ -35,7 +35,10 @@ def flush_kibana_patterns(patterns):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-r", "--remove", help="Remove kibana index patterns.", action="store_true",
+        "-r",
+        "--remove",
+        help="Remove kibana index patterns.",
+        action="store_true",
     )
     return parser.parse_args()
 

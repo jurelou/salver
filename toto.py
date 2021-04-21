@@ -32,6 +32,7 @@ print("=====================================")
 
 a = httpx.get(API_ENDPOINT + "/agents")
 res = a.json()
+print(res)
 assert a.status_code == 200
 
 assert len(res["agents"]) == 1

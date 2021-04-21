@@ -64,7 +64,8 @@ class ElasticsearchDB(BaseDB):
             for doc in res["docs"]:
                 facts.append(
                     models.BaseFact.from_obj(
-                        fact_type=index_to_fact(doc["_index"]), data=doc["_source"],
+                        fact_type=index_to_fact(doc["_index"]),
+                        data=doc["_source"],
                     ),
                 )
         return facts

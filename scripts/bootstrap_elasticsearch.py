@@ -37,7 +37,10 @@ def flush_es_mappings():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-r", "--remove", help="Remove elasticsearch mapping.", action="store_true",
+        "-r",
+        "--remove",
+        help="Remove elasticsearch mapping.",
+        action="store_true",
     )
     return parser.parse_args()
 

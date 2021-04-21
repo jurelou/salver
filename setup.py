@@ -29,9 +29,9 @@ setup(
     ],
     extras_require={
         "dev": [
+            "coverage[toml]",
             "tox==3.23.0",
             "mock==4.0.3",
-            "coverage==5.5",
             "pytest==6.2.2",
             "flake8==3.9.0",
             "black==20.8b1",

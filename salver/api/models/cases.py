@@ -2,6 +2,8 @@
 import uuid
 from typing import List
 
+from pydantic import BaseModel
+
 from salver.common.models import Case
 
 
@@ -9,5 +11,9 @@ class CaseInRequest(Case):
     pass
 
 
-class CaseInResponse(Case):
+class CaseResponse(Case):
     scans: List[uuid.UUID] = []
+
+
+class CaseInResponse(BaseModel):
+    case: CaseResponse
