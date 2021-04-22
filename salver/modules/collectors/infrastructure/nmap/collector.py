@@ -7,8 +7,8 @@ from salver.agent.collectors.docker import DockerCollector
 
 class Nmap(DockerCollector):
     config = {
-        "name": "nmap",
-        "docker": {"build_context": get_actual_dir()},
+        'name': 'nmap',
+        'docker': {'build_context': get_actual_dir()},
     }
 
     def callbacks(self):
@@ -18,7 +18,7 @@ class Nmap(DockerCollector):
         }
 
     def _scan(self, target):
-        data = self.run_container(command=["-oX", "-", "-sS", "-T3", target])
+        data = self.run_container(command=['-oX', '-', '-sS', '-T3', target])
         yield
         for proto, port, service in self.findall_regex(
             data,

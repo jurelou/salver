@@ -20,9 +20,9 @@ celery_app.conf.update(controller_config.celery)
 
 celery_app.conf.update(
     {
-        "imports": "salver.controller.tasks",
-        "task_eager_propagates": True,
-        "task_default_queue": "controller",
+        'imports': 'salver.controller.tasks',
+        'task_eager_propagates': True,
+        'task_default_queue': 'controller',
     },
 )
 
@@ -36,7 +36,7 @@ def init(sender=None, conf=None, **kwargs):
         periodic_tasks.flush()
         periodic_tasks.add_periodic_task(
             celery_app,
-            "salver.controller.tasks.reload_agents",
+            'salver.controller.tasks.reload_agents',
             controller_config.refresh_agents_interval,
         )
         # debug only
@@ -45,7 +45,7 @@ def init(sender=None, conf=None, **kwargs):
         tasks.reload_agents.apply()
 
     except Exception as err:
-        logger.critical(f"Error in signal `worker_init`: {err}")
+        logger.critical(f'Error in signal `worker_init`: {err}')
 
 
 # @worker_ready.connect
@@ -53,13 +53,13 @@ def init(sender=None, conf=None, **kwargs):
 #     print("DB_MANAGER", db_manager)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     argv = [
-        "-A",
-        "salver.controller.app",
-        "worker",
-        "--hostname=controller_main",
-        "-B",
+        '-A',
+        'salver.controller.app',
+        'worker',
+        '--hostname=controller_main',
+        '-B',
     ]
 
     celery_app.worker_main(argv)

@@ -7,13 +7,13 @@ import signal
 from salver.controller import tasks
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def salver_simple_deployment(request):
     proc_agent = subprocess.Popen(
-        ["python", "-m", "salver.agent.app"], preexec_fn=os.setsid
+        ['python', '-m', 'salver.agent.app'], preexec_fn=os.setsid,
     )
     proc_engine = subprocess.Popen(
-        ["python", "-m", "salver.controller.app"], preexec_fn=os.setsid
+        ['python', '-m', 'salver.controller.app'], preexec_fn=os.setsid,
     )
 
     def wait_for_engine():

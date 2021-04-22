@@ -10,10 +10,10 @@ class Socket(BaseFact):
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
             {
-                "mappings": {
-                    "properties": {
-                        "port": {"type": "integer"},
-                        "proto": {"type": "keyword"},
+                'mappings': {
+                    'properties': {
+                        'port': {'type': 'integer'},
+                        'proto': {'type': 'keyword'},
                     },
                 },
             },

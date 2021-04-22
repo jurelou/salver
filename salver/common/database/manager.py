@@ -86,7 +86,7 @@ class DatabaseManager:
 
     def add_scan_input_facts(self, scan_id: uuid.UUID, facts: List[BaseFact]):
         self.elasticsearch.add_facts(facts)
-        self.neo4j.add_facts(scan_id, facts, relationship="INPUTS")
+        self.neo4j.add_facts(scan_id, facts, relationship='INPUTS')
 
     def get_scan(self, scan_id: uuid.UUID) -> db_models.ScanInDB:
         """Retrieve a scan by it's ID.
@@ -99,9 +99,9 @@ class DatabaseManager:
         Raises:
             ScanNotFound: If the scan does not exists.
         """
-        print("MONGODB", scan_id, type(scan_id))
+        print('MONGODB', scan_id, type(scan_id))
         scan = self.mongodb.get_scan(scan_id)
-        print("-azeaze", scan)
+        print('-azeaze', scan)
         # facts_ids = self.neo4j.get_scan_input_facts(scan_id)
         # facts = list(self.elasticsearch.get_facts(facts_ids))
 
@@ -136,6 +136,6 @@ class DatabaseManager:
         return res
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
-        print(f"Add result to scan {scan_id}, {scan_result}")
+        print(f'Add result to scan {scan_id}, {scan_result}')
         # self.mongodb.add_scan_results(scan_id, scan_result)
         self.neo4j.add_scan_results(scan_id, scan_result)

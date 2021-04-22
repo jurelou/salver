@@ -17,29 +17,29 @@ class BaseFact(BaseModel):
 
     @root_validator
     def set_hash(cls, values):
-        if "required" not in cls.schema():
+        if 'required' not in cls.schema():
             return values
-        values.pop("hash__", None)
+        values.pop('hash__', None)
         m = hashlib.sha256()
-        required_fields = cls.schema()["required"]
+        required_fields = cls.schema()['required']
         for k in sorted(values):
             if k in required_fields:
                 m.update(str(k).encode() + str(values[k]).encode())
-        values["hash__"] = m.hexdigest()
+        values['hash__'] = m.hexdigest()
         return values
 
     @staticmethod
     def make_mapping(m):
-        m["mappings"]["properties"]["first_seen"] = {"type": "float"}
-        m["mappings"]["properties"]["last_seen"] = {"type": "float"}
+        m['mappings']['properties']['first_seen'] = {'type': 'float'}
+        m['mappings']['properties']['last_seen'] = {'type': 'float'}
         return m
 
     @classmethod
     def elastic_mapping(cls):
-        return BaseFact.make_mapping({"mappings": {"properties": {}}})
+        return BaseFact.make_mapping({'mappings': {'properties': {}}})
 
     class Config(BaseConfig):
-        extra = "allow"
+        extra = 'allow'
 
     @staticmethod
     def from_obj(fact_type: str, data):

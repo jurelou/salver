@@ -16,12 +16,12 @@ class DockerConfig(BaseModel):
     @classmethod
     @root_validator
     def check_passwords_match(cls, values):
-        image = values.get("image")
-        build_context = values.get("build_context")
+        image = values.get('image')
+        build_context = values.get('build_context')
 
         if (not image and not build_context) or (image and build_context):
             raise ValueError(
-                "Docker config should contains one of `image` or `build_context`",
+                'Docker config should contains one of `image` or `build_context`',
             )
         return values
 
@@ -36,16 +36,16 @@ class DockerCollector(BaseCollector):
         self.__client = docker_cli.from_env()
         if self.config.docker.build_context:
             logger.info(
-                f"Building docker image {self.config.name} \
-                from {self.config.docker.build_context}"
+                f'Building docker image {self.config.name} \
+                from {self.config.docker.build_context}'
             )
             self.__build_image(
                 self.config.docker.build_context,
-                tag=f"opu_{self.config.name}",
+                tag=f'opu_{self.config.name}',
             )
-            self.__image = f"opu_{self.config.name}"
+            self.__image = f'opu_{self.config.name}'
         else:
-            logger.info(f"Pulling docker image {self.config.docker.image}")
+            logger.info(f'Pulling docker image {self.config.docker.image}')
             self.__pull_image(self.config.docker.image)
             self.__image = self.config.docker.image
 
@@ -62,4 +62,4 @@ class DockerCollector(BaseCollector):
             detach=False,
             remove=True,
             **kwargs,
-        ).decode("utf-8")
+        ).decode('utf-8')

@@ -1,3 +1,4 @@
+---
 default:
     refresh_agents_interval: 10
     salver:
@@ -6,10 +7,10 @@ default:
         queue_name: salve_controller
         broker_url: redis://localhost/0
         result_backend: redis://localhost/1
-        task_ignore_result: False
+        task_ignore_result: false
 
         redbeat_redis_url: redis://localhost/2
-        beat_scheduler : redbeat.RedBeatScheduler
+        beat_scheduler: redbeat.RedBeatScheduler
 
 
     elasticsearch:

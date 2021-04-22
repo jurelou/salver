@@ -11,7 +11,7 @@ class CollectorNotFound(EngineException):
         self.collector_name = collector_name
 
     def __str__(self):
-        return f"Collector {self.collector_name} not found"
+        return f'Collector {self.collector_name} not found'
 
 
 class InvalidScanConfiguration(EngineException):
@@ -25,4 +25,4 @@ class ScanRuntimeError(EngineException):
         self.error = error
 
     def __str__(self):
-        return f"Scan {self.scan_type} runtime error: {self.error}"
+        return f'Scan {self.scan_type} runtime error: {self.error}'

@@ -11,7 +11,7 @@ from salver.controller.scans.factory import ScanFactory
 
 all_scans = ScanFactory().build()
 
-print("=>SCANS", all_scans)
+print('=>SCANS', all_scans)
 
 
 def schedule():
@@ -19,16 +19,16 @@ def schedule():
     add_periodic_task(
         app=celery_app,
         interval=1,
-        task_path="salver.controller.tasks.toto",
+        task_path='salver.controller.tasks.toto',
     )
 
 
 def launch(scan: ScanInDB, facts: List[BaseFact]):
-    logger.info(f"Launch scan {scan.external_id} of type {scan.scan_type}")
+    logger.info(f'Launch scan {scan.external_id} of type {scan.scan_type}')
 
     if scan.scan_type not in all_scans:
-        logger.error(f"Scan {scan.scan_type} not found")
-        raise ValueError(f"Scan {scan.scan_type} not found")
+        logger.error(f'Scan {scan.scan_type} not found')
+        raise ValueError(f'Scan {scan.scan_type} not found')
 
     scan_class = all_scans[scan.scan_type]()
     try:

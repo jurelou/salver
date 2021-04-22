@@ -1,10 +1,11 @@
+---
 # Kibana is served by a back end server. This setting specifies the port to use.
 #server.port: 5601
 
 # Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values.
 # The default is 'localhost', which usually means remote machines will not be able to connect.
 # To allow connections from remote users, set this parameter to a non-loopback address.
-server.host: "0"
+server.host: '0'
 
 # Enables you to specify a path to mount Kibana at if you are running behind a proxy.
 # Use the `server.rewriteBasePath` setting to tell Kibana if it should remove the basePath
@@ -22,10 +23,10 @@ server.host: "0"
 #server.maxPayloadBytes: 1048576
 
 # The Kibana server's name.  This is used for display purposes.
-server.name: "kibana"
+server.name: kibana
 
 # The URLs of the Elasticsearch instances to use for all your queries.
-elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.hosts: [http://elasticsearch:9200]
 
 # When this setting's value is true Kibana uses the hostname specified in the server.host
 # setting. When the value of this setting is false, Kibana uses the hostname of the host
@@ -40,8 +41,8 @@ elasticsearch.hosts: ["http://elasticsearch:9200"]
 # the username and password that the Kibana server uses to perform maintenance on the Kibana
 # index at startup. Your Kibana users still need to authenticate with Elasticsearch, which
 # is proxied through the Kibana server.
-elasticsearch.username: "elastic"
-elasticsearch.password: "superpasswd"
+elasticsearch.username: elastic
+elasticsearch.password: superpasswd
 
 # Enables SSL and paths to the PEM-format SSL certificate and SSL key files, respectively.
 # These settings enable SSL for outgoing requests from the Kibana server to the browser.

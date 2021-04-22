@@ -19,17 +19,17 @@ class CollectorFactory(Factory):
         enabled_collectors = set(agent_config.enabled_collectors or [])
         collector_instances = {}
         for collector in collector_modules:
-            if not hasattr(collector, "config") or "name" not in collector.config:
+            if not hasattr(collector, 'config') or 'name' not in collector.config:
                 raise InvalidCollectorDefinition(
                     collector,
-                    "Missing `name` property",
+                    'Missing `name` property',
                 )
 
-            collector_name = collector.config["name"]
+            collector_name = collector.config['name']
 
             # Raises if the collector name is already registered
             if collector_name in collector_instances:
-                raise InvalidCollectorDefinition(collector_name, "Duplicate name found")
+                raise InvalidCollectorDefinition(collector_name, 'Duplicate name found')
             if collector_name not in enabled_collectors:
                 continue
             try:
@@ -38,18 +38,18 @@ class CollectorFactory(Factory):
                 raise InvalidCollectorDefinition(collector, err)
 
             logger.debug(
-                f"Loaded collector {collector_name} \
-                with config: {collector_instance.config}",
+                f'Loaded collector {collector_name} \
+                with config: {collector_instance.config}',
             )
             collector_instances[collector_name] = {
-                "instance": collector_instance,
-                "active": False,
+                'instance': collector_instance,
+                'active': False,
             }
 
         for collector_name in enabled_collectors:
             if collector_name not in collector_instances:
                 raise MissingCollectorDefinition(collector_name)
-            collector_instances[collector_name]["active"] = True
+            collector_instances[collector_name]['active'] = True
 
         self.items = collector_instances
         for name, conf in collector_instances.items():

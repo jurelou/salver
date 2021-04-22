@@ -8,12 +8,12 @@ from salver.common.json_encoder import decode, encode_map
 encode_map.update(
     {
         models.Agent.__module__: {
-            "type": "__agent__",
-            "to_json": lambda obj: {
-                "__salver_type__": "__agent__",
-                "agent": obj.json(),
+            'type': '__agent__',
+            'to_json': lambda obj: {
+                '__salver_type__': '__agent__',
+                'agent': obj.json(),
             },
-            "from_json": lambda obj: models.Agent.parse_raw(obj["agent"]),
+            'from_json': lambda obj: models.Agent.parse_raw(obj['agent']),
         },
     },
 )
@@ -21,18 +21,18 @@ encode_map.update(
 
 class encode(json.JSONEncoder):
     def default(self, obj):
-        if not hasattr(obj, "__module__"):
+        if not hasattr(obj, '__module__'):
             return json.JSONEncoder.default(self, obj)
         if isinstance(obj, BaseFact):
             return {
-                "__salver_type__": "__fact__",
-                "fact": obj.json(),
-                "fact_type": obj.schema()["title"],
+                '__salver_type__': '__fact__',
+                'fact': obj.json(),
+                'fact_type': obj.schema()['title'],
             }
         mod = obj.__module__
         if mod not in encode_map.keys():
             return json.JSONEncoder.default(self, obj)
-        return encode_map[mod]["to_json"](obj)
+        return encode_map[mod]['to_json'](obj)
 
 
 def json_dumps(obj):

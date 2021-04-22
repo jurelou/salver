@@ -6,12 +6,12 @@ from .collector import Collector, CollectorBaseConfig
 from .scan_result import ScanResult
 
 __all__ = [
-    "Case",
-    "BaseFact",
-    "Scan",
-    "ScanState",
-    "ScanConfig",
-    "Collector",
-    "CollectorBaseConfig",
-    "ScanResult",
+    'Case',
+    'BaseFact',
+    'Scan',
+    'ScanState',
+    'ScanConfig',
+    'Collector',
+    'CollectorBaseConfig',
+    'ScanResult',
 ]

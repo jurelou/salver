@@ -6,32 +6,32 @@ client = TestClient(app)
 
 
 def create_case(case, **kwargs):
-    res = client.post("/api/cases/", data=case.json())
+    res = client.post('/api/cases/', data=case.json())
     return __check_response(res, **kwargs)
 
 
 def get_case(case_id, **kwargs):
-    res = client.get(f"/api/cases/{case_id}")
+    res = client.get(f'/api/cases/{case_id}')
     return __check_response(res, **kwargs)
 
 
 def get_scan(scan_id, **kwargs):
-    res = client.get(f"/api/scans/{scan_id}")
+    res = client.get(f'/api/scans/{scan_id}')
     return __check_response(res, **kwargs)
 
 
 def get_all_cases(case_id, **kwargs):
-    res = client.get(f"/api/cases")
+    res = client.get(f'/api/cases')
     return __check_response(res, **kwargs)
 
 
 def launch_scan(scan_id, **kwargs):
-    res = client.get(f"/api/scans/{scan_id}/launch")
+    res = client.get(f'/api/scans/{scan_id}/launch')
     return __check_response(res, **kwargs)
 
 
 def create_scan(scan, **kwargs):
-    res = client.post("/api/scans/", data=scan.json())
+    res = client.post('/api/scans/', data=scan.json())
     return __check_response(res, **kwargs)
 
 

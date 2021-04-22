@@ -9,17 +9,17 @@ client = TestClient(app)
 
 class TestAgents:
     def test_get_agents(self):
-        res = client.get("/api/agents")
+        res = client.get('/api/agents')
         assert res.status_code == 200
 
-        agents = res.json()["agents"]
+        agents = res.json()['agents']
         assert len(agents) == 1
 
-        collectors = agents[0]["collectors"]
+        collectors = agents[0]['collectors']
         assert any(
             [
                 c
                 for c in collectors
-                if c["config"]["name"] == "dummy-collector" and c["active"]
-            ]
+                if c['config']['name'] == 'dummy-collector' and c['active']
+            ],
         )
