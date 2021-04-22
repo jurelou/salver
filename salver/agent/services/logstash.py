@@ -4,6 +4,8 @@ import socket
 import threading
 from typing import List
 
+from loguru import logger
+
 from salver.common.models import BaseFact
 
 
@@ -16,13 +18,13 @@ class LogstashInput:
         self.socket = self.init_socket()
 
     def close(self):
+        logger.info('Closing logstash client')
         if self.socket:
             self.socket.close()
 
     def send(self, data):
         self.lock.acquire()
         try:
-            print('sending data')
             self.socket.send(data)
         finally:
             self.lock.release()
@@ -32,12 +34,12 @@ class LogstashInput:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error as err:
-            print(f'Socket error {err}')
+            logger.critical(f'Socket error: {err}')
             return None
         try:
             sock.connect((self.host, self.port))
         except socket.error as err:
-            print(f'Socket connect error {err}')
+            logger.critical(f'Socket connect error: {err}')
         return sock
 
     def send_facts(self, facts: List[BaseFact]):
@@ -49,6 +51,7 @@ class LogstashInput:
                 'document_id': fact.hash__,
                 'fact_type': f"facts_{fact.schema()['title'].lower()}",
             }
+            logger.info(f'Push to logstash: {data}')
 
             json_data = json.dumps(data).encode('utf-8')
 

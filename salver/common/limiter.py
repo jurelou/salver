@@ -23,15 +23,13 @@ class RequestRate(BaseModel):
 
 
 class Bucket:
-    """A bucket that resides in memory
-    using python's built-in Queue class
-    """
+    """A bucket that resides in memory using python's built-in Queue."""
 
     def __init__(self, maxsize=0):
         self._q = Queue(maxsize=maxsize)
 
     def inspect_expired_items(self, start_time: int) -> Tuple[int, int]:
-        """ Find how many items in bucket that have slipped out of the time-window."""
+        """Find how many items in bucket that have slipped out of the time-window."""
         volume = self.size()
 
         for log_idx, log_item in enumerate(list(self._q.queue)):

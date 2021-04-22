@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from salver.common.exceptions import OpulenceException
+from salver.common.exceptions import SalverException
 
 
-class AgentException(OpulenceException):
+class AgentException(SalverException):
     """Base agent exceptions."""
 
 

@@ -14,6 +14,7 @@ db_manager = DatabaseManager(
     mongodb_config=controller_config.mongodb,
 )
 
+print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@', controller_config.mongodb)
 # Create celery app
 celery_app = create_app(json_encoder=json_loads, json_decoder=json_dumps)
 celery_app.conf.update(controller_config.celery)
@@ -46,11 +47,6 @@ def init(sender=None, conf=None, **kwargs):
 
     except Exception as err:
         logger.critical(f'Error in signal `worker_init`: {err}')
-
-
-# @worker_ready.connect
-# def ready(sender=None, conf=None, **kwargs):
-#     print("DB_MANAGER", db_manager)
 
 
 if __name__ == '__main__':

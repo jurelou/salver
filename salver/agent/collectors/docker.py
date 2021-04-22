@@ -13,9 +13,8 @@ class DockerConfig(BaseModel):
     image: Optional[str] = None
     build_context: Optional[str] = None
 
-    @classmethod
     @root_validator
-    def check_passwords_match(cls, values):
+    def check_image(cls, values):
         image = values.get('image')
         build_context = values.get('build_context')
 
@@ -35,19 +34,16 @@ class DockerCollector(BaseCollector):
         self.config = BaseDockerConfig(**self.config)
         self.__client = docker_cli.from_env()
         if self.config.docker.build_context:
-            logger.info(
-                f'Building docker image {self.config.name} \
-                from {self.config.docker.build_context}'
-            )
+            logger.debug(f'Building docker image {self.config.name}')
             self.__build_image(
                 self.config.docker.build_context,
                 tag=f'opu_{self.config.name}',
             )
-            self.__image = f'opu_{self.config.name}'
+            self._image = f'opu_{self.config.name}'
         else:
-            logger.info(f'Pulling docker image {self.config.docker.image}')
+            logger.debug(f'Pulling docker image {self.config.docker.image}')
             self.__pull_image(self.config.docker.image)
-            self.__image = self.config.docker.image
+            self._image = self.config.docker.image
 
     def __pull_image(self, image, **kwargs):
         return self.__client.images.pull(image, **kwargs)
@@ -56,8 +52,9 @@ class DockerCollector(BaseCollector):
         return self.__client.images.build(path=path, tag=tag, rm=rm, **kwargs)
 
     def run_container(self, command: Union[str, List[str]], **kwargs):
+        logger.debug(f'Run container {self._image} with {command}')
         return self.__client.containers.run(
-            self.__image,
+            self._image,
             command,
             detach=False,
             remove=True,

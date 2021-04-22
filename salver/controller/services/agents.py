@@ -32,7 +32,7 @@ def refresh_agents():
         if 'collectors' not in conf:
             continue
         collectors = [Collector(**collector) for collector in conf['collectors']]
-        c_names.extend([c.config.name for c in collectors])
+        c_names.extend([c.name for c in collectors])
         agents[name] = collectors
 
     AVAILABLE_AGENTS = agents

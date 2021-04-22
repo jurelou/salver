@@ -2,6 +2,8 @@
 import json
 from uuid import UUID
 
+from loguru import logger
+
 from salver.facts import all_facts
 from salver.common.models import BaseFact, Collector, ScanResult
 
@@ -56,7 +58,7 @@ def decode(obj):
     for item in encode_map.values():
         if obj_type == item['type']:
             return item['from_json'](obj)
-    print(f'@@@ERROR json decode {type(obj)}: {obj}')
+    logger.critical(f'Could not decode as json {type(obj)}: {obj}')
     return obj
 
 

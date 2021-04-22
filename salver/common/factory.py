@@ -40,17 +40,16 @@ class Factory(ABC, Singleton):
 
     @staticmethod
     def load_classes_from_module(root_path, parent_class):
+        """Find all classes in a directory."""
         modules = []
         for mod_path in Factory._discover_packages(root_path):
             module = None
             if mod_path not in sys.modules:
                 try:
-
                     module = import_module(mod_path)
                 except Exception as err:
                     traceback.print_exc(file=sys.stdout)
                     logger.critical(f'Could not import module {mod_path}: {err}')
-
             else:
                 module = sys.modules[mod_path]
             for _, mod_cls in inspect.getmembers(module, inspect.isclass):

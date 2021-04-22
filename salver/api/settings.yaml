@@ -26,8 +26,8 @@ default:
 
 testing:
     celery:
-        broker_url: redis://localhost/0
-        result_backend: redis://localhost/1
+        broker_url: redis://localhost/10
+        result_backend: redis://localhost/11
         task_default_queue: controller
 
     neo4j:

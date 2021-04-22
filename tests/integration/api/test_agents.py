@@ -20,6 +20,6 @@ class TestAgents:
             [
                 c
                 for c in collectors
-                if c['config']['name'] == 'dummy-collector' and c['active']
+                if c['name'] == 'dummy-collector' and c['active']
             ],
         )

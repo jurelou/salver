@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 class Singleton:
+    """Single instance class."""
+
     _instance = None
 
     def __new__(class_, *args, **kwargs):

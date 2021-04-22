@@ -12,11 +12,16 @@ default:
         port: 5042
 
 testing:
+    celery:
+        broker_url: redis://localhost/10
+        result_backend: redis://localhost/11
+
     enabled_collectors:
         - dummy-docker-collector
         - dummy-collector
 
 dev:
+
     enabled_collectors:
         - dummy-docker-collector
         - dummy-collector

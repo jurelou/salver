@@ -28,5 +28,6 @@ class CollectorBaseConfig(BaseModel):
 
 class Collector(BaseModel):
     active: bool
-    config: CollectorBaseConfig
-    input_facts: List[str]
+    name: str
+    config: Optional[CollectorBaseConfig] = None
+    input_facts: Optional[List[str]] = None

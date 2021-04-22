@@ -44,11 +44,11 @@ class BaseCollector:
 
     def check_rate_limit(self):
         if not self._limiter:
-            print('no rate limit')
             return
         self._limiter.try_acquire()
 
     def callbacks(self) -> Dict[models.BaseFact, Callable]:
+        logger.warning(f'Collector {type(self)} does not have any callbacks')
         raise InvalidCollectorDefinition(
             self.config.name,
             f'Collector {type(self).__name__} does not have any callbacks',
@@ -94,7 +94,7 @@ class BaseCollector:
 
         callbacks = self._prepare_callbacks(facts)
 
-        logger.info(
+        logger.debug(
             f'Execute collector {self.config.name} with \
             {len(facts)} facts and {len(callbacks)} callbacks',
         )

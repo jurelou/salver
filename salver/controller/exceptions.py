@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from salver.common.exceptions import OpulenceException
+from salver.common.exceptions import SalverException
 
 
-class EngineException(OpulenceException):
+class EngineException(SalverException):
     """Base engine exceptions."""
 
 
