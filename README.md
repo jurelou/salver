@@ -10,9 +10,6 @@
 
 # TODO:
 
-* agent qui écris dans logstash
-* afficher plus d'erreurs dans le scan result (pas de callbacks, erreur docker, ...)
-
 * fuzzing test generateur random de scan, cases, ...
 
 
