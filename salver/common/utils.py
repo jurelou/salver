@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import inspect
-
+import functools
+import operator
+import itertools
 
 def get_actual_dir():
     """Get calling method absolute path."""
@@ -25,10 +27,16 @@ def is_list(element):
     return isinstance(element, (set, list, tuple))
 
 
-def make_list(data):
-    """Convert any iterable to a list."""
-    if is_iterable(data):
-        return list(data)
-    if not is_list(data):
+def make_flat_list(data):
+    """Convert any iterable to a flat list, recursively."""
+    if not is_iterable(data):
         return [data]
-    return data
+    res = []
+    for item in data:
+        if not item:
+            continue
+        if is_list(item):
+            res.extend(item)
+        else:
+            res.append(item)
+    return res

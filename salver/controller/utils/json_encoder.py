@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 import json
 
-from salver.controller import models
+from salver.controller.models import Agent
 from salver.common.models.fact import BaseFact
 from salver.common.json_encoder import decode, encode_map
 
 encode_map.update(
     {
-        models.Agent.__module__: {
+        Agent.__module__: {
             "type": "__agent__",
             "to_json": lambda obj: {
                 "__salver_type__": "__agent__",
                 "agent": obj.json(),
             },
-            "from_json": lambda obj: models.Agent.parse_raw(obj["agent"]),
+            "from_json": lambda obj: Agent.parse_raw(obj["agent"]),
         },
-    },
+    }
 )
 
 
-class encode(json.JSONEncoder):
+class encode(json.JSONEncoder): # pragma: no cover
     def default(self, obj):
         if not hasattr(obj, "__module__"):
             return json.JSONEncoder.default(self, obj)

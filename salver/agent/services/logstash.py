@@ -19,7 +19,6 @@ class LogstashInput:
 
     def close(self):
         if self.socket is not None:
-            logger.info("Closing logstash client")
             self.socket.close()
             self.socket = None
 

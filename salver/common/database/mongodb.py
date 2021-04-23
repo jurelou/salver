@@ -72,7 +72,7 @@ class MongoDB(BaseDB):
             {"$set": {"state": state.value}},
         )
 
-    # def add_scan_results(self, scan_id: UUID, result: ScanResult):
+    # def add_scan_results(self, scan_id: UUID, result: CollectResult):
     #     self._db.scans.update_one(
     #         {"external_id": scan_id},
     #         {"$set": result.dict(exclude={"facts"})},

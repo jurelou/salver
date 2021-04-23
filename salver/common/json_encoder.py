@@ -5,7 +5,7 @@ from uuid import UUID
 from loguru import logger
 
 from salver.facts import all_facts
-from salver.common.models import BaseFact, Collector, ScanResult
+from salver.common.models import BaseFact, Collector, CollectResult
 
 encode_map = {
     BaseFact.__module__: {
@@ -22,13 +22,13 @@ encode_map = {
         "to_json": lambda obj: {"__salver_type__": "__uuid__", "uuid": obj.hex},
         "from_json": lambda obj: UUID(obj["uuid"]),
     },
-    ScanResult.__module__: {
+    CollectResult.__module__: {
         "type": "__scan_result__",
         "to_json": lambda obj: {
             "__salver_type__": "__scan_result__",
             "scan_result": obj.json(),
         },
-        "from_json": lambda obj: ScanResult.parse_raw(obj["scan_result"]),
+        "from_json": lambda obj: CollectResult.parse_raw(obj["scan_result"]),
     },
     Collector.__module__: {
         "type": "__collector__",

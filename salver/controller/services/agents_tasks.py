@@ -5,7 +5,7 @@ import celery
 from loguru import logger
 
 from salver.common.celery import async_call
-from salver.common.models import BaseFact, ScanState, ScanResult
+from salver.common.models import BaseFact, ScanState, CollectResult
 from salver.controller.app import celery_app, db_manager
 
 
@@ -35,7 +35,7 @@ def _scan_success(result, scan_id, collector_name):
         {result['duration']} from {collector_name}",
     )
     try:
-        scan_result = ScanResult(**result)
+        scan_result = CollectResult(**result)
         db_manager.add_scan_results(scan_id, scan_result)
     except Exception as err:
         logger.critical(f"Scan {scan_id} ({collector_name}) success error: {err}")

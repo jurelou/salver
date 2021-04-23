@@ -3,7 +3,7 @@ from .case import Case
 from .fact import BaseFact
 from .scan import Scan, ScanState, ScanConfig
 from .collector import Collector, CollectorBaseConfig
-from .scan_result import ScanResult
+from .scan_result import CollectResult
 
 __all__ = [
     "Case",
@@ -13,5 +13,5 @@ __all__ = [
     "ScanConfig",
     "Collector",
     "CollectorBaseConfig",
-    "ScanResult",
+    "CollectResult",
 ]

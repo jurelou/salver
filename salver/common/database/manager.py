@@ -3,7 +3,7 @@ import uuid
 from typing import List
 
 from salver.common import models as common_models
-from salver.common.models import BaseFact, ScanResult
+from salver.common.models import BaseFact, CollectResult
 from salver.common.database import models as db_models
 
 from . import exceptions
@@ -127,6 +127,6 @@ class DatabaseManager:
         res = self.elasticsearch.get_facts(facts_id)
         return res
 
-    def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
+    def add_scan_results(self, scan_id: uuid.UUID, scan_result: CollectResult):
         # self.mongodb.add_scan_results(scan_id, scan_result)
         self.neo4j.add_scan_results(scan_id, scan_result)

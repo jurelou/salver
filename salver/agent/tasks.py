@@ -35,14 +35,12 @@ def scan(self, facts: List[BaseFact]):
 
     collector = all_collectors[collector_name]["instance"]
 
-    # Check if the collector is rate limited
     try:
-        collector.check_rate_limit()
+        collect_result, facts = collector.collect(facts)
     except BucketFullException as err:
         logger.warning(f"Retry scan of {collector_name} in {err.remaining_time}s")
         raise self.retry(countdown=err.remaining_time, exc=err)
 
-    collect_result, facts = collector.collect(facts)
 
     logstash_client.send_facts(facts)
     return collect_result.dict()

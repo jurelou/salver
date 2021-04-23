@@ -6,7 +6,7 @@ from typing import Dict, List
 from neo4j import GraphDatabase
 from loguru import logger
 
-from salver.common.models import BaseFact, ScanResult
+from salver.common.models import BaseFact, CollectResult
 from salver.common.database import models
 
 from .base import BaseDB
@@ -132,7 +132,7 @@ class Neo4jDB(BaseDB):
     def add_scan_results(
         self,
         scan_id: uuid.UUID,
-        result: ScanResult,
+        result: CollectResult,
         relationship="OUTPUTS",
     ):
         """Add results to a given scan."""

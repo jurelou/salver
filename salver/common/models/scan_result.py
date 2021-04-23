@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class ScanResult(BaseModel):
+class CollectResult(BaseModel):
     duration: float
     executions_count: int
 

@@ -9,7 +9,7 @@ from salver.agent.exceptions import (
 )
 from salver.agent.collectors.base import BaseCollector
 
-ENABLED_COLLECTORS = set(agent_config.enabled_collectors or [])
+ENABLED_COLLECTORS = set(agent_config.enabled_collectors) or []
 
 
 class CollectorFactory(Factory):
@@ -21,12 +21,13 @@ class CollectorFactory(Factory):
                 "Missing config",
             )
 
-        collector_name = collector.config["name"]
-        if not collector_name:
+        if "name" not in collector.config:
             raise InvalidCollectorDefinition(
                 collector,
                 "Missing `name` property",
             )
+
+        collector_name = collector.config["name"]
 
         # Checks for duplicate collector names
         if collector_name in self.items:
@@ -59,7 +60,8 @@ class CollectorFactory(Factory):
             root_path=agent_config.collectors_path,
             parent_class=BaseCollector,
         )
-        enabled_collectors = set(agent_config.enabled_collectors or [])
+        print("!!!!", collector_modules)
+
         self.items = {}
         for collector in collector_modules:
             collector_name, collector_config = self._check_collector(collector)
