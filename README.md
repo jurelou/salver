@@ -15,6 +15,8 @@
 
 # Ideas:
 
+* dig
+
 * https://github.com/saeeddhqan/Maryam
 
 * https://bestpractices.coreinfrastructure.org/fr/projects/4577
