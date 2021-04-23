@@ -42,12 +42,11 @@ class BaseCollector:
     def configure(self):
         self.config = models.CollectorBaseConfig(**self.config)
 
-
     def callbacks(self) -> Dict[models.BaseFact, Callable]:
-        logger.warning(f"Collector {type(self)} does not have any callbacks")
+        logger.warning(f'Collector {type(self)} does not have any callbacks')
         raise InvalidCollectorDefinition(
             type(self).__name__,
-            f"Collector {type(self).__name__} does not have any callbacks",
+            f'Collector {type(self).__name__} does not have any callbacks',
         )
 
     def _sanitize_output(self, fn):
@@ -60,9 +59,13 @@ class BaseCollector:
                 if isinstance(out, models.BaseFact):
                     yield out
                 else:
-                    logger.warning(f"Found unknown output from collector {self.config.name}: {out}")
+                    logger.warning(
+                        f'Found unknown output from collector {self.config.name}: {out}',
+                    )
         except Exception as err:
-            logger.error(f"Error while executing callback from {self.config.name}: {type(err).__name__} {err}")
+            logger.error(
+                f'Error while executing callback from {self.config.name}: {type(err).__name__} {err}',
+            )
             raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
@@ -90,8 +93,8 @@ class BaseCollector:
         callbacks = self._prepare_callbacks(facts)
 
         logger.debug(
-            f"Execute collector {self.config.name} with \
-            {len(facts)} facts and {len(callbacks)} callbacks",
+            f'Execute collector {self.config.name} with \
+            {len(facts)} facts and {len(callbacks)} callbacks',
         )
 
         output_facts = self._execute_callbacks(callbacks)

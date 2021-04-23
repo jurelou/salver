@@ -6,30 +6,30 @@ from salver.agent.collectors.docker import DockerCollector
 
 class PhoneInfoga(DockerCollector):
     config = {
-        "name": "phone-infoga",
-        "docker": {"build_context": get_actual_dir()},
+        'name': 'phone-infoga',
+        'docker': {'build_context': get_actual_dir()},
     }
 
     def callbacks(self):
         return {Phone: self.scan}
 
     def scan(self, phone):
-        data = self.run_container(command=["scan", "-n", phone.number])
+        data = self.run_container(command=['scan', '-n', phone.number])
 
         for item in self.findall_regex(
             data,
-            r"\[i\] Running local scan...\n\[\+\] Local format: (.*)\n\[\+\] \
+            r'\[i\] Running local scan...\n\[\+\] Local format: (.*)\n\[\+\] \
             E164 format:.*\n\[\+\] International format: (.*)\n\[\+\] \
-            Country found:.*\((.*)\)\n\[\+\] Carrier: (.*)",
+            Country found:.*\((.*)\)\n\[\+\] Carrier: (.*)',
         ):
             local_format, international_format, country_code, carrier = item
 
         for item in self.findall_regex(
             data,
-            r"\[i\] Running Numverify.com scan...\n\[\+\] Valid: \
+            r'\[i\] Running Numverify.com scan...\n\[\+\] Valid: \
             (.*)\n\[\+\] Number:.*\n\[\+\] Local format: (.*)\n\[\+\] International format: \
             (.*)\n\[\+\] Country code: (.*) \(.*\n\[\+\] Country: (.*)\n\[\+\] Location: \
-            (.*)\n\[\+\] Carrier: (.*)\n\[\+\] Line type: (.*)\n",
+            (.*)\n\[\+\] Carrier: (.*)\n\[\+\] Line type: (.*)\n',
         ):
             (
                 valid,

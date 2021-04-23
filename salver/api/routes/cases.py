@@ -11,13 +11,13 @@ from salver.api.services.database import get_database
 router = APIRouter()
 
 
-@router.get("/", response_model=models.UUIDsInResponse)
+@router.get('/', response_model=models.UUIDsInResponse)
 async def get_cases(db: DatabaseManager = Depends(get_database)):
     cases_ids = db.list_cases()
     return models.UUIDsInResponse(ids=cases_ids)
 
 
-@router.get("/{case_id}", response_model=models.CaseInResponse)
+@router.get('/{case_id}', response_model=models.CaseInResponse)
 async def get_case(case_id: UUID, db: DatabaseManager = Depends(get_database)):
     try:
         case = db.get_case(case_id)
@@ -30,7 +30,7 @@ async def get_case(case_id: UUID, db: DatabaseManager = Depends(get_database)):
         raise HTTPException(status_code=404, detail=str(err))
 
 
-@router.post("/", response_model=models.UUIDInResponse)
+@router.post('/', response_model=models.UUIDInResponse)
 async def create_case(
     case: models.CaseInRequest,
     db: DatabaseManager = Depends(get_database),

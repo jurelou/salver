@@ -2,4 +2,4 @@
 from .case import CaseInDB
 from .scan import ScanInDB
 
-__all__ = ["CaseInDB", "ScanInDB"]
+__all__ = ['CaseInDB', 'ScanInDB']

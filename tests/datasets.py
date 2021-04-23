@@ -9,12 +9,12 @@ UNIT_CONTROLLER_SCAN_1 = None
 
 def unit_controller():
     global UNIT_CONTROLLER_SCAN_1
- 
-    case = models.Case(name="test-unit-controller-tasks")
+
+    case = models.Case(name='test-unit-controller-tasks')
     case = api.create_case(case)
 
     scan = api_models.ScanInRequest(
-        case_id=case["id"],
+        case_id=case['id'],
         scan_type='single_collector',
         facts=[
             api_models.FactInRequest(
@@ -28,7 +28,7 @@ def unit_controller():
         config=models.ScanConfig(collector_name='dummy-docker-collector'),
     )
     scan = api.create_scan(scan)
-    UNIT_CONTROLLER_SCAN_1 = uuid.UUID(scan["id"])
+    UNIT_CONTROLLER_SCAN_1 = uuid.UUID(scan['id'])
 
 def boot():
     unit_controller()

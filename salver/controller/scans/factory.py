@@ -16,5 +16,5 @@ class ScanFactory(Factory):
             )
         }
         self.items = scans
-        logger.info(f"Loaded scans: {scans.keys()}")
+        logger.info(f'Loaded scans: {scans.keys()}')
         return scans

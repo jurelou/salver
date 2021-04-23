@@ -15,7 +15,7 @@ from salver.common.singleton import Singleton
 class Factory(ABC, Singleton):
     @property
     def items(self):
-        if hasattr(self, "_items"):
+        if hasattr(self, '_items'):
             return self._items
         return None
 
@@ -34,9 +34,9 @@ class Factory(ABC, Singleton):
             if ispkg:
                 yield from Factory._discover_packages(pkg_path)
                 continue
-            if pkg_path.startswith("./"):
+            if pkg_path.startswith('./'):
                 pkg_path = pkg_path[2:]
-            yield pkg_path.replace("/", ".")
+            yield pkg_path.replace('/', '.')
 
     @staticmethod
     def load_classes_from_module(root_path, parent_class):
@@ -49,7 +49,7 @@ class Factory(ABC, Singleton):
                     module = import_module(mod_path)
                 except Exception as err:
                     traceback.print_exc(file=sys.stdout)
-                    logger.critical(f"Could not import module {mod_path}: {err}")
+                    logger.critical(f'Could not import module {mod_path}: {err}')
             else:
                 module = sys.modules[mod_path]
             for _, mod_cls in inspect.getmembers(module, inspect.isclass):

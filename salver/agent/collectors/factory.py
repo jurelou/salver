@@ -15,44 +15,39 @@ ENABLED_COLLECTORS = set(agent_config.enabled_collectors) or []
 class CollectorFactory(Factory):
     def _check_collector(self, collector):
         # Collectors should have a config dict
-        if not hasattr(collector, "config"):
+        if not hasattr(collector, 'config'):
             raise InvalidCollectorDefinition(
                 collector,
-                "Missing config",
+                'Missing config',
             )
 
-        if "name" not in collector.config:
+        if 'name' not in collector.config:
             raise InvalidCollectorDefinition(
                 collector,
-                "Missing `name` property",
+                'Missing `name` property',
             )
 
-        collector_name = collector.config["name"]
+        collector_name = collector.config['name']
 
         # Checks for duplicate collector names
         if collector_name in self.items:
             raise InvalidCollectorDefinition(
                 collector_name,
-                f"Duplicate name {collector_name} found",
+                f'Duplicate name {collector_name} found',
             )
 
         if collector_name not in ENABLED_COLLECTORS:
             return collector_name, {
-                "instance": None,
-                "active": False,
+                'instance': None,
+                'active': False,
             }
         try:
             collector_instance = collector()
         except Exception as err:
             raise InvalidCollectorDefinition(collector, err)
-
-        # logger.debug(
-        #     f'Loaded collector {collector_name} \
-        #     active: {} with config: {collector_instance.config}',
-        # )
         return collector_name, {
-            "instance": collector_instance,
-            "active": True,
+            'instance': collector_instance,
+            'active': True,
         }
 
     def build(self):
@@ -60,7 +55,6 @@ class CollectorFactory(Factory):
             root_path=agent_config.collectors_path,
             parent_class=BaseCollector,
         )
-        print("!!!!", collector_modules)
 
         self.items = {}
         for collector in collector_modules:
@@ -73,7 +67,7 @@ class CollectorFactory(Factory):
         for collector_name in ENABLED_COLLECTORS:
             if collector_name not in self.items:
                 logger.critical(
-                    f"Collector {collector_name} not found, but it was defined in the settings.yml",
+                    f'Collector {collector_name} not found, but it was defined in the settings.yml',
                 )
                 raise MissingCollectorDefinition(collector_name)
 

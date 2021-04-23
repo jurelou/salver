@@ -15,20 +15,20 @@ from salver.api.services.remote_tasks import sync_call
 router = APIRouter()
 
 
-@router.get("/", response_model=models.UUIDsInResponse)
+@router.get('/', response_model=models.UUIDsInResponse)
 async def get_scans(db: DatabaseManager = Depends(get_database)):
     scans_ids = db.list_scans()
     return models.UUIDsInResponse(ids=scans_ids)
 
 
-@router.get("/{scan_id}")
+@router.get('/{scan_id}')
 async def get_scan(scan_id: UUID, db: DatabaseManager = Depends(get_database)):
 
     try:
         scan_db = db.get_scan(scan_id)
         facts = db.get_input_facts_for_scan(scan_id)
         facts = [
-            models.FactInResponse(fact_type=f.schema()["title"], **f.dict())
+            models.FactInResponse(fact_type=f.schema()['title'], **f.dict())
             for f in facts
         ]
         return models.ScanInResponse(facts=facts, **scan_db.dict())
@@ -36,12 +36,12 @@ async def get_scan(scan_id: UUID, db: DatabaseManager = Depends(get_database)):
         raise HTTPException(status_code=404, detail=str(err))
 
 
-@router.post("/", response_model=models.UUIDInResponse)
+@router.post('/', response_model=models.UUIDInResponse)
 async def create_scan(
     scan_request: models.ScanInRequest,
     db: DatabaseManager = Depends(get_database),
 ):
-    scan = Scan(**scan_request.dict(exclude={"facts"}))
+    scan = Scan(**scan_request.dict(exclude={'facts'}))
     facts = [all_facts[f.fact_type](**f.fact.dict()) for f in scan_request.facts]
 
     try:
@@ -52,15 +52,15 @@ async def create_scan(
     return models.UUIDInResponse(id=scan_id)
 
 
-@router.get("/{scan_id}/launch")
+@router.get('/{scan_id}/launch')
 async def get_scan(scan_id: UUID, db: DatabaseManager = Depends(get_database)):
     try:
-        res = sync_call("salver.controller.tasks.launch_scan", args=[scan_id])
+        res = sync_call('salver.controller.tasks.launch_scan', args=[scan_id])
     except db_exceptions.ScanNotFound as err:
         raise HTTPException(status_code=404, detail=str(err))
     except ctrl_exceptions.ScanRuntimeError as err:
         raise HTTPException(status_code=500, detail=str(err))
-    return "OK"
+    return 'OK'
     # try:
     #     scan_db = db.get_scan(scan_id)
     #     facts = db.get_input_facts_for_scan(scan_id)

@@ -85,7 +85,7 @@ class DatabaseManager:
 
     def add_scan_input_facts(self, scan_id: uuid.UUID, facts: List[BaseFact]):
         self.elasticsearch.add_facts(facts)
-        self.neo4j.add_facts(scan_id, facts, relationship="INPUTS")
+        self.neo4j.add_facts(scan_id, facts, relationship='INPUTS')
 
     def get_scan(self, scan_id: uuid.UUID) -> db_models.ScanInDB:
         """Retrieve a scan by it's ID.

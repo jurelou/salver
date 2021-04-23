@@ -9,4 +9,4 @@ class BucketFullException(SalverException):
         self.rate = rate
 
     def __str__(self):
-        return f"Bucket with Rate {self.rate.limit}/{self.rate.interval.name} is full"
+        return f'Bucket with Rate {self.rate.limit}/{self.rate.interval.name} is full'

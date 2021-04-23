@@ -20,8 +20,8 @@ celery_app.conf.update(controller_config.celery)
 
 celery_app.conf.update(
     {
-        "imports": "salver.controller.tasks",
-        "task_default_queue": "controller",
+        'imports': 'salver.controller.tasks',
+        'task_default_queue': 'controller',
     },
 )
 
@@ -31,14 +31,14 @@ db_manager.bootstrap()
 periodic_tasks.flush()
 periodic_tasks.add_periodic_task(
     celery_app,
-    "salver.controller.tasks.reload_agents",
+    'salver.controller.tasks.reload_agents',
     controller_config.refresh_agents_interval,
 )
 
 
 # Hack for coverage.
 # See: https://github.com/nedbat/coveragepy/issues/689
-IS_TESTING = controller_config.ENV_FOR_DYNACONF == "testing"
+IS_TESTING = controller_config.ENV_FOR_DYNACONF == 'testing'
 if IS_TESTING:
     from coverage import Coverage  # pragma: nocover
 
@@ -57,7 +57,7 @@ def init(sender=None, conf=None, **kwargs):
         # reload_agents.apply()
 
     except Exception as err:
-        logger.critical(f"Error in signal `worker_init`: {err}")
+        logger.critical(f'Error in signal `worker_init`: {err}')
 
 
 @worker_process_shutdown.connect
@@ -67,13 +67,13 @@ def on_shutdown(**kwargs):
         COVERAGE.save()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     argv = [
-        "-A",
-        "salver.controller.app",
-        "worker",
-        "--hostname=controller_main",
-        "-B",
+        '-A',
+        'salver.controller.app',
+        'worker',
+        '--hostname=controller_main',
+        '-B',
     ]
 
     celery_app.worker_main(argv)

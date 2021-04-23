@@ -8,5 +8,5 @@ class Profile(BaseFact):
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {"mappings": {"properties": {"url": {"type": "keyword"}}}},
+            {'mappings': {'properties': {'url': {'type': 'keyword'}}}},
         )

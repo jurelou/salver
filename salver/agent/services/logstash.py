@@ -17,7 +17,7 @@ class LogstashInput:
         self.lock = threading.Lock()
         self.socket = self.init_socket()
 
-    def close(self):
+    def close(self):  # pragma: no cover
         if self.socket is not None:
             self.socket.close()
             self.socket = None
@@ -33,34 +33,34 @@ class LogstashInput:
         sock = None
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        except socket.error as err:
-            logger.critical(f"Socket error: {err}")
+        except socket.error as err:  # pragma: no cover
+            logger.critical(f'Socket error: {err}')
             return None
         try:
             sock.connect((self.host, self.port))
-        except socket.error as err:
-            logger.critical(f"Socket connect error: {err}")
+        except socket.error as err:  # pragma: no cover
+            logger.critical(f'Socket connect error: {err}')
         return sock
 
     def send_facts(self, facts: List[BaseFact]):
-        buffer = b""
+        buffer = b''
         buf_size = 0
         for fact in facts:
-            data = fact.dict(exclude={"hash__"})
-            data["@metadata"] = {
-                "document_id": fact.hash__,
-                "fact_type": f"facts_{fact.schema()['title'].lower()}",
+            data = fact.dict(exclude={'hash__'})
+            data['@metadata'] = {
+                'document_id': fact.hash__,
+                'fact_type': f"facts_{fact.schema()['title'].lower()}",
             }
-            logger.info(f"Push to logstash: {data}")
+            logger.info(f'Push to logstash: {data}')
 
-            json_data = json.dumps(data).encode("utf-8")
+            json_data = json.dumps(data).encode('utf-8')
 
-            buffer = buffer + json_data + b"\n"
+            buffer = buffer + json_data + b'\n'
             buf_size = buf_size + len(json_data)
 
-            if buf_size > 10000:
+            if buf_size > 10000:  # pragma: no cover
                 self.send(buffer)
-                buffer = ""
+                buffer = ''
                 buf_size = 0
 
         if buf_size != 0:

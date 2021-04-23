@@ -13,8 +13,8 @@ from salver.controller.services import scans, agents, agents_tasks
 
 @celery_app.task
 def ping():
-    logger.info("Ping")
-    return "pong"
+    logger.info('Ping')
+    return 'pong'
 
 
 # @celery_app.task
@@ -23,7 +23,7 @@ def ping():
 
 @celery_app.task
 def list_agents():
-    logger.info("List agents")
+    logger.info('List agents')
     return [
         models.Agent(name=name, collectors=collectors)
         for name, collectors in agents.AVAILABLE_AGENTS.items()
@@ -32,13 +32,13 @@ def list_agents():
 
 @celery_app.task
 def reload_agents():
-    logger.info("Reload agents")
+    logger.info('Reload agents')
     agents.refresh_agents()
 
 
 @celery_app.task
 def launch_scan(scan_id: UUID):
-    logger.info(f"Launch scan {scan_id}")
+    logger.info(f'Launch scan {scan_id}')
 
     scan = db_manager.get_scan(scan_id)
     db_manager.update_scan_state(scan.external_id, ScanState.STARTING)

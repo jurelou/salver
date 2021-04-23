@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import inspect
-import functools
 import operator
+import functools
 import itertools
+
 
 def get_actual_dir():
     """Get calling method absolute path."""

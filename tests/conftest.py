@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # -*- coding: utf-8 -*-
 import pytest
@@ -15,10 +16,10 @@ from salver.controller.app import celery_app as controller_app
 
 def start_agent():
     argv = [
-        "-A",
-        "salver.agent.app",
-        "worker",
-        "--hostname=agent_main",
+        '-A',
+        'salver.agent.app',
+        'worker',
+        '--hostname=agent_main',
         # "--concurrency=4"
 
     ]
@@ -26,11 +27,11 @@ def start_agent():
 
 def start_controller():
     argv = [
-        "-A",
-        "salver.controller.app",
-        "worker",
-        "--hostname=controller_main",
-        "-B",
+        '-A',
+        'salver.controller.app',
+        'worker',
+        '--hostname=controller_main',
+        '-B',
         # "--concurrency=4"
     ]
 

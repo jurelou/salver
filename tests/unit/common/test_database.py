@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from salver.config import api_config
 from salver.common.database import DatabaseManager
 from salver.common import models
@@ -12,7 +13,7 @@ db_manager = DatabaseManager(
 )
 
 def test_duplicate_case():
-    case_name = "test-duplicate-case"
+    case_name = 'test-duplicate-case'
     case1 = models.Case(name=case_name)
     case_id = db_manager.add_case(case1)
 

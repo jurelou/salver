@@ -47,7 +47,7 @@ def test_simple_scan():
 
     # Check if the scan is in the list
     list_scans = api.get_all_scans()
-    assert scan_id in list_scans["ids"] 
+    assert scan_id in list_scans['ids']
 
 
     # Check if the scan have been created

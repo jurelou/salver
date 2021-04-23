@@ -10,7 +10,7 @@ def test_invalid_docker_1():
 
     class SomeDocker(DockerCollector):
         config = {
-            "name": "dummy-docker-collector",
+            'name': 'dummy-docker-collector',
         }
 
         def callbacks(self):
@@ -23,8 +23,8 @@ def test_invalid_docker_2():
 
     class SomeDocker(DockerCollector):
         config = {
-            "name": "dummy-docker-collector",
-            "docker": {"image": "some image", "build_context": "some context"},
+            'name': 'dummy-docker-collector',
+            'docker': {'image': 'some image', 'build_context': 'some context'},
         }
 
         def callbacks(self):
@@ -37,8 +37,8 @@ def test_invalid_docker_3():
 
     class SomeDocker(DockerCollector):
         config = {
-            "name": "dummy-docker-collector",
-            "docker": {"build_context": "/tmp/this/should/not/exists"},
+            'name': 'dummy-docker-collector',
+            'docker': {'build_context': '/tmp/this/should/not/exists'},
         }
 
         def callbacks(self):
@@ -51,8 +51,8 @@ def test_invalid_docker_4():
 
     class SomeDocker(DockerCollector):
         config = {
-            "name": "dummy-docker-collector",
-            "docker": {"image": "this_docker_image_does_not_exists"},
+            'name': 'dummy-docker-collector',
+            'docker': {'image': 'this_docker_image_does_not_exists'},
         }
 
         def callbacks(self):
