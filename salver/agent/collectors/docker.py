@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import List, Union, Optional
 import os
+from typing import List, Union, Optional
+
 import docker as docker_cli
 from loguru import logger
-from pydantic import BaseModel, root_validator, ValidationError
+from pydantic import BaseModel, ValidationError, root_validator
 
 from salver.common.models import CollectorBaseConfig
 from salver.agent.collectors.base import BaseCollector
+
 
 class DockerConfig(BaseModel):
     image: Optional[str] = None
@@ -39,9 +41,10 @@ class DockerCollector(BaseCollector):
         self.__client = docker_cli.from_env()
         build_context = self.config.docker.build_context
         if build_context:
-            logger.debug(f"Building docker image {self.config.name} from {build_context}")
+            logger.debug(
+                f"Building docker image {self.config.name} from {build_context}"
+            )
             self.__build_image(build_context, tag=f"salver_{self.config.name}")
-
 
             self._image = f"salver_{self.config.name}"
         else:

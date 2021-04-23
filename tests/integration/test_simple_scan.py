@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from fastapi.testclient import TestClient
 from salver.api.main import app
 from salver.common import models
 from salver.api import models as api_models
@@ -8,7 +7,6 @@ import sys
 from tests import api
 from salver.facts import Person
 
-client = TestClient(app)
 CASE_NAME = 'simple scan case'
 
 
@@ -25,7 +23,7 @@ def test_simple_scan():
     assert case['scans'] == []
 
     # Check if the case is present in the list of cases IDs
-    res = api.get_all_cases(case_id)
+    res = api.get_all_cases()
     all_cases = res['ids']
     assert case_id in all_cases
 
@@ -46,6 +44,11 @@ def test_simple_scan():
     )
     res = api.create_scan(scan)
     scan_id = res['id']
+
+    # Check if the scan is in the list
+    list_scans = api.get_all_scans()
+    assert scan_id in list_scans["ids"] 
+
 
     # Check if the scan have been created
     scan = api.get_scan(scan_id)

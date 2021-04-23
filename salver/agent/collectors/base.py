@@ -47,10 +47,11 @@ class BaseCollector:
             return
         self._limiter.try_acquire()
 
+
     def callbacks(self) -> Dict[models.BaseFact, Callable]:
         logger.warning(f"Collector {type(self)} does not have any callbacks")
         raise InvalidCollectorDefinition(
-            self.config.name,
+            type(self).__name__,
             f"Collector {type(self).__name__} does not have any callbacks",
         )
 

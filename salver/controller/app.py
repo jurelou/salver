@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from loguru import logger
 from celery.signals import worker_init, worker_ready, worker_process_shutdown
 
@@ -30,18 +30,18 @@ db_manager.flush()
 db_manager.bootstrap()
 periodic_tasks.flush()
 periodic_tasks.add_periodic_task(
-            celery_app,
-            "salver.controller.tasks.reload_agents",
-            controller_config.refresh_agents_interval,
+    celery_app,
+    "salver.controller.tasks.reload_agents",
+    controller_config.refresh_agents_interval,
 )
-
 
 
 # Hack for coverage.
 # See: https://github.com/nedbat/coveragepy/issues/689
 IS_TESTING = controller_config.ENV_FOR_DYNACONF == "testing"
 if IS_TESTING:
-    from coverage import Coverage # pragma: nocover
+    from coverage import Coverage  # pragma: nocover
+
     COVERAGE = None
 
 
@@ -50,24 +50,21 @@ def init(sender=None, conf=None, **kwargs):
     try:
         if IS_TESTING:
             global COVERAGE
-            COVERAGE = Coverage(data_suffix=True)
+            COVERAGE = Coverage(branch=True, config_file=True)
             COVERAGE.start()
 
-        from .tasks import reload_agents  # pragma: nocover
-        reload_agents.apply()
+        # from .tasks import reload_agents  # pragma: nocover
+        # reload_agents.apply()
 
     except Exception as err:
         logger.critical(f"Error in signal `worker_init`: {err}")
 
 
-
 @worker_process_shutdown.connect
 def on_shutdown(**kwargs):
-        if IS_TESTING and COVERAGE:
-            COVERAGE.stop()
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            COVERAGE.save()
-
+    if IS_TESTING and COVERAGE:
+        # COVERAGE.stop()
+        COVERAGE.save()
 
 
 if __name__ == "__main__":
@@ -80,10 +77,6 @@ if __name__ == "__main__":
     ]
 
     celery_app.worker_main(argv)
-
-
-
-
 
 
 # # -*- coding: utf-8 -*-
@@ -129,7 +122,7 @@ if __name__ == "__main__":
 #             COVERAGE.start()
 #     except Exception as err:
 #         logger.critical(f"Error in signal `worker_init`: {err}")
-                
+
 
 # @worker_init.connect
 # def init(sender=None, conf=None, **kwargs):
@@ -151,7 +144,6 @@ if __name__ == "__main__":
 #         logger.critical(f"Error in signal `worker_init`: {err}")
 
 
-
 # @worker_process_shutdown.connect
 # def on_shutdown(**kwargs):
 #         if IS_TESTING and COVERAGE:
@@ -170,6 +162,3 @@ if __name__ == "__main__":
 #     ]
 
 #     celery_app.worker_main(argv)
-
-
-

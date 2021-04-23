@@ -39,16 +39,6 @@ def start_controller():
 @pytest.fixture(scope='session', autouse=True)
 def salver_simple_deployment(request):
 
-    # env = os.environ.copy()
-
-    # proc_agent = subprocess.Popen(
-    #     ['python', '-m', 'salver.agent.app'], preexec_fn=os.setsid, env=env
-    # )
-    # proc_engine = subprocess.Popen(
-    #     ['python', '-m', 'salver.controller.app'], preexec_fn=os.setsid, env=env
-    # )
-
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     agent = Process(target=start_agent)
     controller = Process(target=start_controller)
 
@@ -58,14 +48,10 @@ def salver_simple_deployment(request):
     def wait_for_engine():
         while True:
             time.sleep(1)
-            print("SALUT")
             if tasks.ping.delay().get():
-                print("UP")
                 tasks.reload_agents.delay().get()
                 return boot()
 
-    # request.addfinalizer(lambda: os.killpg(os.getpgid(proc_agent.pid), signal.SIGKILL))
-    # request.addfinalizer(lambda: os.killpg(os.getpgid(proc_engine.pid), signal.SIGKILL))
     request.addfinalizer(lambda: agent.terminate())
     request.addfinalizer(lambda: controller.terminate())
     wait_for_engine()

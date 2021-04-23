@@ -103,7 +103,7 @@ class Neo4jDB(BaseDB):
             )
             for record in result:
                 fact = record.get("fact")
-                if not fact:
+                if not fact: # pragma: no cover
                     continue
 
                 fact_type = fact.get("type")

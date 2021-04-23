@@ -2,6 +2,7 @@
 import os
 import inspect
 
+
 def get_actual_dir():
     """Get calling method absolute path."""
     frame = inspect.stack()[1]

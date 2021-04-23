@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from kombu import Queue
-from celery.signals import worker_process_init, worker_process_shutdown, worker_shutdown
-from celery.schedules import crontab
 from loguru import logger
+from celery.signals import worker_shutdown, worker_process_init, worker_process_shutdown
+from celery.schedules import crontab
+
 from salver.config import agent_config
 from salver.common.celery import create_app
 from salver.common.models import Collector
@@ -56,37 +57,35 @@ celery_app.conf.update(agent_config.celery)
 # See: https://github.com/nedbat/coveragepy/issues/689
 IS_TESTING = agent_config.ENV_FOR_DYNACONF == "testing"
 if IS_TESTING:
-    from coverage import Coverage # pragma: nocover
+    from coverage import Coverage  # pragma: nocover
+
     COVERAGE = None
 
-@worker_process_init.connect
+
+@worker_process_init.connect # pragma: no cover
 def on_init(sender=None, conf=None, **kwargs):
     try:
         if IS_TESTING:
             global COVERAGE
-            COVERAGE = Coverage(data_suffix=True)
+            COVERAGE = Coverage(branch=True, config_file=True)
             COVERAGE.start()
     except Exception as err:
         logger.critical(f"Error in signal `worker_process_init`: {err}")
 
-@worker_shutdown.connect
-def on_shutdown(**kwargs):
+
+@worker_process_shutdown.connect # pragma: no cover
+def on_process_shutdown(**kwargs):
+    
     try:
         logstash_client.close()
-    except Exception as err:
-        logger.critical(f"Error in signal `worker_shutdown`: {err}")
-
-
-@worker_process_shutdown.connect
-def on_process_shutdown(**kwargs):
-    try:
         if IS_TESTING and COVERAGE:
-            COVERAGE.stop()
+            # COVERAGE.stop()
             COVERAGE.save()
     except Exception as err:
         logger.critical(f"Error in signal `worker_process_shutdown`: {err}")
 
-if __name__ == "__main__":
+
+if __name__ == "__main__": # pragma: no cover
     argv = [
         "-A",
         "salver.agent.app",

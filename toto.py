@@ -275,3 +275,43 @@ tasks.reload_agents.delay().get()
 
 
 # print(task.get())
+
+
+
+
+
+
+salver/controller/utils/__init__.py                       0      0      0      0   100%
+salver/api/routes/errors/http.py                          5      1      0      0    80%   9
+salver/api/routes/errors/validation.py                   11      1      0      0    91%   18
+salver/common/database/manager.py                        65      1      6      1    97%   78
+salver/common/database/neo4j.py                          61      1     10      2    96%   112, 128->126
+salver/common/exceptions.py                               7      1      0      0    86%   12
+salver/controller/services/agents.py                     25      1      8      0    97%   16
+salver/agent/collectors/docker.py                        40      2      6      1    93%   28, 53
+salver/common/celery.py                                  19      2      4      0    91%   49-50
+salver/common/database/base.py                            8      2      0      0    75%   8, 12
+salver/common/database/elasticsearch.py                  45      2     18      2    94%   21, 28
+salver/common/database/exceptions.py                     13      3      0      0    77%   14, 19, 24
+salver/controller/scans/base.py                          20      3      2      1    82%   18, 21, 33
+salver/api/routes/cases.py                               26      4      0      0    85%   29-30, 40-41
+salver/api/routes/websockets.py                          14      4      0      0    71%   17, 22-23, 28
+salver/common/json_encoder.py                            29      4     14      3    84%   47, 55, 66-67
+salver/agent/tasks.py                                    31      5      4      1    83%   33-34, 41-43
+salver/common/limiter.py                                 60      5     20      3    88%   68, 71-77, 90->82
+salver/common/models/fact.py                             36      5      6      0    88%   16, 33-35, 39
+salver/agent/exceptions.py                               26      6      0      0    77%   21, 30, 35-36, 39, 44
+salver/common/factory.py                                 47      6     16      2    87%   20, 28, 38, 50-52
+salver/common/utils.py                                   20      6      4      1    62%   17-18, 25, 32-34
+salver/controller/app.py                                 31      6      6      2    73%   42->48, 50-60, 65->exit
+salver/controller/exceptions.py                          16      6      0      0    62%   11, 14, 19, 24-25, 28
+salver/controller/services/scans.py                      23      6      2      1    72%   17, 28-29, 35-37
+salver/agent/collectors/factory.py                       35      7     14      4    78%   19, 26, 33, 45-46, 73-76
+salver/api/routes/agents.py                              19      7      4      0    52%   18-19, 24-28
+salver/api/routes/scans.py                               43      8      6      0    80%   35-36, 50-51, 59-62
+salver/controller/services/agents_tasks.py               40     10      2      1    74%   20->28, 24-27, 40-42, 48-53
+salver/controller/utils/json_encoder.py                  19     10      8      0    41%   24-35, 39, 43
+salver/agent/collectors/base.py                          66     11     24      3    80%   48, 51-52, 62, 67-73, 114-116
+salver/agent/services/logstash.py                        50     12      8      2    72%   21-24, 37-39, 42-43, 63-65, 67->exit
+
+

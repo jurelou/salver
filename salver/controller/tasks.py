@@ -16,8 +16,10 @@ def ping():
     logger.info("Ping")
     return "pong"
 
+
 # @celery_app.task
 # def ping_agents():
+
 
 @celery_app.task
 def list_agents():
@@ -38,10 +40,7 @@ def reload_agents():
 def launch_scan(scan_id: UUID):
     logger.info(f"Launch scan {scan_id}")
 
-
-
     scan = db_manager.get_scan(scan_id)
     db_manager.update_scan_state(scan.external_id, ScanState.STARTING)
     scan_facts = db_manager.get_input_facts_for_scan(scan_id)
     scans.launch(scan, scan_facts)
-

@@ -50,7 +50,7 @@ class encode(json.JSONEncoder):
             mod = BaseFact.__module__
         else:
             mod = obj.__module__
-        
+
         if mod not in encode_map.keys():
             return json.JSONEncoder.default(self, obj)
         return encode_map[mod]["to_json"](obj)

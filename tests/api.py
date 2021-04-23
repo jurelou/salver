@@ -20,10 +20,14 @@ def get_scan(scan_id, **kwargs):
     return __check_response(res, **kwargs)
 
 
-def get_all_cases(case_id, **kwargs):
+def get_all_cases(**kwargs):
     res = client.get(f'/api/cases')
     return __check_response(res, **kwargs)
 
+
+def get_all_scans(**kwargs):
+    res = client.get(f'/api/scans')
+    return __check_response(res, **kwargs)
 
 def launch_scan(scan_id, **kwargs):
     res = client.get(f'/api/scans/{scan_id}/launch')

@@ -18,9 +18,10 @@ class LogstashInput:
         self.socket = self.init_socket()
 
     def close(self):
-        logger.info("Closing logstash client")
-        if self.socket:
+        if self.socket is not None:
+            logger.info("Closing logstash client")
             self.socket.close()
+            self.socket = None
 
     def send(self, data):
         self.lock.acquire()

@@ -1,6 +1,6 @@
 ---
 default:
-    refresh_agents_interval: 5
+    refresh_agents_interval: 10
     salver:
         scans_path: salver/controller/scans/modules/
 
