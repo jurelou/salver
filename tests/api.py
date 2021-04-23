@@ -37,6 +37,8 @@ def create_scan(scan, **kwargs):
 
 def __check_response(response, check_200=True, get_return_code=False, **kwargs):
     if check_200:
+        if response.status_code not in (200, 201):
+            print(f"Error: {response.status_code}: {response.text}")
         assert response.status_code in (200, 201)
     try:
         content = response.json()

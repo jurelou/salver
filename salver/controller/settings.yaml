@@ -3,8 +3,9 @@ default:
     refresh_agents_interval: 5
     salver:
         scans_path: salver/controller/scans/modules/
+
     celery:
-        queue_name: salve_controller
+        queue_name: salver_controller
         broker_url: redis://localhost/0
         result_backend: redis://localhost/1
         task_ignore_result: false

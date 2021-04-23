@@ -16,16 +16,16 @@ class ScanInRequest(Scan):
 
     class Config:
         schema_extra = {
-            'example': {
-                'case_id': '4242',
-                'facts': [
+            "example": {
+                "case_id": "4242",
+                "facts": [
                     {
-                        'fact_type': 'Person',
-                        'fact': {'firstname': 'John', 'lastname': 'Doe', 'age': 42},
+                        "fact_type": "Person",
+                        "fact": {"firstname": "John", "lastname": "Doe", "age": 42},
                     },
                 ],
-                'scan_type': 'single_collector',
-                'config': {'collector_name': 'dummy-docker-collector'},
+                "scan_type": "single_collector",
+                "config": {"collector_name": "dummy-docker-collector"},
             },
         }
 

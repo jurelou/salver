@@ -65,7 +65,7 @@ class Limiter:
     @staticmethod
     def _validate_rate_list(rates):
         if not rates:
-            raise ValueError('Rate(s) must be provided')
+            raise ValueError("Rate(s) must be provided")
 
         for idx, rate in enumerate(rates[1:]):
             prev_rate = rates[idx]
@@ -74,7 +74,7 @@ class Limiter:
                 or rate.interval.value <= prev_rate.interval.value
             )
             if invalid:
-                raise ValueError(f'{prev_rate} cannot come before {rate}')
+                raise ValueError(f"{prev_rate} cannot come before {rate}")
 
     def try_acquire(self) -> None:
         """Acquiring an item or reject it if rate-limit has been exceeded."""

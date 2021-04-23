@@ -11,34 +11,35 @@ from salver.common.exceptions import BucketFullException
 from salver.common.models.fact import BaseFact
 
 
-@celery_app.task(name='ping')
+@celery_app.task(name="ping")
 def ping():
-    logger.info('ping')
-    return 'pong'
+    logger.info("ping")
+    return "pong"
 
 
-@celery_app.task(name='scan', bind=True, max_retries=3)
+@celery_app.task(name="scan", bind=True, max_retries=3)
 def scan(self, facts: List[BaseFact]):
-    collector_name = current_task.request.delivery_info['routing_key']
+    collector_name = current_task.request.delivery_info["routing_key"]
 
-    logger.info(f'Scanning {len(facts)} facts with {collector_name}')
+    logger.info(f"Scanning {len(facts)} facts with {collector_name}")
+
     # Check if collector exists
     if collector_name not in all_collectors:
-        logger.debug(f'Collector {collector_name} not found')
+        logger.debug(f"Collector {collector_name} not found")
         raise exceptions.CollectorNotFound(collector_name)
 
     # Check if collector is active
-    if not all_collectors[collector_name]['active']:
-        logger.debug(f'Collector {collector_name} is not active')
+    if not all_collectors[collector_name]["active"]:
+        logger.debug(f"Collector {collector_name} is not active")
         raise exceptions.CollectorDisabled(collector_name)
 
-    collector = all_collectors[collector_name]['instance']
+    collector = all_collectors[collector_name]["instance"]
 
     # Check if the collector is rate limited
     try:
         collector.check_rate_limit()
     except BucketFullException as err:
-        logger.warning(f'Retry scan of {collector_name} in {err.remaining_time}s')
+        logger.warning(f"Retry scan of {collector_name} in {err.remaining_time}s")
         raise self.retry(countdown=err.remaining_time, exc=err)
 
     collect_result, facts = collector.collect(facts)

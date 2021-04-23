@@ -10,7 +10,7 @@ class GenericFact(BaseModel):
     fact_type: str
 
     class Config(BaseConfig):
-        extra = 'allow'
+        extra = "allow"
 
 
 class FactInResponse(GenericFact):

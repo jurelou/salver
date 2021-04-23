@@ -7,6 +7,7 @@ from salver.common.models import BaseFact, ScanResult
 from salver.common.database import models as db_models
 
 from . import exceptions
+from .base import BaseDB
 from .neo4j import Neo4jDB
 from .mongodb import MongoDB
 from .elasticsearch import ElasticsearchDB
@@ -19,27 +20,25 @@ class DatabaseManager:
         self._mongodb = MongoDB(config=mongodb_config)
 
     def flush(self):
-        for db in self.databases:
-            db.flush()
+        [db.flush() for db in self.databases]
 
     def bootstrap(self):
-        for db in self.databases:
-            db.bootstrap()
+        [db.bootstrap() for db in self.databases]
 
     @property
-    def neo4j(self):
+    def neo4j(self) -> Neo4jDB:
         return self._neo4j
 
     @property
-    def mongodb(self):
+    def mongodb(self) -> MongoDB:
         return self._mongodb
 
     @property
-    def elasticsearch(self):
+    def elasticsearch(self) -> ElasticsearchDB:
         return self._elasticsearch
 
     @property
-    def databases(self):
+    def databases(self) -> List[BaseDB]:
         return [self.mongodb, self.neo4j, self.elasticsearch]
 
     def update_scan_state(self, scan_id, state: common_models.ScanState):
@@ -86,7 +85,7 @@ class DatabaseManager:
 
     def add_scan_input_facts(self, scan_id: uuid.UUID, facts: List[BaseFact]):
         self.elasticsearch.add_facts(facts)
-        self.neo4j.add_facts(scan_id, facts, relationship='INPUTS')
+        self.neo4j.add_facts(scan_id, facts, relationship="INPUTS")
 
     def get_scan(self, scan_id: uuid.UUID) -> db_models.ScanInDB:
         """Retrieve a scan by it's ID.
@@ -99,14 +98,7 @@ class DatabaseManager:
         Raises:
             ScanNotFound: If the scan does not exists.
         """
-        print('MONGODB', scan_id, type(scan_id))
-        scan = self.mongodb.get_scan(scan_id)
-        print('-azeaze', scan)
-        # facts_ids = self.neo4j.get_scan_input_facts(scan_id)
-        # facts = list(self.elasticsearch.get_facts(facts_ids))
-
-        # scan.facts = facts
-        return scan
+        return self.mongodb.get_scan(scan_id)
 
     def list_scans(self) -> List[uuid.UUID]:
         return self.mongodb.list_scans()
@@ -136,6 +128,5 @@ class DatabaseManager:
         return res
 
     def add_scan_results(self, scan_id: uuid.UUID, scan_result: ScanResult):
-        print(f'Add result to scan {scan_id}, {scan_result}')
         # self.mongodb.add_scan_results(scan_id, scan_result)
         self.neo4j.add_scan_results(scan_id, scan_result)

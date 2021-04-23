@@ -6,8 +6,8 @@ from salver.agent.collectors.docker import DockerCollector
 
 class Kupa3(DockerCollector):
     config = {
-        'name': 'kupa3',
-        'docker': {'build_context': get_actual_dir()},
+        "name": "kupa3",
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):
@@ -16,6 +16,6 @@ class Kupa3(DockerCollector):
         }
 
     def scan(self, domain):
-        data = self.run_container(command=['ls', '-la'])
-        for item in self.findall_regex(data, r'(.*)'):
+        data = self.run_container(command=["ls", "-la"])
+        for item in self.findall_regex(data, r"(.*)"):
             yield

@@ -6,8 +6,8 @@ from salver.agent.collectors.base import BaseCollector
 
 class Dummy(BaseCollector):
     config = {
-        'name': 'dummy-collector',
-        'limiter': [RequestRate(limit=1, interval=Duration.SECOND)],
+        "name": "dummy-collector",
+        "limiter": [RequestRate(limit=1, interval=Duration.SECOND)],
     }
 
     def callbacks(self):
@@ -16,5 +16,5 @@ class Dummy(BaseCollector):
         }
 
     def cb_email(self, email):
-        yield Username(name=f'Mr. {email.address}')
-        yield Username(name=f'Mrs. {email.address}')
+        yield Username(name=f"Mr. {email.address}")
+        yield Username(name=f"Mrs. {email.address}")

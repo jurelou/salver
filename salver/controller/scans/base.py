@@ -9,7 +9,7 @@ from salver.controller.services.agents import get_collectors_names
 
 
 class BaseScan:
-    name: str = ''
+    name: str = ""
     config: ScanConfig = None
     scan_id: UUID = None
 
@@ -21,7 +21,7 @@ class BaseScan:
         self.config = config
 
     def scan(self, facts):
-        raise NotImplementedError(f'{type(self)} does not implements `scan`')
+        raise NotImplementedError(f"{type(self)} does not implements `scan`")
 
     def launch_collector(
         self,

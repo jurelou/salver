@@ -1,5 +1,7 @@
 [run]
 branch = true
+concurrency = multiprocessing
+parallel = true
 source = salver
 omit =
     salver/modules/*

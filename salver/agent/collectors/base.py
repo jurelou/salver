@@ -32,8 +32,8 @@ class BaseCollector:
 
         try:
             self.configure()
-        except ValidationError as err:
-            raise InvalidCollectorDefinition(self.config.name, err) from err
+        except Exception as err:
+            raise InvalidCollectorDefinition(type(self).__name__, err) from err
 
         self._limiter = None
         if self.config.limiter:
@@ -48,10 +48,10 @@ class BaseCollector:
         self._limiter.try_acquire()
 
     def callbacks(self) -> Dict[models.BaseFact, Callable]:
-        logger.warning(f'Collector {type(self)} does not have any callbacks')
+        logger.warning(f"Collector {type(self)} does not have any callbacks")
         raise InvalidCollectorDefinition(
             self.config.name,
-            f'Collector {type(self).__name__} does not have any callbacks',
+            f"Collector {type(self).__name__} does not have any callbacks",
         )
 
     def _sanitize_output(self, fn):
@@ -65,11 +65,11 @@ class BaseCollector:
                     yield out
                 else:
                     logger.error(
-                        f'Found unknown output from collector \
-                        {self.config.name}: {out}',
+                        f"Found unknown output from collector \
+                        {self.config.name}: {out}",
                     )
         except Exception as err:
-            logger.error(f'Error while executing {fn} from {self.config.name}: {err}')
+            logger.error(f"Error while executing {fn} from {self.config.name}: {err}")
             raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
@@ -95,8 +95,8 @@ class BaseCollector:
         callbacks = self._prepare_callbacks(facts)
 
         logger.debug(
-            f'Execute collector {self.config.name} with \
-            {len(facts)} facts and {len(callbacks)} callbacks',
+            f"Execute collector {self.config.name} with \
+            {len(facts)} facts and {len(callbacks)} callbacks",
         )
 
         output_facts = self._execute_callbacks(callbacks)

@@ -7,8 +7,8 @@ from salver.agent.collectors.docker import DockerCollector
 
 class TheHarester(DockerCollector):
     config = {
-        'name': 'harvester',
-        'docker': {'build_context': get_actual_dir()},
+        "name": "harvester",
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):
@@ -26,41 +26,41 @@ class TheHarester(DockerCollector):
     def scan(self, target):
         data = self.run_container(
             command=[
-                '-d',
+                "-d",
                 target,
-                '--source',
-                'baidu,bing,bufferoverun,certspotter,crtsh,dnsdumpster,duckduckgo,\
+                "--source",
+                "baidu,bing,bufferoverun,certspotter,crtsh,dnsdumpster,duckduckgo,\
                 exalead,google,linkedin,linkedin_links,netcraft,\
-                omnisint,otx,qwant,rapiddns,threatminer,twitter,urlscan,yahoo',
+                omnisint,otx,qwant,rapiddns,threatminer,twitter,urlscan,yahoo",
             ],
         )
 
         for item, _ in self.findall_regex(
             data,
-            r'\[\*\] IPs found: \d+\n-------------------\
-            \n((.|\n)*)\n\[\*\] Emails found',
+            r"\[\*\] IPs found: \d+\n-------------------\
+            \n((.|\n)*)\n\[\*\] Emails found",
         ):
-            for ip in item.split('\n'):
+            for ip in item.split("\n"):
                 if ip:
                     yield IPv4(address=ip)
 
         for item, _ in self.findall_regex(
             data,
-            r'\[\*\] Emails found: \d+\n----------------------\n((.|\n)*)\n\[\*\] Hosts found',
+            r"\[\*\] Emails found: \d+\n----------------------\n((.|\n)*)\n\[\*\] Hosts found",
         ):
-            for email in item.split('\n'):
+            for email in item.split("\n"):
                 if email:
                     yield Email(address=email)
 
         for item, _ in self.findall_regex(
             data,
-            r'\[\*\] Hosts found: \d+\n---------------------\n((.|\n)*)',
+            r"\[\*\] Hosts found: \d+\n---------------------\n((.|\n)*)",
         ):
-            for host in item.split('\n'):
+            for host in item.split("\n"):
                 if not host:
                     continue
-                if ':' in host:
-                    domain, ip = host.split(':')
+                if ":" in host:
+                    domain, ip = host.split(":")
                     yield Domain(fqdn=domain, address=ip)
                     yield IPv4(address=ip, dns=domain)
                 else:

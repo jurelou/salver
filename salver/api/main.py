@@ -15,14 +15,14 @@ def get_app() -> FastAPI:
     """Configure and returns a FastAPI application."""
     new_app = FastAPI(title=api_config.FASTAPI.APP_NAME, debug=api_config.FASTAPI.DEBUG)
 
-    origins = ['http://localhost:8181']
+    origins = ["http://localhost:8181"]
 
     new_app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
         allow_credentials=True,
-        allow_methods=['*'],
-        allow_headers=['*'],
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     # app.add_event_handler("startup", start_app_handler(app))
@@ -33,7 +33,7 @@ def get_app() -> FastAPI:
 
     new_app.include_router(router, prefix=api_config.FASTAPI.API_PREFIX)
 
-    new_app.mount('/websock', socket_app)
+    new_app.mount("/websock", socket_app)
     return new_app
 
 

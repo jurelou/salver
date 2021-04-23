@@ -29,12 +29,12 @@ def refresh_agents():
     c_names = []
     for name in workers.keys():
         conf = celery_app.control.inspect([name]).conf()[name]
-        if 'collectors' not in conf:
+        if "collectors" not in conf:
             continue
-        collectors = [Collector(**collector) for collector in conf['collectors']]
+        collectors = [Collector(**collector) for collector in conf["collectors"]]
         c_names.extend([c.name for c in collectors])
         agents[name] = collectors
 
     AVAILABLE_AGENTS = agents
     COLLECTORS_NAMES = c_names
-    logger.info(f'Available agents: {AVAILABLE_AGENTS.keys()}')
+    logger.debug(f"Available agents: {AVAILABLE_AGENTS.keys()}")

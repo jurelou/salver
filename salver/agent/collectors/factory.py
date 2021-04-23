@@ -15,30 +15,30 @@ ENABLED_COLLECTORS = set(agent_config.enabled_collectors or [])
 class CollectorFactory(Factory):
     def _check_collector(self, collector):
         # Collectors should have a config dict
-        if not hasattr(collector, 'config'):
+        if not hasattr(collector, "config"):
             raise InvalidCollectorDefinition(
                 collector,
-                'Missing config',
+                "Missing config",
             )
 
-        collector_name = collector.config['name']
+        collector_name = collector.config["name"]
         if not collector_name:
             raise InvalidCollectorDefinition(
                 collector,
-                'Missing `name` property',
+                "Missing `name` property",
             )
 
         # Checks for duplicate collector names
         if collector_name in self.items:
             raise InvalidCollectorDefinition(
                 collector_name,
-                f'Duplicate name {collector_name} found',
+                f"Duplicate name {collector_name} found",
             )
 
         if collector_name not in ENABLED_COLLECTORS:
             return collector_name, {
-                'instance': None,
-                'active': False,
+                "instance": None,
+                "active": False,
             }
         try:
             collector_instance = collector()
@@ -50,8 +50,8 @@ class CollectorFactory(Factory):
         #     active: {} with config: {collector_instance.config}',
         # )
         return collector_name, {
-            'instance': collector_instance,
-            'active': True,
+            "instance": collector_instance,
+            "active": True,
         }
 
     def build(self):
@@ -71,7 +71,7 @@ class CollectorFactory(Factory):
         for collector_name in ENABLED_COLLECTORS:
             if collector_name not in self.items:
                 logger.critical(
-                    f'Collector {collector_name} not found, but it was defined in the settings.yml',
+                    f"Collector {collector_name} not found, but it was defined in the settings.yml",
                 )
                 raise MissingCollectorDefinition(collector_name)
 

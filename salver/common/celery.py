@@ -16,19 +16,19 @@ def create_app(json_encoder=None, json_decoder=None):
         json_encoder = default_encoder.json_loads
 
     register(
-        'customEncoder',
+        "customEncoder",
         json_decoder,
         json_encoder,
-        content_type='application/x-customEncoder',
-        content_encoding='utf-8',
+        content_type="application/x-customEncoder",
+        content_encoding="utf-8",
     )
     celery_app = celery.Celery(__name__)
     celery_app.conf.update(
         {
-            'accept_content': ['customEncoder', 'application/json'],
-            'task_serializer': 'customEncoder',
-            'result_serializer': 'customEncoder',
-            'worker_hijack_root_logger': False,
+            "accept_content": ["customEncoder", "application/json"],
+            "task_serializer": "customEncoder",
+            "result_serializer": "customEncoder",
+            "worker_hijack_root_logger": False,
         },
     )
     return celery_app

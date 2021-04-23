@@ -6,8 +6,8 @@ from salver.agent.collectors.docker import DockerCollector
 
 class Dirsearch(DockerCollector):
     config = {
-        'name': 'dirsearch',
-        'docker': {'build_context': get_actual_dir()},
+        "name": "dirsearch",
+        "docker": {"build_context": get_actual_dir()},
     }
 
     def callbacks(self):
@@ -15,9 +15,9 @@ class Dirsearch(DockerCollector):
 
     def from_domain(self, domain):
         data = self.run_container(
-            command=['-u', domain.fqdn, '-F', '--timeout=5', '-q', '-t', '4'],
+            command=["-u", domain.fqdn, "-F", "--timeout=5", "-q", "-t", "4"],
         )
-        print('!!!!', data)
+        print("!!!!", data)
 
-        for item in self.findall_regex(data, r'2\d\d - .* - ([^\s]+)'):
+        for item in self.findall_regex(data, r"2\d\d - .* - ([^\s]+)"):
             yield Uri(location=item)

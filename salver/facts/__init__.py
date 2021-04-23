@@ -4,4 +4,4 @@ from salver.facts.modules import *  # noqa: F403,F401
 
 all_facts = FactFactory().build()
 
-__all__ = ['all_facts']
+__all__ = ["all_facts"]

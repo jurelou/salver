@@ -16,15 +16,15 @@ async def http_422_error(
 ) -> JSONResponse:
     """Intercept 422 errors (UNPROCESSABLE_ENTITY)."""
     return JSONResponse(
-        {'errors': exc.errors()},
+        {"errors": exc.errors()},
         status_code=HTTP_422_UNPROCESSABLE_ENTITY,
     )
 
 
-validation_error_response_definition['properties'] = {
-    'errors': {
-        'title': 'Errors',
-        'type': 'array',
-        'items': {'$ref': '{}ValidationError'.format(REF_PREFIX)},
+validation_error_response_definition["properties"] = {
+    "errors": {
+        "title": "Errors",
+        "type": "array",
+        "items": {"$ref": "{}ValidationError".format(REF_PREFIX)},
     },
 }
