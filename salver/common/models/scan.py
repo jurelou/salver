@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
 import uuid
 from enum import Enum
-from time import time
-from typing import List, Optional
 
-from pydantic import Field, BaseModel, BaseConfig
+from pydantic import BaseModel, BaseConfig
 
 
 class ScanState(str, Enum):
-    UNKNOWN = "unknown"
-    CREATED = "created"
+    UNKNOWN = 'unknown'
+    CREATED = 'created'
 
-    STARTING = "starting"
-    STARTED = "started"
-    FINISHED = "finished"
-    ERRORED = "errored"
+    STARTING = 'starting'
+    STARTED = 'started'
+    FINISHED = 'finished'
+    ERRORED = 'errored'
 
 
 class ScanConfig(BaseModel):
     class Config(BaseConfig):
-        extra = "allow"
+        extra = 'allow'
 
 
 class Scan(BaseModel):
@@ -28,5 +26,5 @@ class Scan(BaseModel):
     config: ScanConfig
 
     class Config:
-        extra = "ignore"
+        extra = 'ignore'
         use_enum_values = True

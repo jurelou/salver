@@ -1,4 +1,3 @@
 ---
 cluster:
-  name: "salver-cluster"
-
+    name: salver-cluster

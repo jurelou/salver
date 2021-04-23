@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from salver.common.exceptions import OpulenceException
+from salver.common.exceptions import SalverException
 
 
-class AgentException(OpulenceException):
+class AgentException(SalverException):
     """Base agent exceptions."""
 
 
@@ -13,12 +13,12 @@ class CollectorException(AgentException):
 
 class CollectorNotFound(CollectorException):
     def __str__(self):
-        return f"Collector {self.collector_name} not found"
+        return f'Collector {self.collector_name} not found'
 
 
 class CollectorDisabled(CollectorException):
     def __str__(self):
-        return f"Collector {self.collector_name} is disabled"
+        return f'Collector {self.collector_name} is disabled'
 
 
 class InvalidCollectorDefinition(CollectorException):
@@ -27,7 +27,7 @@ class InvalidCollectorDefinition(CollectorException):
         self.error = error
 
     def __str__(self):
-        return f"Invalid collector definition for {self.collector_name}: {self.error}"
+        return f'Invalid collector definition for {self.collector_name}: {self.error}'
 
 
 class CollectorRuntimeError(CollectorException):
@@ -36,9 +36,10 @@ class CollectorRuntimeError(CollectorException):
         self.error = error
 
     def __str__(self):
-        return f"Collector runtime error for {self.collector_name}: {self.error}"
+        return f'Collector runtime error for {self.collector_name}: {self.error}'
 
 
 class MissingCollectorDefinition(CollectorException):
     def __str__(self):
-        return f"Can't find `{self.collector_name}`, which is defined in the configuration file. Check your settings.yml file `collectors` section."
+        return f"Can't find `{self.collector_name}`, which is defined \
+        in the configuration file. Check your settings.yml file `collectors` section."

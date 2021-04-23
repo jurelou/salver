@@ -1,43 +1,34 @@
 # -*- coding: utf-8 -*-
-import uuid
-from enum import Enum
-from time import time
-from typing import List, Optional
+from typing import List
 
-from pydantic import Field, BaseModel, BaseConfig
+from pydantic import BaseModel
 
-from salver.facts import all_facts
-from salver.common.models.scan import Scan, ScanState, ScanConfig
+from salver.common.models import Scan
 from salver.common.database.models.scan import ScanInDB
 
-from .facts import FactInResponse
+from .facts import FactInRequest, FactInResponse
 
-# class ScanInRequest(Scan):
-#     facts: List[BaseFact] = []
+# from salver.controller.models import ScanInRequest as ControlerScanInRequest
 
-#     def json(self, *_):
-#         res = self.dict(exclude={"facts", "case_id"})
-#         res["case_id"] = self.case_id.hex
-#         res["facts"] = [
-#             {"fact": f.json(), "fact_type": f.schema()["title"]} for f in self.facts
-#         ]
-#         return self.__config__.json_dumps(res)
 
-#     @classmethod
-#     def parse_obj(cls, obj) -> "Model":
-#         facts = [
-#             all_facts[f["fact_type"]].parse_raw(f["fact"]) for f in obj.pop("facts")
-#         ]
-#         return cls(facts=facts, **obj)
+class ScanInRequest(Scan):
+    facts: List[FactInRequest] = []
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'case_id': '4242',
+                'facts': [
+                    {
+                        'fact_type': 'Person',
+                        'fact': {'firstname': 'John', 'lastname': 'Doe', 'age': 42},
+                    },
+                ],
+                'scan_type': 'single_collector',
+                'config': {'collector_name': 'dummy-docker-collector'},
+            },
+        }
 
 
 class ScanInResponse(ScanInDB):
     facts: List[FactInResponse]
-    # def json(self, *_):
-    #     res = self.dict(exclude={"facts", "case_id", "external_id"})
-    #     res["case_id"] = self.case_id.hex
-    #     res["external_id"] = self.external_id.hex
-    #     res["facts"] = [
-    #         {"fact": f.json(), "fact_type": f.schema()["title"]} for f in self.facts
-    #     ]
-    #     return self.__config__.json_dumps(res)

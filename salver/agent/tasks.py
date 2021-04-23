@@ -1,50 +1,45 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
-from celery import group, current_task
+from celery import current_task
 from loguru import logger
 
 from salver.agent import exceptions
-from salver.agent.app import celery_app
+from salver.config import agent_config
+from salver.agent.app import celery_app, all_collectors, logstash_client
 from salver.common.exceptions import BucketFullException
 from salver.common.models.fact import BaseFact
-from salver.agent.elasticsearch import bulk_upsert
-from salver.agent.collectors.factory import CollectorFactory
-
-all_collectors = CollectorFactory().items
 
 
-@celery_app.task(name="ping")
-def ping(toto, tata):
-    print("pingaaa", toto, "tata", tata)
-    from salver.facts import Person
-    from salver.common.models import ScanResult
-
-    a = ScanResult(duration=2, executions_count=32, facts=["Perso"])
-    return a
+@celery_app.task(name='ping')
+def ping():
+    logger.info('ping')
+    return 'pong'
 
 
-@celery_app.task(name="scan", bind=True, max_retries=3)
+@celery_app.task(name='scan', bind=True, max_retries=3)
 def scan(self, facts: List[BaseFact]):
+    collector_name = current_task.request.delivery_info['routing_key']
 
-    print("@@@@@@@@@@@@@@@@@", facts)
-    # return group(B.s(i) for i in range(40))()
+    logger.info(f'Scanning {len(facts)} facts with {collector_name}')
 
-    collector_name = current_task.request.delivery_info["routing_key"]
+    # Check if collector exists
     if collector_name not in all_collectors:
+        logger.debug(f'Collector {collector_name} not found')
         raise exceptions.CollectorNotFound(collector_name)
-    if not all_collectors[collector_name]["active"]:
+
+    # Check if collector is active
+    if not all_collectors[collector_name]['active']:
+        logger.debug(f'Collector {collector_name} is not active')
         raise exceptions.CollectorDisabled(collector_name)
 
-    collector = all_collectors[collector_name]["instance"]
+    collector = all_collectors[collector_name]['instance']
+
     try:
-        collector.check_rate_limit()
+        collect_result, facts = collector.collect(facts)
     except BucketFullException as err:
-        logger.warning(f"Retry scan of {collector_name} in {err.remaining_time}s")
+        logger.warning(f'Retry scan of {collector_name} in {err.remaining_time}s')
         raise self.retry(countdown=err.remaining_time, exc=err)
 
-    collect_result, facts = collector.collect(facts)
-    bulk_upsert(facts)
-    collect_result.dict()
-    print("RETURN", collect_result.dict())
+    logstash_client.send_facts(facts)
     return collect_result.dict()

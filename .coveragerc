@@ -1,0 +1,19 @@
+[run]
+branch = true
+concurrency = multiprocessing
+parallel = true
+source = salver
+omit =
+    salver/modules/*
+    salver/facts/*
+
+[report]
+fail_under = 80
+show_missing = true
+sort = Miss
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == "__main__":

@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 import inspect
-import pkgutil
-from importlib import import_module
+import operator
+import functools
+import itertools
 
 
 def get_actual_dir():
+    """Get calling method absolute path."""
     frame = inspect.stack()[1]
     module = inspect.getmodule(frame[0])
-    filename = module.__file__
     return os.path.dirname(os.path.abspath(module.__file__))
 
 
 def is_iterable(element):
+    """check if item is iterable."""
     try:
         iter(element)
     except TypeError:
@@ -23,12 +24,20 @@ def is_iterable(element):
 
 
 def is_list(element):
+    """Check if item is a list."""
     return isinstance(element, (set, list, tuple))
 
 
-def make_list(data):
-    if is_iterable(data):
-        return list(data)
-    if not is_list(data):
+def make_flat_list(data):
+    """Convert any iterable to a flat list, recursively."""
+    if not is_iterable(data):
         return [data]
-    return data
+    res = []
+    for item in data:
+        if not item:
+            continue
+        if is_list(item):
+            res.extend(item)
+        else:
+            res.append(item)
+    return res

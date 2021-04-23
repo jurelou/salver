@@ -13,16 +13,16 @@ from .profile import Profile
 from .username import Username
 
 __all__ = [
-    "Company",
-    "Domain",
-    "Email",
-    "IPv4",
-    "IPv6",
-    "Person",
-    "Phone",
-    "Profile",
-    "Socket",
-    "Tweet",
-    "Uri",
-    "Username",
+    'Company',
+    'Domain',
+    'Email',
+    'IPv4',
+    'IPv6',
+    'Person',
+    'Phone',
+    'Profile',
+    'Socket',
+    'Tweet',
+    'Uri',
+    'Username',
 ]

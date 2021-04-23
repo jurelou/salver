@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from salver.config import api_config
 from salver.common.celery import create_app
 from salver.controller.utils.json_encoder import json_dumps, json_loads

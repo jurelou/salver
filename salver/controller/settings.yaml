@@ -1,22 +1,23 @@
+---
 default:
     refresh_agents_interval: 10
     salver:
         scans_path: salver/controller/scans/modules/
+
     celery:
-        queue_name: salve_controller
+        queue_name: salver_controller
         broker_url: redis://localhost/0
         result_backend: redis://localhost/1
-        task_ignore_result: False
+        task_ignore_result: false
 
         redbeat_redis_url: redis://localhost/2
-        beat_scheduler : redbeat.RedBeatScheduler
+        beat_scheduler: redbeat.RedBeatScheduler
 
 
     elasticsearch:
         endpoint:
             host: localhost
             port: 9200
-            #kibana_endpoint: http://localhost:5601
 
     neo4j:
         endpoint: bolt://localhost:7687
@@ -31,3 +32,12 @@ testing:
     mongodb:
         endpoint: mongodb://localhost:27017
         database: salver-test
+
+    celery:
+        queue_name: salve_controller
+        broker_url: redis://localhost/10
+        result_backend: redis://localhost/11
+        task_ignore_result: false
+
+        redbeat_redis_url: redis://localhost/12
+        beat_scheduler: redbeat.RedBeatScheduler

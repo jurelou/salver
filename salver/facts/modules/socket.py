@@ -3,17 +3,17 @@ from salver.common.models.fact import BaseFact
 
 
 class Socket(BaseFact):
-    port: int
+    port_number: int
     proto: str
 
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
             {
-                "mappings": {
-                    "properties": {
-                        "port": {"type": "integer"},
-                        "proto": {"type": "keyword"},
+                'mappings': {
+                    'properties': {
+                        'port': {'type': 'integer'},
+                        'proto': {'type': 'keyword'},
                     },
                 },
             },

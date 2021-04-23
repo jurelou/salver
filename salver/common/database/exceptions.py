@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from salver.common.exceptions import OpulenceException
+from salver.common.exceptions import SalverException
 
 
-class DatabaseException(OpulenceException):
+class DatabaseException(SalverException):
     """Base engine exceptions."""
 
     def __init__(self, item):
@@ -11,14 +11,14 @@ class DatabaseException(OpulenceException):
 
 class ScanNotFound(DatabaseException):
     def __str__(self):
-        return f"Scan {self.item} not found"
+        return f'Scan {self.item} not found'
 
 
 class CaseNotFound(DatabaseException):
     def __str__(self):
-        return f"Case {self.item} not found"
+        return f'Case {self.item} not found'
 
 
 class CaseAlreadyExists(DatabaseException):
     def __str__(self):
-        return f"Case with name {self.item} already exists"
+        return f'Case with name {self.item} already exists'

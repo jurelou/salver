@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from uuid import UUID
 from typing import List
 

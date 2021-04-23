@@ -1,3 +1,4 @@
+re: redocker bootstrap
 
 redocker:
 	docker-compose down -v

@@ -3,8 +3,6 @@
 from typing import List
 
 from salver.common.models import BaseFact, ScanConfig
-from salver.controller.app import celery_app
-from salver.controller.services import agents as agents_ctrl
 from salver.controller.scans.base import BaseScan
 
 
@@ -13,14 +11,13 @@ class SingleCollectorConfig(ScanConfig):
 
 
 class SingleCollector(BaseScan):
-    name = "single_collector"
-    config: SingleCollectorConfig
+    name = 'single_collector'
 
     def configure(self, config: ScanConfig):
         self.config = SingleCollectorConfig(**config.dict())
 
     def scan_success_lol(self, result):
-        print("CALLBACKKKKKKKKKKKKK", result)
+        print('CALLBACKKKKKKKKKKKKK', result)
 
     def scan(self, facts: List[BaseFact]):
         a = self.launch_collector(

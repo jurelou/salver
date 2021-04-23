@@ -1,57 +1,58 @@
 # -*- coding: utf-8 -*-
+
+# -*- coding: utf-8 -*-
 import pytest
 import subprocess
+import time
 import os
+import signal
+from salver.controller import tasks
+from .datasets import boot
 
+from multiprocessing import Process
 
-@pytest.fixture(scope="class")
-def engine_app(request):
-    from opulence.engine.app import celery_app
+from salver.agent.app import celery_app as agent_app
+from salver.controller.app import celery_app as controller_app
 
-    celery_app.conf.update(task_eager_propagates=True)
+def start_agent():
+    argv = [
+        '-A',
+        'salver.agent.app',
+        'worker',
+        '--hostname=agent_main',
+        # "--concurrency=4"
 
-    # celery_app.conf.update(task_always_eager=True)
-    return celery_app
+    ]
+    agent_app.worker_main(argv)
 
+def start_controller():
+    argv = [
+        '-A',
+        'salver.controller.app',
+        'worker',
+        '--hostname=controller_main',
+        '-B',
+        # "--concurrency=4"
+    ]
 
-@pytest.fixture(scope="class")
-def agent_app(request):
-    from opulence.agent.app import celery_app
+    controller_app.worker_main(argv)
 
-    # celery_app.conf.update(task_always_eager=True)
-    celery_app.conf.update(task_eager_propagates=True)
-    return celery_app
+@pytest.fixture(scope='session', autouse=True)
+def salver_simple_deployment(request):
 
+    agent = Process(target=start_agent)
+    controller = Process(target=start_controller)
 
-@pytest.fixture(scope="session", autouse=True)
-def agent_worker(request):
-    proc_agent = subprocess.Popen(["python", "-m", "opulence.agent.app"])
+    agent.start()
+    controller.start()
 
-    import time
+    def wait_for_engine():
+        while True:
+            time.sleep(1)
+            if tasks.ping.delay().get():
+                tasks.reload_agents.delay().get()
+                return boot()
 
-    time.sleep(2)
-    proc_engine = subprocess.Popen(["python", "-m", "opulence.engine.app"])
-
-    def kill_agent():
-        proc_agent.terminate()
-
-    def kill_engine():
-        proc_engine.terminate()
-
-    request.addfinalizer(kill_agent)
-    request.addfinalizer(kill_engine)
-
-    time.sleep(2)
-
-    # request.addfinalizer(proc_engine.kill)
-    time.sleep(2)
-
-
-@pytest.fixture(scope="class")
-def database_manager(request):
-    from opulence.engine.database.manager import DatabaseManager
-
-    manager = DatabaseManager()
-    manager.flush()
-    manager.bootstrap()
-    request.cls.database_manager = manager
+    request.addfinalizer(lambda: agent.terminate())
+    request.addfinalizer(lambda: controller.terminate())
+    wait_for_engine()

@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 import re
-import json
 
 # from opulence.agent.collectors.dependencies import Dependency
 from timeit import default_timer as timer
-from typing import Dict, List, Union, Callable, Iterator, Optional
+from typing import Dict, List, Union, Callable, Iterator
 from functools import partial
 
 from loguru import logger
-from pydantic import BaseModel, ValidationError, root_validator
+from pydantic import ValidationError
 
 from salver.common import models
-from salver.common.utils import make_list
-from salver.common.limiter import Limiter, RequestRate
+from salver.common.utils import make_flat_list
+from salver.common.limiter import Limiter
 from salver.agent.exceptions import CollectorRuntimeError, InvalidCollectorDefinition
 
 # class Schedule(BaseModel):
@@ -33,8 +32,8 @@ class BaseCollector:
 
         try:
             self.configure()
-        except ValidationError as err:
-            raise InvalidCollectorDefinition(self.config.name, err) from err
+        except Exception as err:
+            raise InvalidCollectorDefinition(type(self).__name__, err) from err
 
         self._limiter = None
         if self.config.limiter:
@@ -43,33 +42,30 @@ class BaseCollector:
     def configure(self):
         self.config = models.CollectorBaseConfig(**self.config)
 
-    def check_rate_limit(self):
-        if not self._limiter:
-            print("no rate limit")
-            return
-        self._limiter.try_acquire()
-
     def callbacks(self) -> Dict[models.BaseFact, Callable]:
+        logger.warning(f'Collector {type(self)} does not have any callbacks')
         raise InvalidCollectorDefinition(
-            self.config.name,
-            f"Collector {type(self).__name__} does not have any callbacks",
+            type(self).__name__,
+            f'Collector {type(self).__name__} does not have any callbacks',
         )
 
     def _sanitize_output(self, fn):
         try:
-            output = make_list(fn())
-            output = list(filter(None, output))
+
+            output = make_flat_list(fn())
             if not output:
                 return []
             for out in output:
                 if isinstance(out, models.BaseFact):
                     yield out
                 else:
-                    logger.error(
-                        f"Found unknown output from collector {self.config.name}: {out}",
+                    logger.warning(
+                        f'Found unknown output from collector {self.config.name}: {out}',
                     )
         except Exception as err:
-            logger.error(f"Error while executing {fn} from {self.config.name}: {err}")
+            logger.error(
+                f'Error while executing callback from {self.config.name}: {type(err).__name__} {err}',
+            )
             raise CollectorRuntimeError(self.config.name, err) from err
 
     def _prepare_callbacks(
@@ -89,18 +85,21 @@ class BaseCollector:
             facts.extend(list(self._sanitize_output(cb)))
         return facts
 
-    def collect(self, facts: List[models.BaseFact]) -> models.ScanResult:
+    def collect(self, facts: List[models.BaseFact]) -> models.CollectResult:
+        if self._limiter:
+            self._limiter.try_acquire()
         start_time = timer()
 
         callbacks = self._prepare_callbacks(facts)
 
-        logger.info(
-            f"Execute collector {self.config.name} with {len(facts)} facts and {len(callbacks)} callbacks",
+        logger.debug(
+            f'Execute collector {self.config.name} with \
+            {len(facts)} facts and {len(callbacks)} callbacks',
         )
 
         output_facts = self._execute_callbacks(callbacks)
         return (
-            models.ScanResult(
+            models.CollectResult(
                 duration=timer() - start_time,
                 executions_count=len(callbacks),
                 facts=[f.hash__ for f in output_facts],

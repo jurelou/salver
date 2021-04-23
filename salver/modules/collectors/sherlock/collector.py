@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
-
 from salver.facts import Profile, Username
 from salver.common.utils import get_actual_dir
 from salver.agent.collectors.docker import DockerCollector
@@ -8,8 +6,8 @@ from salver.agent.collectors.docker import DockerCollector
 
 class Sherlock(DockerCollector):
     config = {
-        "name": "sherlock",
-        "docker": {"build_context": get_actual_dir()},
+        'name': 'sherlock',
+        'docker': {'build_context': get_actual_dir()},
     }
 
     def callbacks(self):
@@ -17,7 +15,7 @@ class Sherlock(DockerCollector):
 
     def from_username(self, username):
         data = self.run_container(
-            command=[username.name, "--no-color", "--print-found", "--timeout", "20"],
+            command=[username.name, '--no-color', '--print-found', '--timeout', '20'],
         )
-        for item in self.findall_regex(data, r"\[\+\] .*: (.*)\n"):
+        for item in self.findall_regex(data, r'\[\+\] .*: (.*)\n'):
             yield Profile(url=item)

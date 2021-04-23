@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from salver.config import api_config
 from salver.common.database import DatabaseManager
 
