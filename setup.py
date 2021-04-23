@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='salver',
-    version='0.0.1',
+    version='2.4.0',
     description='Yes',
     long_description='long desc',
     author='Opulence',
