@@ -1,6 +1,6 @@
 ---
 default:
-  
+
 development:
   kafka:
     bootstrap_servers: localhost:9092

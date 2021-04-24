@@ -59,6 +59,7 @@ class   Consumer:
             except Exception as err:
                 print(f'{os.getpid()} - Worker terminated., {err}')
                 c.close()
+                break
 
     def start_workers(self):
         if self.num_alive == self.num_workers:

@@ -1,18 +1,19 @@
 from salver.common.facts import all_facts
 from salver.engine.services.kafka_producer import KafkaProducers
-from salver.facts import Person
+from salver.facts import Person, Email
 from salver.common.models.collect import CollectRequest
 
 producer = KafkaProducers()
 
 
 p = Person(firstname="1", lastname="1")
+e = Email(address="addr")
 
 p2 = Person(firstname="2", lastname="2")
+e2 = Email(address="addr22é")
 
-
-c = CollectRequest(collector_name="toto", facts=["aze", 123, "ert", 32])
-c1 = CollectRequest(collector_name="toto111", facts=["123aze", 123123, "123ert", 32123])
+c = CollectRequest(collector_name="toto", facts=[p, e])
+c1 = CollectRequest(collector_name="toto111", facts=[p2, e2])
 
 producer.agents_collect.produce(c)
 

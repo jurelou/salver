@@ -53,7 +53,7 @@ class   Producer:
 class   KafkaProducers:
     def __init__(self):
         string_serializer = StringSerializer('utf_8')
-        
+
         self.agents_collect = Producer(
                 config={
                     'bootstrap.servers': engine_config.kafka.bootstrap_servers,
@@ -79,5 +79,3 @@ class   KafkaProducers:
                 },
                 topic='agent-broadcast',
         )
-
-
