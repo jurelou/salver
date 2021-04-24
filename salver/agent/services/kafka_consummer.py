@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka import DeserializingConsumer
@@ -14,12 +15,12 @@ from multiprocessing import Process
 from queue import Queue
 import os
 
-
+from salver.config import agent_config
 
 def _process_msg(q, c):
     msg = q.get(timeout=60)
 
-    print("---->", msg.value(), msg.value().listof)
+    print('---->', msg.value())
     q.task_done()
     c.commit(msg)
 
@@ -70,45 +71,62 @@ class   Consumer:
             print(f'Starting worker {p.pid}')
 
 
-class   AgentConsumer:
+class   KafkaConsummers:
     def __init__(self):
-        sr_conf = {'url': "http://127.0.0.1:8081"}
-        schema_registry_client = SchemaRegistryClient(sr_conf)
-        avro_deserializer = AvroDeserializer(schema_str=schema_str, schema_registry_client=schema_registry_client, from_dict=dict_to_user)
+        # sr_conf = {'url': agent_config.kafka.schema_registry_url}
+        # schema_registry_client = SchemaRegistryClient(sr_conf)
+
+        from salver.common.models.collect import CollectRequest
+
+        # avro_deserializer = AvroDeserializer(schema_str=schema_str, schema_registry_client=schema_registry_client, from_dict=dict_to_user)
         string_deserializer = StringDeserializer('utf_8')
+
+        from salver.common.models.collect import CollectRequest
+
+
+
+        from salver.common.avro import make_deserializer
 
         self.consumers = [
             Consumer(
-                num_workers=2,
+                num_workers=agent_config.kafka.workers_per_topic,
                     config = {
                         'kafka_kwargs': {
-                            'bootstrap.servers': 'localhost:9092',
+                            'bootstrap.servers': agent_config.kafka.bootstrap_servers,
                             'group.id': 'agents',
                             'auto.offset.reset': 'earliest',
                             'key.deserializer': string_deserializer,
-                            'value.deserializer': avro_deserializer,
+                            'value.deserializer': make_deserializer(
+                                topic="agent-collect",
+                                from_dict=CollectRequest.from_dict,
+                                schema_registry_url=agent_config.kafka.schema_registry_url
+                            ),
                             'enable.auto.commit': False,
                         },
-                        'topic': 'topic2',
-                        "num_threads": 4
-                    }
+                        'topic': 'agent-collect',
+                        'num_threads': agent_config.kafka.threads_per_worker,
+                    },
             ),
 
-            Consumer(
-                num_workers=2,
-                    config = {
-                        'kafka_kwargs': {
-                            'bootstrap.servers': 'localhost:9092',
-                            'group.id': 'agentXXX',
-                            'auto.offset.reset': 'earliest',
-                            'key.deserializer': string_deserializer,
-                            'value.deserializer': avro_deserializer,
-                            'enable.auto.commit': False,
-                        },
-                        'topic': 'topic1',
-                        "num_threads": 4
-                    }
-            )
+            # Consumer(
+            #     num_workers=agent_config.kafka.workers_per_topic,
+            #         config = {
+            #             'kafka_kwargs': {
+            #                 'bootstrap.servers':  agent_config.kafka.bootstrap_servers,
+            #                 'group.id': 'agentXXX',
+            #                 'auto.offset.reset': 'earliest',
+            #                 'key.deserializer': string_deserializer,
+            #                 'value.deserializer': make_deserializer(
+            #                     topic="topic1",
+            #                     from_dict=CollectRequest.from_dict,
+            #                     schema_registry_url=agent_config.kafka.schema_registry_url
+            #                 ),
+            #                 'enable.auto.commit': False,
+            #             },
+            #             'topic': 'topic1',
+            #             'num_threads':  agent_config.kafka.threads_per_worker,
+            #         },
+            # ),
 
         ]
 
@@ -117,7 +135,3 @@ class   AgentConsumer:
             for consumer in self.consumers:
                 consumer.start_workers()
             time.sleep(5)
-
-
-agent = AgentConsumer()
-agent.start()

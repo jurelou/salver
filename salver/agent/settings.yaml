@@ -1,0 +1,10 @@
+---
+default:
+  
+development:
+  kafka:
+    bootstrap_servers: localhost:9092
+    schema_registry_url: http://127.0.0.1:8081
+
+    workers_per_topic: 2
+    threads_per_worker: 4
