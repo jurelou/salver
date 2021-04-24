@@ -7,8 +7,6 @@ from pydantic import Field, BaseModel, BaseConfig, root_validator
 
 
 class BaseFact(BaseModel):
-
-
     class Config(BaseConfig):
         extra = 'allow'
 

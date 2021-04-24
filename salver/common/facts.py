@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from salver.common.utils import load_classes
 from salver.common.models import BaseFact
 

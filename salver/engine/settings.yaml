@@ -2,6 +2,6 @@
 default:
 
 development:
-  kafka:
-    bootstrap_servers: localhost:9092
-    schema_registry_url: http://127.0.0.1:8081
+    kafka:
+        bootstrap_servers: localhost:9092
+        schema_registry_url: http://127.0.0.1:8081
