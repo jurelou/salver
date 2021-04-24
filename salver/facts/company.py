@@ -3,7 +3,7 @@ from salver.common.models.fact import BaseFact
 
 
 class Company(BaseFact):
-    naazeme: str
+    name: str
 
     @classmethod
     def elastic_mapping(cls):

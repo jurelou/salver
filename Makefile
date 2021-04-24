@@ -25,7 +25,7 @@ install:
 format:
 	tox -e black
 	tox -e isort
-
+	pre-commit run --all-files
 
 bootstrap:
 	python -m scripts.bootstrap_kafka

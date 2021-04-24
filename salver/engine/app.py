@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from salver.facts import Email, Person
 from salver.common.facts import all_facts
-from salver.common.models.collect import CollectRequest
+from salver.common.models import PingRequest, CollectRequest
 from salver.engine.services.kafka_producer import KafkaProducers
 
 producer = KafkaProducers()
@@ -18,7 +18,7 @@ c1 = CollectRequest(collector_name='toto111', facts=[p2, e2])
 
 producer.agents_collect.produce(c)
 
-producer.agents_broadcast.produce(c1)
+producer.agents_broadcast.produce(PingRequest())
 
 
 producer.agents_collect.flush()

@@ -4,8 +4,8 @@ from typing import List, Union
 from pydantic import BaseModel
 
 from salver.common.avro import make_serializer, make_deserializer
-from salver.common.facts import all_facts
-from salver.common.models import BaseFact
+
+from .fact import BaseFact
 
 
 class CollectRequest(BaseModel):
@@ -19,6 +19,8 @@ class CollectRequest(BaseModel):
     @staticmethod
     def from_dict(obj, _):
         facts = []
+        from salver.common.facts import all_facts
+
         obj_facts = obj.pop('facts', [])
         for fact in obj_facts:
             fact_type = fact.pop('__fact_type__')
