@@ -16,8 +16,11 @@ class SalverEngine:
         e = Email(address='addr')
         c = models.CollectRequest(collector_name='toto', facts=[p, e])
 
-        agent_info_prod = kafka_producers.make_agent_info()
+        agent_info_prod = kafka_producers.make_agent_info_request()
         agent_info_prod.produce(models.AgentInfoRequest(), flush=True)
+
+        info_res = kafka_producers.make_agent_broadcast_ping()
+        info_res.produce(models.PingRequest(ping='ping allllllll'), flush=True)
 
         # self.producers.agents_collect.produce(c, flush=True)
         # self.producers.agents_collect.produce(c, flush=True)

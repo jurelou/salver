@@ -15,10 +15,10 @@ from salver.common.avro import make_deserializer
 def _process_msg(q, consumer, callback, topic):
     msg = q.get(timeout=60)
 
+    callback(msg.value())
+
     q.task_done()
     consumer.commit(msg)
-
-    callback(msg.value())
 
 
 class ConsumerCallback(ABC):

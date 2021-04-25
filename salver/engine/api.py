@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 
+from multiprocessing import Manager
+
 from salver.common import models
 from salver.config import engine_config
 from salver.common.kafka import Consumer, ConsumerCallback
 from salver.engine.services import kafka_producers
 
+AVAILABLE_AGENTS = Manager().dict()
 
-class OnInfoResponse(ConsumerCallback):
+
+class AgentInfo(ConsumerCallback):
     def __init__(self):
         self.agents_broadcast_producer = kafka_producers.make_agent_broadcast_ping()
 
     def on_message(self, message):
-        print('ON INFO RESPONSE', message)
-        self.agents_broadcast_producer.produce(
-            models.PingRequest(ping='enginepinginging'),
-            flush=True,
-        )
+        print('ON AGENT INFO RESPONSE', message)
+        print(f'available agents: {AVAILABLE_AGENTS}')
+
+        # self.agents_broadcast_producer.produce(
+        #     models.PingRequest(ping='enginepinginging'),
+        #     flush=True,
+        # )
 
 
 def on_ping(message):
@@ -26,7 +32,7 @@ class EngineAPI:
     def __init__(self):
         self.consumers = [
             Consumer(
-                topic='agent-info-response',
+                topic='agent-info',
                 num_workers=engine_config.kafka.workers_per_topic,
                 num_threads=engine_config.kafka.threads_per_worker,
                 value_deserializer=models.AgentInfo,
@@ -35,7 +41,7 @@ class EngineAPI:
                     'bootstrap.servers': engine_config.kafka.bootstrap_servers,
                     'group.id': 'engine',
                 },
-                callback=OnInfoResponse,
+                callback=AgentInfo,
             ),
             Consumer(
                 topic='agent-broadcast-ping',

@@ -4,24 +4,33 @@
 from salver.common import models
 from salver.config import agent_config
 from salver.common.kafka import Consumer, ConsumerCallback
+from salver.agent.services import kafka_producers
 
 
-class onping(ConsumerCallback):
+class OnPing(ConsumerCallback):
     def on_message(self, message):
         print('ON PING', message)
+
+
+class OnAgentInfo(ConsumerCallback):
+    def __init__(self):
+        self.agent_info_producer = kafka_producers.make_agent_info_response()
+
+    def on_message(self, agent_info_request):
+        print('ON AGENT INFO', agent_info_request)
+        self.agent_info_producer.produce(
+            models.AgentInfo(name='init agent because asked ....'), flush=True,
+        )
 
 
 def on_collect(message):
     print('ON AGENT COLLECT', message)
 
 
-def oninfo(message):
-    print('ON INFO', message)
-
-
 class AgentAPI:
-    def __init__(self):
+    def __init__(self, agent_name: str):
         print('CREATE AGENT API')
+        self.agent_name = agent_name
 
         self.consumers = [
             Consumer(
@@ -44,21 +53,21 @@ class AgentAPI:
                 schema_registry_url=agent_config.kafka.schema_registry_url,
                 kafka_config={
                     'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                    'group.id': 'agentXXX',
+                    'group.id': agent_name,
                 },
-                callback=onping,
+                callback=OnPing,
             ),
             Consumer(
-                topic='agent-info',
+                topic='agent-info-request',
                 num_workers=agent_config.kafka.workers_per_topic,
                 num_threads=agent_config.kafka.threads_per_worker,
                 value_deserializer=models.AgentInfoRequest,
                 schema_registry_url=agent_config.kafka.schema_registry_url,
                 kafka_config={
                     'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                    'group.id': 'agentYYY',
+                    'group.id': agent_name,
                 },
-                callback=oninfo,
+                callback=OnAgentInfo,
             ),
         ]
 
