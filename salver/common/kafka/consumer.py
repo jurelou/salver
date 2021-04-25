@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+import types
 import threading
 from queue import Queue
 from multiprocessing import Process
@@ -11,15 +12,21 @@ from confluent_kafka.serialization import StringDeserializer
 from salver.config import agent_config
 from salver.common.avro import make_deserializer
 from salver.common.models import PingRequest, CollectRequest
+from abc import ABC, abstractmethod
 
-
-def _process_msg(q, consumer, callback):
+def _process_msg(q, consumer, callback, topic):
     msg = q.get(timeout=60)
-
-    callback(msg.value())
 
     q.task_done()
     consumer.commit(msg)
+
+    callback(msg.value())
+
+
+class ConsumerCallback(ABC):
+    @abstractmethod
+    def on_message(self, message):
+        pass
 
 
 class Consumer:
@@ -30,8 +37,8 @@ class Consumer:
         num_workers,
         num_threads,
         kafka_config,
-        callback,
         schema_registry_url,
+        callback_cls
     ):
         self.topic = topic
         self.num_threads = num_threads
@@ -51,16 +58,25 @@ class Consumer:
         self.kafka_config.update(kafka_config)
 
         self.workers = []
-        self.callback = callback
+        self.callback_cls = callback_cls
 
     @property
     def num_alive(self) -> int:
         return len([w for w in self.workers if w.is_alive()])
 
-    def _consume(self):
+    def _consume(self, on_consume):
         print(
             f"{os.getpid()} Starting consumer group={self.kafka_config['group.id']}, topic={self.topic}",
         )
+
+        if isinstance(on_consume, types.FunctionType):
+            callback = on_consume
+        else:
+            callback_cls = on_consume()
+            callback = callback_cls.on_message
+
+        if not callback:
+            print(f"!!!NO CALLBACK FOR {self.topic}")
         consumer = DeserializingConsumer(self.kafka_config)
         consumer.subscribe([self.topic])
         q = Queue(maxsize=self.num_threads)
@@ -75,10 +91,11 @@ class Consumer:
                 if msg.error():
                     print(f'{os.getpid()} - Consumer error: {msg.error()}')
                     continue
+                print("@@@", self.topic, "=>", msg.value())
                 q.put(msg)
                 t = threading.Thread(
                     target=_process_msg,
-                    args=(q, consumer, self.callback),
+                    args=(q, consumer, callback, self.topic),
                 )
                 t.start()
             except Exception as err:
@@ -94,6 +111,7 @@ class Consumer:
             p = Process(
                 target=self._consume,
                 daemon=True,
+                args=(self.callback_cls,)
             )
             p.start()
             self.workers.append(p)

@@ -7,9 +7,9 @@ from confluent_kafka.admin import NewTopic, AdminClient
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 
 from salver.common.facts import all_facts
-from salver.common.models import PingRequest, CollectRequest
+from salver.common import models
 
-topics = ['agent-broadcast-ping', 'agent-collect']
+topics = ['agent-broadcast-ping', 'agent-collect', 'agent-info', 'agent-info-response']
 
 admin_client = AdminClient({'bootstrap.servers': 'localhost:9092'})
 shema_registry_client = SchemaRegistryClient({'url': 'http://127.0.0.1:8081'})
@@ -119,18 +119,30 @@ def remove_schemas():
 
 def create_schemas():
     collect_request = Schema(
-        schema_str=pydantic_to_avro(CollectRequest),
+        schema_str=pydantic_to_avro(models.CollectRequest),
         schema_type='AVRO',
     )
 
     ping_request = Schema(
-        schema_str=pydantic_to_avro(PingRequest),
+        schema_str=pydantic_to_avro(models.PingRequest),
+        schema_type='AVRO',
+    )
+
+    info_request = Schema(
+        schema_str=pydantic_to_avro(models.AgentInfoRequest),
+        schema_type='AVRO',
+    )
+
+    info_response = Schema(
+        schema_str=pydantic_to_avro(models.AgentInfo),
         schema_type='AVRO',
     )
 
     shema_registry_client.register_schema('agent-collect', collect_request)
     shema_registry_client.register_schema('agent-broadcast-ping', ping_request)
 
+    shema_registry_client.register_schema('agent-info', info_request)
+    shema_registry_client.register_schema('agent-info-response', info_response)
 
 remove_schemas()
 create_schemas()

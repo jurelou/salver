@@ -6,7 +6,7 @@ from salver.common.models import BaseFact
 
 
 class PingRequest(BaseModel):
-    ping: str = 'ping'
+    ping: str
 
     @staticmethod
     def to_dict(obj, _):

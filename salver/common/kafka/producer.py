@@ -8,6 +8,7 @@ from confluent_kafka.serialization import StringSerializer
 
 from salver.common.avro import make_serializer
 
+# from salver.common.utils import Singleton
 
 class Producer:
     def __init__(self, topic, kafka_config, value_serializer, schema_registry_url):
@@ -21,6 +22,8 @@ class Producer:
                     to_dict=value_serializer,
                     schema_registry_url=schema_registry_url,
                 ),
+                'error_cb': lambda x: print("ERRRRRRRRRRR", x),
+                
             },
         )
         self.producer = SerializingProducer(kafka_config)
@@ -31,7 +34,7 @@ class Producer:
             print('Delivery failed for User record {}: {}'.format(msg.key(), err))
             return
         print(
-            'User record {} successfully produced to {} [{}] at offset {}'.format(
+            'record {} successfully produced to {} [{}] at offset {}'.format(
                 msg.key(),
                 msg.topic(),
                 msg.partition(),
@@ -40,15 +43,15 @@ class Producer:
         )
 
     def produce(self, msg, flush=False):
-        print(f'Producing records to topic {self.topic}: {msg}')
-
         self.producer.poll(0.0)
+        print(f'Producing records to topic {self.topic}: {msg}')
         self.producer.produce(
             topic=self.topic,
             key=str(uuid4()),
             value=msg,
             on_delivery=self._delivery_report,
         )
+        print("hereeee")
         if flush:
             self.flush()
 
