@@ -7,7 +7,7 @@ from typing import Dict, List, Union, Callable, Iterator, Optional
 from functools import partial
 
 from loguru import logger
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 from salver.common import models
 from salver.common.utils import make_flat_list

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import time
 import types
 import threading
 from abc import ABC, abstractmethod
@@ -10,9 +9,7 @@ from multiprocessing import Process
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.serialization import StringDeserializer
 
-from salver.config import agent_config
 from salver.common.avro import make_deserializer
-from salver.common.models import PingRequest, CollectRequest
 
 
 def _process_msg(q, consumer, callback, topic):

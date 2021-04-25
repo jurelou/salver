@@ -2,8 +2,6 @@
 
 from pydantic import BaseModel
 
-from salver.common.models import BaseFact
-
 
 class PingRequest(BaseModel):
     ping: str

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import hashlib
-from time import time
-from typing import Optional
 
-from pydantic import Field, BaseModel, BaseConfig, root_validator
+from pydantic import BaseModel, BaseConfig
 
 
 class BaseFact(BaseModel):

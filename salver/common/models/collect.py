@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from typing import List, Union
+from typing import List
 
 from pydantic import BaseModel
-
-from salver.common.avro import make_serializer, make_deserializer
 
 from .fact import BaseFact
 

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from multiprocessing import Manager, Process
-from multiprocessing.managers import BaseManager
+
 
 from salver.common import models
 from salver.config import agent_config
-from salver.common.kafka import Consumer, Producer, ConsumerCallback
+from salver.common.kafka import Consumer, ConsumerCallback
 
 
 class onping(ConsumerCallback):
@@ -45,7 +44,7 @@ class AgentAPI:
                 schema_registry_url=agent_config.kafka.schema_registry_url,
                 kafka_config={
                     'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                    'group.id': 'agentYYY',
+                    'group.id': 'agentXXX',
                 },
                 callback=onping,
             ),

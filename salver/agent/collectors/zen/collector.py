@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from salver.facts import Email, Tweet, Company, Username
+from salver.facts import Email, Company, Username
 from salver.common.utils import get_actual_dir
 from salver.common.collectors import DockerCollector
 

@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-import time
-import argparse
-from uuid import uuid4
 
-from confluent_kafka import SerializingProducer
-from confluent_kafka.serialization import StringSerializer
 
 from salver.common import models
 from salver.config import engine_config

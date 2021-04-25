@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from multiprocessing import Manager, Process
-from multiprocessing.managers import BaseManager
 
 from salver.common import models
 from salver.config import engine_config
