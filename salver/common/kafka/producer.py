@@ -6,12 +6,24 @@ from uuid import uuid4
 from confluent_kafka import SerializingProducer
 from confluent_kafka.serialization import StringSerializer
 
+from salver.common.avro import make_serializer
+
 
 class Producer:
-    def __init__(self, topic, kafka_config):
-        kafka_config.update({'key.serializer': StringSerializer('utf_8')})
-        self.producer = SerializingProducer(kafka_config)
+    def __init__(self, topic, kafka_config, value_serializer, schema_registry_url):
         self.topic = topic
+
+        kafka_config.update(
+            {
+                'key.serializer': StringSerializer('utf_8'),
+                'value.serializer': make_serializer(
+                    topic=self.topic,
+                    to_dict=value_serializer,
+                    schema_registry_url=schema_registry_url,
+                ),
+            },
+        )
+        self.producer = SerializingProducer(kafka_config)
 
     @staticmethod
     def _delivery_report(err, msg):

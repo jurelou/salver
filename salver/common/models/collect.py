@@ -28,3 +28,11 @@ class CollectRequest(BaseModel):
                 raise ValueError(f'Could not deserialize fact of type {fact_type}')
             facts.append(all_facts[fact_type](**fact))
         return CollectRequest(facts=facts, **obj)
+
+
+class CollectResult(BaseModel):
+    duration: float
+    executions_count: int
+
+    # errors: Optional[List[str]] = None
+    facts: List[str] = []

@@ -23,7 +23,16 @@ def _process_msg(q, consumer, callback):
 
 
 class Consumer:
-    def __init__(self, topic, num_workers, num_threads, kafka_config, callback):
+    def __init__(
+        self,
+        topic,
+        value_deserializer,
+        num_workers,
+        num_threads,
+        kafka_config,
+        callback,
+        schema_registry_url,
+    ):
         self.topic = topic
         self.num_threads = num_threads
         self.num_workers = num_workers
@@ -33,6 +42,11 @@ class Consumer:
             'key.deserializer': StringDeserializer('utf_8'),
             'enable.auto.commit': False,
             'auto.offset.reset': 'earliest',
+            'value.deserializer': make_deserializer(
+                topic=self.topic,
+                from_dict=value_deserializer,
+                schema_registry_url=schema_registry_url,
+            ),
         }
         self.kafka_config.update(kafka_config)
 
@@ -63,7 +77,8 @@ class Consumer:
                     continue
                 q.put(msg)
                 t = threading.Thread(
-                    target=_process_msg, args=(q, consumer, self.callback),
+                    target=_process_msg,
+                    args=(q, consumer, self.callback),
                 )
                 t.start()
             except Exception as err:
