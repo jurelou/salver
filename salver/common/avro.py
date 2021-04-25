@@ -9,7 +9,7 @@ from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserialize
 
 # TODO: cache schema registry client
 def _get_schema(schema_registry_client, topic) -> str:
-    print("@@@@@GET", topic)
+    print('@@@@@GET', topic)
     return schema_registry_client.get_latest_version(topic).schema.schema_str
 
 

@@ -3,8 +3,9 @@ from pydantic import BaseModel
 
 from salver.common.models import BaseFact
 
+
 class AgentInfoRequest(BaseModel):
-    hello: str = "world"
+    hello: str = 'world'
 
     @staticmethod
     def to_dict(obj, _):
@@ -13,6 +14,7 @@ class AgentInfoRequest(BaseModel):
     @staticmethod
     def from_dict(obj, _):
         return AgentInfoRequest(**obj)
+
 
 class AgentInfo(BaseModel):
     name: str

@@ -6,8 +6,8 @@ import time
 from confluent_kafka.admin import NewTopic, AdminClient
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 
-from salver.common.facts import all_facts
 from salver.common import models
+from salver.common.facts import all_facts
 
 topics = ['agent-broadcast-ping', 'agent-collect', 'agent-info', 'agent-info-response']
 
@@ -143,6 +143,7 @@ def create_schemas():
 
     shema_registry_client.register_schema('agent-info', info_request)
     shema_registry_client.register_schema('agent-info-response', info_response)
+
 
 remove_schemas()
 create_schemas()

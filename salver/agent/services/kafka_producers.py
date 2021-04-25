@@ -6,10 +6,10 @@ from salver.common.models import AgentInfo
 
 def make_info_response():
     return Producer(
-            topic='agent-info-response',
-            value_serializer=AgentInfo,
-            schema_registry_url=agent_config.kafka.schema_registry_url,
-            kafka_config={
-                'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-            },
-        )
+        topic='agent-info-response',
+        value_serializer=AgentInfo,
+        schema_registry_url=agent_config.kafka.schema_registry_url,
+        kafka_config={
+            'bootstrap.servers': agent_config.kafka.bootstrap_servers,
+        },
+    )

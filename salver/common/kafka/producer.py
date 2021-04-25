@@ -21,8 +21,7 @@ class Producer:
                     to_dict=value_serializer.to_dict,
                     schema_registry_url=schema_registry_url,
                 ),
-                'error_cb': lambda x: print("ERRRRRRRRRRR", x),
-                
+                'error_cb': lambda x: print('ERRRRRRRRRRR', x),
             },
         )
         self.producer = SerializingProducer(kafka_config)

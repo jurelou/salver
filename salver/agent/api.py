@@ -1,25 +1,28 @@
-from multiprocessing import Process, Manager
+# -*- coding: utf-8 -*-
+from multiprocessing import Manager, Process
 from multiprocessing.managers import BaseManager
 
 from salver.common import models
 from salver.config import agent_config
-from salver.common.kafka import Producer, Consumer, ConsumerCallback
+from salver.common.kafka import Consumer, Producer, ConsumerCallback
 
 
 class onping(ConsumerCallback):
     def on_message(self, message):
-        print("ON PING", message)
+        print('ON PING', message)
+
 
 def on_collect(message):
-    print("ON AGENT COLLECT", message)
+    print('ON AGENT COLLECT', message)
+
 
 def oninfo(message):
-    print("ON INFO", message)
+    print('ON INFO', message)
+
 
 class AgentAPI:
-
     def __init__(self):
-        print("CREATE AGENT API")
+        print('CREATE AGENT API')
 
         self.consumers = [
             Consumer(
@@ -34,9 +37,6 @@ class AgentAPI:
                 },
                 callback=on_collect,
             ),
-
-
-
             Consumer(
                 topic='agent-broadcast-ping',
                 num_workers=agent_config.kafka.workers_per_topic,
@@ -49,7 +49,6 @@ class AgentAPI:
                 },
                 callback=onping,
             ),
-
             Consumer(
                 topic='agent-info',
                 num_workers=agent_config.kafka.workers_per_topic,
@@ -62,7 +61,6 @@ class AgentAPI:
                 },
                 callback=oninfo,
             ),
-
         ]
 
     def start(self):

@@ -5,7 +5,6 @@ from salver.config import agent_config
 from salver.common.utils import load_classes
 from salver.agent.exceptions import MissingCollectorDefinition
 from salver.common.collectors import BaseCollector
-
 from salver.common.collectors.exceptions import (
     InvalidCollectorDefinition,
     MissingCollectorDefinition,

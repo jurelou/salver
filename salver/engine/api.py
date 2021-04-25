@@ -1,13 +1,11 @@
-from salver.common import models
-from salver.engine.services import kafka_producers
-
-from salver.common.kafka import Consumer
-from salver.config import engine_config
-
-
-from multiprocessing import Process, Manager
+# -*- coding: utf-8 -*-
+from multiprocessing import Manager, Process
 from multiprocessing.managers import BaseManager
+
+from salver.common import models
+from salver.config import engine_config
 from salver.common.kafka import Consumer, ConsumerCallback
+from salver.engine.services import kafka_producers
 
 
 class OnInfoResponse(ConsumerCallback):
@@ -15,17 +13,20 @@ class OnInfoResponse(ConsumerCallback):
         self.agents_broadcast_producer = kafka_producers.make_agent_broadcast_ping()
 
     def on_message(self, message):
-        print("ON INFO RESPONSE", message)
-        self.agents_broadcast_producer.produce(models.PingRequest(ping="enginepinginging"), flush=True)
+        print('ON INFO RESPONSE', message)
+        self.agents_broadcast_producer.produce(
+            models.PingRequest(ping='enginepinginging'),
+            flush=True,
+        )
+
 
 def on_ping(message):
-    print("ON PING", message)
+    print('ON PING', message)
+
 
 class EngineAPI:
-
     def __init__(self):
         self.consumers = [
-
             Consumer(
                 topic='agent-info-response',
                 num_workers=engine_config.kafka.workers_per_topic,
@@ -36,10 +37,8 @@ class EngineAPI:
                     'bootstrap.servers': engine_config.kafka.bootstrap_servers,
                     'group.id': 'engine',
                 },
-                callback=OnInfoResponse
+                callback=OnInfoResponse,
             ),
-
-
             Consumer(
                 topic='agent-broadcast-ping',
                 num_workers=engine_config.kafka.workers_per_topic,
@@ -50,11 +49,9 @@ class EngineAPI:
                     'bootstrap.servers': engine_config.kafka.bootstrap_servers,
                     'group.id': 'agentENGINE',
                 },
-                callback=on_ping
-
+                callback=on_ping,
             ),
         ]
-
 
     def start(self):
         while True:

@@ -3,6 +3,7 @@ import os
 import time
 import types
 import threading
+from abc import ABC, abstractmethod
 from queue import Queue
 from multiprocessing import Process
 
@@ -12,7 +13,7 @@ from confluent_kafka.serialization import StringDeserializer
 from salver.config import agent_config
 from salver.common.avro import make_deserializer
 from salver.common.models import PingRequest, CollectRequest
-from abc import ABC, abstractmethod
+
 
 def _process_msg(q, consumer, callback, topic):
     msg = q.get(timeout=60)
@@ -38,7 +39,7 @@ class Consumer:
         num_threads,
         kafka_config,
         schema_registry_url,
-        callback
+        callback,
     ):
         self.topic = topic
         self.num_threads = num_threads
@@ -76,7 +77,7 @@ class Consumer:
             callback = callback_cls.on_message
 
         if not callback:
-            print(f"!!!NO CALLBACK FOR {self.topic}")
+            print(f'!!!NO CALLBACK FOR {self.topic}')
         consumer = DeserializingConsumer(self.kafka_config)
         consumer.subscribe([self.topic])
         q = Queue(maxsize=self.num_threads)
@@ -91,7 +92,7 @@ class Consumer:
                 if msg.error():
                     print(f'{os.getpid()} - Consumer error: {msg.error()}')
                     continue
-                print("@@@", self.topic, "=>", msg.value())
+                print('@@@', self.topic, '=>', msg.value())
                 q.put(msg)
                 t = threading.Thread(
                     target=_process_msg,
@@ -108,11 +109,7 @@ class Consumer:
             return
 
         for _ in range(self.num_workers - self.num_alive):
-            p = Process(
-                target=self._consume,
-                daemon=True,
-                args=(self.callback,)
-            )
+            p = Process(target=self._consume, daemon=True, args=(self.callback,))
             p.start()
             self.workers.append(p)
             print(f'Starting worker {p.pid}')
