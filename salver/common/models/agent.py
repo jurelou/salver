@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from salver.common.models import BaseFact
 
 class AgentInfoRequest(BaseModel):
-    hello: str
+    hello: str = "world"
 
     @staticmethod
     def to_dict(obj, _):

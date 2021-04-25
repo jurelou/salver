@@ -10,32 +10,33 @@ from salver.config import engine_config
 from salver.common.kafka import Producer
 from salver.common import models
 
-class KafkaProducers:
-    def __init__(self):
 
-        self.agents_collect = Producer(
-            topic='agent-collect',
-            value_serializer=models.CollectRequest.to_dict,
-            schema_registry_url=engine_config.kafka.schema_registry_url,
-            kafka_config={
-                'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-            },
-        )
-
-        self.agents_broadcast = Producer(
+def make_agent_broadcast_ping():
+    return Producer(
             topic='agent-broadcast-ping',
-            value_serializer=models.PingRequest.to_dict,
+            value_serializer=models.PingRequest,
+            schema_registry_url=engine_config.kafka.schema_registry_url,
+            kafka_config={
+                'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+            },
+    )
+
+def make_agent_collect():
+        return Producer(
+            topic='agent-collect',
+            value_serializer=models.CollectRequest,
             schema_registry_url=engine_config.kafka.schema_registry_url,
             kafka_config={
                 'bootstrap.servers': engine_config.kafka.bootstrap_servers,
             },
         )
 
-        # self.agents_info = Producer(
-        #     topic='agent-info',
-        #     value_serializer=models.AgentInfoRequest.to_dict,
-        #     schema_registry_url=engine_config.kafka.schema_registry_url,
-        #     kafka_config={
-        #         'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-        #     },
-        # )
+def make_agent_info():
+        return Producer(
+            topic='agent-info',
+            value_serializer=models.AgentInfoRequest,
+            schema_registry_url=engine_config.kafka.schema_registry_url,
+            kafka_config={
+                'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+            },
+        )

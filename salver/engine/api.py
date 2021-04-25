@@ -1,61 +1,63 @@
 from salver.common import models
-from salver.engine.services.kafka_producers import KafkaProducers
-from salver.engine.services.kafka_consumers import KafkaConsumers
+from salver.engine.services import kafka_producers
 
-from salver.common.kafka import ConsumerAPI, Topic
+from salver.common.kafka import Consumer
 from salver.config import engine_config
 
 
 from multiprocessing import Process, Manager
 from multiprocessing.managers import BaseManager
+from salver.common.kafka import Consumer, ConsumerCallback
 
 
-class ConsumeAPI():
-
+class OnInfoResponse(ConsumerCallback):
     def __init__(self):
-        self._methods = {
-            "agent-info-response": self.on_info_response,
-            "agent-broadcast-ping": self.on_ping
-        }
+        self.agents_broadcast_producer = kafka_producers.make_agent_broadcast_ping()
 
-        self.producers = KafkaProducers()
+    def on_message(self, message):
+        print("ON INFO RESPONSE", message)
+        self.agents_broadcast_producer.produce(models.PingRequest(ping="enginepinginging"), flush=True)
 
-    def on_ping(self, msg):
-        print("ON PING", msg)
-        # self.producers.agents_broadcast.produce(models.PingRequest(), flush=True)
-
-    def on_info_response(self, toto):
-        print("INFO RESPONSE", toto)
-        self.producers.agents_broadcast.produce(models.PingRequest(ping="world"), flush=True)
-        # self.producers.agents_broadcast.produce(models.PingRequest(ping="world"), flush=True)
-        # self.producers.agents_broadcast.produce(models.PingRequest(ping="world"), flush=True)
-
-    def get_method_for_topic(self, topic: str):
-        if topic in self._methods:
-            return self._methods[topic]
-        return None    
-
+def on_ping(message):
+    print("ON PING", message)
 
 class EngineAPI:
-    def __init__(self, producers = None):
-        print("CREATE ENGINE API")
 
-        self.consumers = KafkaConsumers(ConsumeAPI)
-        self.consumers.start()
-        # toto = Topic(
-        #         produce=True,
-        #         topic='agent-info-response',
-        #         consumer_workers=engine_config.kafka.workers_per_topic,
-        #         consumer_threads=engine_config.kafka.threads_per_worker,
-        #         model_serializer=models.AgentInfo,
-        #         schema_registry_url=engine_config.kafka.schema_registry_url,
-        #         kafka_config={
-        #             'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-        #             'group.id': 'engine',
-        #         },
-        #         callback_cls=callback_cls
-        #     ),
-        # self.producers = KafkaProducers()
-        
+    def __init__(self):
+        self.consumers = [
+
+            Consumer(
+                topic='agent-info-response',
+                num_workers=engine_config.kafka.workers_per_topic,
+                num_threads=engine_config.kafka.threads_per_worker,
+                value_deserializer=models.AgentInfo,
+                schema_registry_url=engine_config.kafka.schema_registry_url,
+                kafka_config={
+                    'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+                    'group.id': 'engine',
+                },
+                callback=OnInfoResponse
+            ),
 
 
+            Consumer(
+                topic='agent-broadcast-ping',
+                num_workers=engine_config.kafka.workers_per_topic,
+                num_threads=engine_config.kafka.threads_per_worker,
+                value_deserializer=models.PingRequest,
+                schema_registry_url=engine_config.kafka.schema_registry_url,
+                kafka_config={
+                    'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+                    'group.id': 'agentENGINE',
+                },
+                callback=on_ping
+
+            ),
+        ]
+
+
+    def start(self):
+        while True:
+            for consumer in self.consumers:
+                consumer.start_workers()
+            # time.sleep(5)

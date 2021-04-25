@@ -38,7 +38,7 @@ class Consumer:
         num_threads,
         kafka_config,
         schema_registry_url,
-        callback_cls
+        callback
     ):
         self.topic = topic
         self.num_threads = num_threads
@@ -51,14 +51,14 @@ class Consumer:
             'auto.offset.reset': 'earliest',
             'value.deserializer': make_deserializer(
                 topic=self.topic,
-                from_dict=value_deserializer,
+                from_dict=value_deserializer.from_dict,
                 schema_registry_url=schema_registry_url,
             ),
         }
         self.kafka_config.update(kafka_config)
 
         self.workers = []
-        self.callback_cls = callback_cls
+        self.callback = callback
 
     @property
     def num_alive(self) -> int:
@@ -111,7 +111,7 @@ class Consumer:
             p = Process(
                 target=self._consume,
                 daemon=True,
-                args=(self.callback_cls,)
+                args=(self.callback,)
             )
             p.start()
             self.workers.append(p)

@@ -1,56 +1,72 @@
-
 from multiprocessing import Process, Manager
 from multiprocessing.managers import BaseManager
 
 from salver.common import models
 from salver.config import agent_config
-from salver.common.kafka import Producer
-from salver.agent.services.kafka_producers import KafkaProducers
-from salver.agent.services.kafka_consumers import KafkaConsumers
+from salver.common.kafka import Producer, Consumer, ConsumerCallback
 
 
-class ConsumerAPI:
-    def __init__(self):
-        # self.producers = KafkaProducers()
-        self._methods = {
-            "agent-collect": self.on_collect,
-            "agent-info": self.on_info_request,
-            "agent-broadcast-ping": self.on_ping
+class onping(ConsumerCallback):
+    def on_message(self, message):
+        print("ON PING", message)
 
-        }
-    def get_method_for_topic(self, topic: str):
-        if topic in self._methods:
-            return self._methods[topic]
-        return None  
+def on_collect(message):
+    print("ON AGENT COLLECT", message)
 
-    def on_info_request(self, info_request):
-        print("INFO REQUEST", info_request)
-        # self.producers.info_response.produce(models.AgentInfo(name="yesssssssss"), flush=True)
-
-    def on_collect(self, toto):
-        print("COLLECt", toto)
-    
-    def on_ping(self, ping):
-        print("PINGPING", ping)
-        # self.producers.info_response.produce(models.AgentInfo(name="yesssssssss"))
-        # self.producers.info_response.flush()
+def oninfo(message):
+    print("ON INFO", message)
 
 class AgentAPI:
-    # producers = {
-
-    #     "agent-info-response": Producer(
-    #         topic='agent-info-response',
-    #         value_serializer=models.AgentInfo.to_dict,
-    #         schema_registry_url=agent_config.kafka.schema_registry_url,
-    #         kafka_config={
-    #             'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-    #         },
-    #     )
-
 
     def __init__(self):
         print("CREATE AGENT API")
 
-        self.consumers = KafkaConsumers(ConsumerAPI)
+        self.consumers = [
+            Consumer(
+                topic='agent-collect',
+                num_workers=agent_config.kafka.workers_per_topic,
+                num_threads=agent_config.kafka.threads_per_worker,
+                value_deserializer=models.CollectRequest,
+                schema_registry_url=agent_config.kafka.schema_registry_url,
+                kafka_config={
+                    'bootstrap.servers': agent_config.kafka.bootstrap_servers,
+                    'group.id': 'agents',
+                },
+                callback=on_collect,
+            ),
+
+
+
+            Consumer(
+                topic='agent-broadcast-ping',
+                num_workers=agent_config.kafka.workers_per_topic,
+                num_threads=agent_config.kafka.threads_per_worker,
+                value_deserializer=models.PingRequest,
+                schema_registry_url=agent_config.kafka.schema_registry_url,
+                kafka_config={
+                    'bootstrap.servers': agent_config.kafka.bootstrap_servers,
+                    'group.id': 'agentYYY',
+                },
+                callback=onping,
+            ),
+
+            Consumer(
+                topic='agent-info',
+                num_workers=agent_config.kafka.workers_per_topic,
+                num_threads=agent_config.kafka.threads_per_worker,
+                value_deserializer=models.AgentInfoRequest,
+                schema_registry_url=agent_config.kafka.schema_registry_url,
+                kafka_config={
+                    'bootstrap.servers': agent_config.kafka.bootstrap_servers,
+                    'group.id': 'agentYYY',
+                },
+                callback=oninfo,
+            ),
+
+        ]
+
     def start(self):
-        self.consumers.start()
+        while True:
+            for consumer in self.consumers:
+                consumer.start_workers()
+            # time.sleep(5)

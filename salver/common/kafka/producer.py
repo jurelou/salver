@@ -8,7 +8,6 @@ from confluent_kafka.serialization import StringSerializer
 
 from salver.common.avro import make_serializer
 
-# from salver.common.utils import Singleton
 
 class Producer:
     def __init__(self, topic, kafka_config, value_serializer, schema_registry_url):
@@ -19,7 +18,7 @@ class Producer:
                 'key.serializer': StringSerializer('utf_8'),
                 'value.serializer': make_serializer(
                     topic=self.topic,
-                    to_dict=value_serializer,
+                    to_dict=value_serializer.to_dict,
                     schema_registry_url=schema_registry_url,
                 ),
                 'error_cb': lambda x: print("ERRRRRRRRRRR", x),
@@ -51,7 +50,6 @@ class Producer:
             value=msg,
             on_delivery=self._delivery_report,
         )
-        print("hereeee")
         if flush:
             self.flush()
 
