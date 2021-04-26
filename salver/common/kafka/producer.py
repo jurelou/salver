@@ -6,12 +6,12 @@ from confluent_kafka import SerializingProducer
 from confluent_kafka.serialization import StringSerializer
 
 from salver.common.avro import make_serializer
-
+from loguru import logger
 
 class Producer:
     def __init__(self, topic, kafka_config, value_serializer, schema_registry_url):
         self.topic = topic
-
+        logger.debug(f'Create kafka producer for topic {self.topic}')
         kafka_config.update(
             {
                 'key.serializer': StringSerializer('utf_8'),
@@ -20,7 +20,7 @@ class Producer:
                     to_dict=value_serializer.to_dict,
                     schema_registry_url=schema_registry_url,
                 ),
-                'error_cb': lambda x: print('ERRRRRRRRRRR', x),
+                'error_cb': lambda err: logger.error(f'Producer for {topic} error: {err}'),
             },
         )
         self.producer = SerializingProducer(kafka_config)
@@ -28,23 +28,21 @@ class Producer:
     @staticmethod
     def _delivery_report(err, msg):
         if err is not None:
-            print('Delivery failed for User record {}: {}'.format(msg.key(), err))
+            logger.error(f'Delivery failed for {msg.key()}: {err}')
             return
-        print(
-            'record {} successfully produced to {} [{}] at offset {}'.format(
-                msg.key(),
-                msg.topic(),
-                msg.partition(),
-                msg.offset(),
-            ),
-        )
+        logger.debug(f'Produced {str(msg.key())} to {msg.topic()}')
+                # msg.key(),
+                # msg.topic(),
+                # msg.partition(),
+                # msg.offset(),
 
     def produce(self, msg, flush=False):
         self.producer.poll(0.0)
-        print(f'Producing records to topic {self.topic}: {msg}')
+        msg_id = uuid4().hex
+        logger.debug(f'Producing {msg_id} to {self.topic}: {msg}')
         self.producer.produce(
             topic=self.topic,
-            key=str(uuid4()),
+            key=msg_id,
             value=msg,
             on_delivery=self._delivery_report,
         )
@@ -52,4 +50,5 @@ class Producer:
             self.flush()
 
     def flush(self):
+        logger.debug(f'Flush producer for {self.topic}')
         self.producer.flush()

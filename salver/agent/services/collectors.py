@@ -31,6 +31,11 @@ def build():
     for enabled_collector in enabled_collectors:
         if enabled_collector not in collectors:
             raise MissingCollectorDefinition(enabled_collector)
+
+    print('==================')
+    for collector_name, collector_config in collectors.items():
+        active = ': active' if collector_config['active'] else ''
+        logger.info(f'Loaded collector {collector_name}{active}')
     return collectors
 
 

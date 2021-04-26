@@ -28,9 +28,9 @@ def make_agent_collect():
     )
 
 
-def make_agent_info_request():
+def make_request_agent_info():
     return Producer(
-        topic='agent-info-request',
+        topic='request-agent-info',
         value_serializer=models.AgentInfoRequest,
         schema_registry_url=engine_config.kafka.schema_registry_url,
         kafka_config={

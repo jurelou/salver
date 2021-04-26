@@ -9,7 +9,7 @@ from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from salver.common import models
 from salver.common.facts import all_facts
 
-topics = ['agent-broadcast-ping', 'agent-collect', 'agent-info', 'agent-info-request']
+topics = ['agent-broadcast-ping', 'agent-collect', 'agent-info', 'request-agent-info']
 
 admin_client = AdminClient({'bootstrap.servers': 'localhost:9092'})
 shema_registry_client = SchemaRegistryClient({'url': 'http://127.0.0.1:8081'})
@@ -141,7 +141,7 @@ def create_schemas():
     shema_registry_client.register_schema('agent-collect', collect_request)
     shema_registry_client.register_schema('agent-broadcast-ping', ping_request)
 
-    shema_registry_client.register_schema('agent-info-request', info_request)
+    shema_registry_client.register_schema('request-agent-info', info_request)
     shema_registry_client.register_schema('agent-info', info_response)
 
 

@@ -3,14 +3,13 @@
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
 
-
-# TODO: cache schema registry client
-def _get_schema(schema_registry_client, topic) -> str:
-    print('@@@@@GET', topic)
+def _get_schema(schema_registry_client: SchemaRegistryClient, topic: str) -> str:
+    """Return a schema string from an AVRO server."""
     return schema_registry_client.get_latest_version(topic).schema.schema_str
 
 
 def make_serializer(topic, to_dict, schema_registry_url):
+    """Create an AvroSerializer from a topic."""
     client = SchemaRegistryClient({'url': schema_registry_url})
     return AvroSerializer(
         schema_str=_get_schema(client, topic),
@@ -20,6 +19,7 @@ def make_serializer(topic, to_dict, schema_registry_url):
 
 
 def make_deserializer(topic, from_dict, schema_registry_url):
+    """Create an AvroDeserializer from a topic."""
     client = SchemaRegistryClient({'url': schema_registry_url})
     return AvroDeserializer(
         schema_str=_get_schema(client, topic),

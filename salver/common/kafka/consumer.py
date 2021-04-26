@@ -10,15 +10,18 @@ from confluent_kafka import DeserializingConsumer
 from confluent_kafka.serialization import StringDeserializer
 
 from salver.common.avro import make_deserializer
-
+from loguru import logger
 
 def _process_msg(q, consumer, callback, topic):
     msg = q.get(timeout=60)
+    value = msg.value()
+    logger.debug(f'From {topic} got {value}')
 
-    callback(msg.value())
+    callback(value)
 
     q.task_done()
     consumer.commit(msg)
+    logger.debug(f'Task done {topic}')
 
 
 class ConsumerCallback(ABC):
@@ -38,6 +41,7 @@ class Consumer:
         schema_registry_url,
         callback,
     ):
+        logger.debug(f'Create a kafka consumer for topic {topic} with {num_workers} workers and {num_threads} threads')
         self.topic = topic
         self.num_threads = num_threads
         self.num_workers = num_workers
@@ -46,7 +50,7 @@ class Consumer:
         self.kafka_config = {
             'key.deserializer': StringDeserializer('utf_8'),
             'enable.auto.commit': False,
-            'auto.offset.reset': 'earliest',
+            'auto.offset.reset': 'latest',
             'value.deserializer': make_deserializer(
                 topic=self.topic,
                 from_dict=value_deserializer.from_dict,
@@ -63,33 +67,27 @@ class Consumer:
         return len([w for w in self.workers if w.is_alive()])
 
     def _consume(self, on_consume):
-        print(
-            f"{os.getpid()} Starting consumer group={self.kafka_config['group.id']}, topic={self.topic}",
-        )
-
         if isinstance(on_consume, types.FunctionType):
             callback = on_consume
         else:
             callback_cls = on_consume()
             callback = callback_cls.on_message
 
-        if not callback:
-            print(f'!!!NO CALLBACK FOR {self.topic}')
         consumer = DeserializingConsumer(self.kafka_config)
         consumer.subscribe([self.topic])
         q = Queue(maxsize=self.num_threads)
 
+        msg = None
         while True:
-            # print(f'{os.getpid()} - Waiting for message...')
             try:
                 # Check if we should rate limit
                 msg = consumer.poll(1)
                 if msg is None:
                     continue
                 if msg.error():
-                    print(f'{os.getpid()} - Consumer error: {msg.error()}')
+                    logger.error(f'Worker for topic {self.topic} error: {msg.error()}')
                     continue
-                print('@@@', self.topic, '=>', msg.value())
+
                 q.put(msg)
                 t = threading.Thread(
                     target=_process_msg,
@@ -97,7 +95,8 @@ class Consumer:
                 )
                 t.start()
             except Exception as err:
-                print(f'{os.getpid()} - Worker terminated., {err}')
+                logger.error(f'Worker for topic {self.topic} terminated: {err}')
+                logger.error(msg)
                 consumer.close()
                 break
 
@@ -109,4 +108,4 @@ class Consumer:
             p = Process(target=self._consume, daemon=True, args=(self.callback,))
             p.start()
             self.workers.append(p)
-            print(f'Starting worker {p.pid}')
+            logger.debug(f"Start consumer worker {p.pid} for topic {self.topic} with group {self.kafka_config['group.id']}")
