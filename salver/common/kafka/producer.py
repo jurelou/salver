@@ -2,11 +2,12 @@
 
 from uuid import uuid4
 
+from loguru import logger
 from confluent_kafka import SerializingProducer
 from confluent_kafka.serialization import StringSerializer
 
 from salver.common.avro import make_serializer
-from loguru import logger
+
 
 class Producer:
     def __init__(self, topic, kafka_config, value_serializer, schema_registry_url):
@@ -20,7 +21,9 @@ class Producer:
                     to_dict=value_serializer.to_dict,
                     schema_registry_url=schema_registry_url,
                 ),
-                'error_cb': lambda err: logger.error(f'Producer for {topic} error: {err}'),
+                'error_cb': lambda err: logger.error(
+                    f'Producer for {topic} error: {err}',
+                ),
             },
         )
         self.producer = SerializingProducer(kafka_config)
@@ -31,10 +34,10 @@ class Producer:
             logger.error(f'Delivery failed for {msg.key()}: {err}')
             return
         logger.debug(f'Produced {str(msg.key())} to {msg.topic()}')
-                # msg.key(),
-                # msg.topic(),
-                # msg.partition(),
-                # msg.offset(),
+        # msg.key(),
+        # msg.topic(),
+        # msg.partition(),
+        # msg.offset(),
 
     def produce(self, msg, flush=False):
         self.producer.poll(0.0)

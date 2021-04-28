@@ -6,6 +6,8 @@ import pkgutil
 import traceback
 from importlib import import_module
 
+from loguru import logger
+
 
 def get_actual_dir():
     """Get calling method absolute path."""

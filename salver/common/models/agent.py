@@ -1,27 +1,20 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 from pydantic import BaseModel
 
-from salver.common.models import BaseFact
-
-
-class AgentInfoRequest(BaseModel):
-    hello: str = 'world'
-
-    @staticmethod
-    def to_dict(obj, _):
-        return obj.dict()
-
-    @staticmethod
-    def from_dict(obj, _):
-        return AgentInfoRequest(**obj)
+from .collector import Collector
 
 
 class AgentInfo(BaseModel):
     name: str
+    collectors: List[Collector]
 
     @staticmethod
     def to_dict(obj, _):
-        return obj.dict()
+        res = obj.dict(exclude={'collectors'})
+        res['collectors'] = [c.dict() for c in obj.collectors]
+        return res
 
     @staticmethod
     def from_dict(obj, _):

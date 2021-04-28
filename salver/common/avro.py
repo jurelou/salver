@@ -3,6 +3,7 @@
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
 
+
 def _get_schema(schema_registry_client: SchemaRegistryClient, topic: str) -> str:
     """Return a schema string from an AVRO server."""
     return schema_registry_client.get_latest_version(topic).schema.schema_str

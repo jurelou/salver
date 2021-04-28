@@ -13,14 +13,18 @@ class SalverEngine:
     def on_engine_start(self):
         p = Person(firstname='1', lastname='1')
         e = Email(address='addr')
-        c = models.CollectRequest(collector_name='toto', facts=[p, e])
+        c = models.Collect(collector_name='toto', facts=[p, e])
 
-        agent_info_prod = kafka_producers.make_request_agent_info()
-        agent_info_prod.produce(models.AgentInfoRequest(), flush=True)
+        engine_connect = kafka_producers.make_engine_connect()
+        engine_connect.produce(
+            models.EngineInfo(name='thats my engine name'), flush=True,
+        )
+
+        agent_collect = kafka_producers.make_agent_collect()
+        # agent_collect.produce(c, flush=True)
 
         # info_res = kafka_producers.make_agent_broadcast_ping()
         # info_res.produce(models.PingRequest(ping='ping allllllll'), flush=True)
-
 
         # self.producers.agents_collect.produce(c, flush=True)
         # self.producers.agents_collect.produce(c, flush=True)

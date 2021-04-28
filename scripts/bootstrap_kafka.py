@@ -9,7 +9,14 @@ from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from salver.common import models
 from salver.common.facts import all_facts
 
-topics = ['agent-broadcast-ping', 'agent-collect', 'agent-info', 'request-agent-info']
+topics = [
+    'agent-broadcast-ping',
+    'engine-connect',
+    'agent-disconnect',
+    'agent-collect-create',
+    # 'agent-collect-item',
+    # 'agent-collect-update-status',
+]
 
 admin_client = AdminClient({'bootstrap.servers': 'localhost:9092'})
 shema_registry_client = SchemaRegistryClient({'url': 'http://127.0.0.1:8081'})
@@ -77,11 +84,26 @@ def pydantic_to_avro(pydantic_model):
     for p_name, p_value in pydantic_schema['properties'].items():
         p_type = p_value['type']
         if p_type == 'array':
+
             if '$ref' in p_value['items']:
-                if 'BaseFact' not in p_value['items']['$ref']:
-                    print(f'UNSUPPORTED FACT {p_name}: {p_value}')
-                    sys.exit(1)
-                items = list(get_facts_avro_mapping())
+                if 'BaseFact' in p_value['items']['$ref']:
+                    items = list(get_facts_avro_mapping())
+
+                else:
+                    if '#/definition' not in p_value['items']['$ref']:
+                        print(f'ERRORRRRRRR, could not parse field {p_name}: {p_value}')
+                        sys.exit(1)
+
+                    a = getattr(
+                        models, p_value['items']['$ref'].split('#/definitions/')[1],
+                    )
+                    model_json = pydantic_to_avro(a)
+                    model = json.loads(model_json)
+                    items = {
+                        'name': model['name'],
+                        'type': 'record',
+                        'fields': model['fields'],
+                    }
 
             else:
                 items = resolve_type(p_value['items']['type'])
@@ -119,7 +141,7 @@ def remove_schemas():
 
 def create_schemas():
     collect_request = Schema(
-        schema_str=pydantic_to_avro(models.CollectRequest),
+        schema_str=pydantic_to_avro(models.Collect),
         schema_type='AVRO',
     )
 
@@ -128,21 +150,26 @@ def create_schemas():
         schema_type='AVRO',
     )
 
-    info_request = Schema(
-        schema_str=pydantic_to_avro(models.AgentInfoRequest),
+    engine_info = Schema(
+        schema_str=pydantic_to_avro(models.EngineInfo),
         schema_type='AVRO',
     )
 
-    info_response = Schema(
+    agent_info = Schema(
         schema_str=pydantic_to_avro(models.AgentInfo),
         schema_type='AVRO',
     )
 
-    shema_registry_client.register_schema('agent-collect', collect_request)
     shema_registry_client.register_schema('agent-broadcast-ping', ping_request)
+    shema_registry_client.register_schema('agent-collect-create', collect_request)
 
-    shema_registry_client.register_schema('request-agent-info', info_request)
-    shema_registry_client.register_schema('agent-info', info_response)
+    shema_registry_client.register_schema('agent-connect', agent_info)
+    shema_registry_client.register_schema('agent-disconnect', agent_info)
+
+    shema_registry_client.register_schema('engine-connect', engine_info)
+
+    # shema_registry_client.register_schema('request-agent-info', info_request)
+    # shema_registry_client.register_schema('agent-info', info_response)
 
 
 remove_schemas()

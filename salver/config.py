@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from dynaconf import Dynaconf
 from loguru import logger
+from dynaconf import Dynaconf
 
 engine_config = Dynaconf(
     envvar_prefix='DYNACONF',

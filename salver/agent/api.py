@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
+import sys
+import signal
+from functools import partial
+
+from loguru import logger
+
 from salver.common import models
 from salver.config import agent_config
 from salver.common.kafka import Consumer, ConsumerCallback
 from salver.agent.services import kafka_producers
-from functools import partial
-from loguru import logger
 
 
 class OnPing(ConsumerCallback):
@@ -14,16 +18,14 @@ class OnPing(ConsumerCallback):
         logger.info(f'Got ping: {message}')
 
 
-class OnAgentInfo(ConsumerCallback):
-    def __init__(self, agent_name):
-        self.agent_info_producer = kafka_producers.make_agent_info_response()
-        self.agent_name = agent_name
+class OnEngineConnect(ConsumerCallback):
+    def __init__(self, agent_info):
+        self.agent_connect = kafka_producers.make_agent_connect()
+        self.agent_info = agent_info
 
     def on_message(self, agent_info_request):
-        logger.info(f'Got agent info: {agent_info_request}')
-        self.agent_info_producer.produce(
-            models.AgentInfo(name=self.agent_name), flush=True,
-        )
+        logger.info(f'Got engine connect: {agent_info_request}')
+        self.agent_connect.produce(self.agent_info, flush=True)
 
 
 def on_collect(message):
@@ -31,15 +33,15 @@ def on_collect(message):
 
 
 class AgentAPI:
-    def __init__(self, agent_name: str):
-        self.agent_name = agent_name
+    def __init__(self, agent_info: models.AgentInfo):
+        self.agent_info = agent_info
 
         self.consumers = [
             Consumer(
-                topic='agent-collect',
+                topic='agent-collect-create',
                 num_workers=agent_config.kafka.workers_per_topic,
                 num_threads=agent_config.kafka.threads_per_worker,
-                value_deserializer=models.CollectRequest,
+                value_deserializer=models.Collect,
                 schema_registry_url=agent_config.kafka.schema_registry_url,
                 kafka_config={
                     'bootstrap.servers': agent_config.kafka.bootstrap_servers,
@@ -55,21 +57,21 @@ class AgentAPI:
                 schema_registry_url=agent_config.kafka.schema_registry_url,
                 kafka_config={
                     'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                    'group.id': agent_name,
+                    'group.id': agent_info.name,
                 },
                 callback=OnPing,
             ),
             Consumer(
-                topic='request-agent-info',
+                topic='engine-connect',
                 num_workers=agent_config.kafka.workers_per_topic,
                 num_threads=agent_config.kafka.threads_per_worker,
-                value_deserializer=models.AgentInfoRequest,
+                value_deserializer=models.EngineInfo,
                 schema_registry_url=agent_config.kafka.schema_registry_url,
                 kafka_config={
                     'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                    'group.id': agent_name,
+                    'group.id': agent_info.name,
                 },
-                callback=partial(OnAgentInfo, self.agent_name),
+                callback=partial(OnEngineConnect, agent_info),
             ),
         ]
 
@@ -77,4 +79,7 @@ class AgentAPI:
         while True:
             for consumer in self.consumers:
                 consumer.start_workers()
-            # time.sleep(5)
+        # time.sleep(5)
+
+    def stop(self):
+        pass

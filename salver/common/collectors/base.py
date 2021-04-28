@@ -88,7 +88,7 @@ class BaseCollector:
             facts.extend(list(self._sanitize_output(cb)))
         return facts
 
-    def collect(self, facts: List[models.BaseFact]) -> models.CollectResult:
+    def collect(self, facts: List[models.BaseFact]):
         if self._limiter:
             self._limiter.try_acquire()
         start_time = timer()

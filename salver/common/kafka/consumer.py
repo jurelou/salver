@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import os
 import types
+import signal
 import threading
 from abc import ABC, abstractmethod
 from queue import Queue
 from multiprocessing import Process
 
+from loguru import logger
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.serialization import StringDeserializer
 
 from salver.common.avro import make_deserializer
-from loguru import logger
+
 
 def _process_msg(q, consumer, callback, topic):
     msg = q.get(timeout=60)
@@ -30,6 +32,10 @@ class ConsumerCallback(ABC):
         pass
 
 
+# def handler(s, f):
+#     print("!!!!!!!!!!!!!!!!!!!!!!!", s, f)
+
+
 class Consumer:
     def __init__(
         self,
@@ -41,7 +47,9 @@ class Consumer:
         schema_registry_url,
         callback,
     ):
-        logger.debug(f'Create a kafka consumer for topic {topic} with {num_workers} workers and {num_threads} threads')
+        logger.debug(
+            f'Create a kafka consumer for topic {topic} with {num_workers} workers and {num_threads} threads',
+        )
         self.topic = topic
         self.num_threads = num_threads
         self.num_workers = num_workers
@@ -108,4 +116,6 @@ class Consumer:
             p = Process(target=self._consume, daemon=True, args=(self.callback,))
             p.start()
             self.workers.append(p)
-            logger.debug(f"Start consumer worker {p.pid} for topic {self.topic} with group {self.kafka_config['group.id']}")
+            logger.debug(
+                f"Start consumer worker {p.pid} for topic {self.topic} with group {self.kafka_config['group.id']}",
+            )

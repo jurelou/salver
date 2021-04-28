@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from .fact import BaseFact
 
 
-class CollectRequest(BaseModel):
+class Collect(BaseModel):
     collector_name: str
     facts: List[BaseFact]
 
@@ -25,7 +25,7 @@ class CollectRequest(BaseModel):
             if fact_type not in all_facts:
                 raise ValueError(f'Could not deserialize fact of type {fact_type}')
             facts.append(all_facts[fact_type](**fact))
-        return CollectRequest(facts=facts, **obj)
+        return Collect(facts=facts, **obj)
 
 
 class CollectResult(BaseModel):

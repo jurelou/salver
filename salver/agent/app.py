@@ -1,24 +1,52 @@
 # -*- coding: utf-8 -*-
+import sys
 import socket
 from uuid import uuid4
+from signal import SIGTERM, signal
+from functools import partial
+
+from loguru import logger
 
 from salver.common import models
 from salver.agent.api import AgentAPI
-from salver.agent.services import kafka_producers
-from loguru import logger
+from salver.agent.services import collectors, kafka_producers
+
+
+def on_sigterm(agent_disconnect, agent_info, *_args):
+    print('!!!!!!!!!', agent_info)
+    try:
+        agent_disconnect.produce(agent_info)
+    except Exception as err:
+        print(f'Could not send disconect: {err}')
+        sys.exit(0)
+    sys.exit(0)
+
 
 class SalverAgent:
     def __init__(self):
         self.name = f'agent-{socket.getfqdn()}-{uuid4().hex[:4]}'
-        self.api = AgentAPI(agent_name=self.name)
+        all_collectors = [
+            models.Collector(name=c_name, enabled=c_config['enabled'])
+            for c_name, c_config in collectors.ALL_COLLECTORS.items()
+        ]
+        self.agent_info = models.AgentInfo(name=self.name, collectors=all_collectors)
+        self.api = AgentAPI(agent_info=self.agent_info)
 
     def start(self):
         logger.info(f'Starting agent {self.name}')
 
-        info_res = kafka_producers.make_agent_info_response()
-        info_res.produce(models.AgentInfo(name=self.name), flush=True)
+        agent_connect = kafka_producers.make_agent_connect()
+        agent_disconnect = kafka_producers.make_agent_disconnect()
 
-        self.api.start()
+        agent_connect.produce(self.agent_info, flush=True)
+
+        # signal(SIGTERM, partial(on_sigterm, agent_disconnect, agent_info))
+        try:
+            self.api.start()
+        except KeyboardInterrupt:
+            logger.warning('quitting')
+            agent_disconnect.produce(self.agent_info, flush=True)
+        self.api.stop()
 
 
 agent = SalverAgent()
