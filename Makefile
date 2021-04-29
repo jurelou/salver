@@ -1,8 +1,8 @@
 # re: redocker bootstrap
 
-# redocker:
-# 	docker-compose down -v
-# 	docker-compose up --build --force-recreate -d
+redocker:
+	docker-compose -f ./deploy/docker-compose-kafka.yml down -v
+	docker-compose -f ./deploy/docker-compose-kafka.yml up --build --force-recreate -d
 
 docker:
 	docker-compose -f ./deploy/docker-compose-kafka.yml up -d
@@ -28,7 +28,9 @@ format:
 	pre-commit run --all-files
 
 bootstrap:
+	./scripts/wait_services_up.sh
 	python -m scripts.bootstrap_kafka
+	./scripts/bootstrap_mongodb.sh
 
 
 sloc:

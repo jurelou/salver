@@ -2,12 +2,12 @@
 from salver.facts import Email, Person
 from salver.common import models
 from salver.engine.api import EngineAPI
-from salver.engine.services import kafka_producers
+from salver.engine.services import kafka_producers, mongodb
 
 
 class SalverEngine:
     def __init__(self):
-
+        print('!!!!!!!!!!!!!!!!!!!', mongodb.CLIENT)
         self.api = EngineAPI(on_start=self.on_engine_start)
 
     def on_engine_start(self):

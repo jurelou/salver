@@ -9,10 +9,69 @@ services:
   #     - "7474:7474"
   #     - "7687:7687"
   #   environment:
-  #     NEO4J_kafka_bootstrap_servers: broker:9093
+  #     NEO4J_kafka_bootstrap_servers: broker:19092
   #     NEO4J_AUTH: neo4j/connect
   #     NEO4J_dbms_memory_heap_max__size: 8G
 
+################################
+# MONGODB
+################################
+    mongo1:
+        image: mongo:4.4-bionic
+        container_name: mongo1
+        command: --replSet rs0 --oplogSize 128
+        volumes:
+            - mongo-rs1:/data/db
+        ports:
+            - 27017:27017
+        restart: always
+
+    mongo2:
+        image: mongo:4.4-bionic
+        container_name: mongo2
+        command: --replSet rs0 --oplogSize 128
+        volumes:
+            - mongo-rs2:/data/db
+        ports:
+            - 27018:27017
+        restart: always
+
+    mongo3:
+        image: mongo:4.4-bionic
+        container_name: mongo3
+        command: --replSet rs0 --oplogSize 128
+        volumes:
+            - mongo-rs3:/data/db
+        ports:
+            - 27019:27017
+        restart: always
+
+########################
+##  MONGOEXPRESS
+########################
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+            - 8017:8081
+        depends_on:
+            - mongo1
+            - mongo2
+            - mongo3
+        environment:
+            ME_CONFIG_MONGODB_SERVER: mongo1
+            # ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            # ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+            # ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
+            # ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
+
+    # environment:
+    #   ME_CONFIG_MONGODB_ADMINUSERNAME: root
+    #   ME_CONFIG_MONGODB_ADMINPASSWORD: rootroot
+
+################################
+# KAFKA ZOOKEEPER
+################################
     zookeeper:
         image: confluentinc/cp-zookeeper:5.5.4
         hostname: zookeeper
@@ -23,6 +82,9 @@ services:
             ZOOKEEPER_CLIENT_PORT: 2181
             ZOOKEEPER_TICK_TIME: 2000
 
+################################
+# KAFKA BROKER
+################################
     broker:
         image: confluentinc/cp-enterprise-kafka:5.5.4
         hostname: broker
@@ -31,13 +93,14 @@ services:
             - zookeeper
         ports:
             - 9092:9092
-        expose:
-            - '9093'
+            - 19092:19092
         environment:
-            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9093,OUTSIDE://localhost:9092
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:19092,OUTSIDE://localhost:9092
+
             KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,OUTSIDE:PLAINTEXT
-            KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-            CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:9093
+
+            KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:19092,OUTSIDE://0.0.0.0:9092
+            CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:19092
 
       # workaround if we change to a custom name the schema_registry fails to start
             KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -52,34 +115,39 @@ services:
             CONFLUENT_METRICS_ENABLE: 'true'
             CONFLUENT_SUPPORT_CUSTOMER_ID: anonymous
 
-    schema_registry:
+################################
+# KAFKA SCHEMA REGISTRY
+################################
+    schema-registry:
         image: confluentinc/cp-schema-registry
-        hostname: schema_registry
-        container_name: schema_registry
+        hostname: schema-registry
+        container_name: schema-registry
         depends_on:
             - zookeeper
             - broker
         ports:
             - 8081:8081
         environment:
-            SCHEMA_REGISTRY_HOST_NAME: schema_registry
+            SCHEMA_REGISTRY_HOST_NAME: schema-registry
             SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
             SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
+################################
+# KAFKA CONNECT
+################################
     connect:
-        image: confluentinc/cp-kafka-connect:5.5.4
+        build:
+            context: ./kafka-connect
         hostname: connect
         container_name: connect
         depends_on:
             - zookeeper
             - broker
-            - schema_registry
+            - schema-registry
         ports:
             - 8083:8083
-        volumes:
-            - ./plugins:/tmp/connect-plugins
         environment:
-            CONNECT_BOOTSTRAP_SERVERS: broker:9093
+            CONNECT_BOOTSTRAP_SERVERS: broker:19092
             CONNECT_REST_ADVERTISED_HOST_NAME: connect
             CONNECT_REST_PORT: 8083
             CONNECT_GROUP_ID: compose-connect-group
@@ -90,17 +158,30 @@ services:
             CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
             CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
             CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
             CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-            CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema_registry:8081
+            CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
             CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-            CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema_registry:8081
+            CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
             CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
             CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
             CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
-            CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
+            CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
+
+            CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
             CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=DEBUG,org.I0Itec.zkclient=DEBUG,org.reflections=ERROR
+
+            CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.3.0.jar
+            CONNECT_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+            CONNECT_CONSUMER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+
         command: /etc/confluent/docker/run
 
+################################
+# KAFKA CONTROL-CENTER
+################################
     control-center:
         image: confluentinc/cp-enterprise-control-center:5.5.4
         hostname: control-center
@@ -108,16 +189,61 @@ services:
         depends_on:
             - zookeeper
             - broker
-            - schema_registry
+            - schema-registry
             - connect
         ports:
             - 9021:9021
         environment:
-            CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:9093
+            CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
             CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
             CONTROL_CENTER_CONNECT_CLUSTER: connect:8083
+            CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
             CONTROL_CENTER_REPLICATION_FACTOR: 1
             CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
             CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
             CONFLUENT_METRICS_TOPIC_REPLICATION: 1
             PORT: 9021
+
+
+################################
+# KAFKA REST PROXY
+################################
+    rest-proxy:
+        image: confluentinc/cp-kafka-rest:5.5.4
+        depends_on:
+            - zookeeper
+            - broker
+            - schema-registry
+        ports:
+            - 8082:8082
+        hostname: rest-proxy
+        container_name: rest-proxy
+        environment:
+            KAFKA_REST_HOST_NAME: rest-proxy
+            KAFKA_REST_BOOTSTRAP_SERVERS: broker:19092
+            KAFKA_REST_LISTENERS: http://0.0.0.0:8082
+            KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
+
+################################
+# KAFKA TOPICS UI
+################################
+    kafka-topics-ui:
+        image: landoop/kafka-topics-ui:0.9.4
+        hostname: kafka-topics-ui
+        ports:
+            - 8000:8000
+        environment:
+            KAFKA_REST_PROXY_URL: http://rest-proxy:8082/
+            PROXY: 'true'
+        depends_on:
+            - zookeeper
+            - broker
+            - schema-registry
+            - rest-proxy
+
+volumes:
+    mongo-rs1:
+    mongo-rs2:
+    mongo-rs3:

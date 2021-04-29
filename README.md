@@ -13,7 +13,7 @@
 * change avro to json
 * fuzzing test generateur random de scan, cases, ...
 
-
+* GUI: afficer les outils: kafka topics, kafka control center, mongodb ui, neo4j, kibana, .....
 # Ideas:
 
 * https://github.com/saeeddhqan/Maryam

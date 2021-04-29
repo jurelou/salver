@@ -27,7 +27,7 @@ setup(
         'docker==5.0.0',
         'pydantic==1.8.1',
         'confluent-kafka==1.6.1',
-        # 'pymongo==3.11.3',
+        'pymongo==3.11.3',
         # 'redis==3.5.3',
     ],
     extras_require={
