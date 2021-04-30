@@ -30,7 +30,7 @@ format:
 bootstrap:
 	./scripts/wait_services_up.sh
 	python -m scripts.bootstrap_kafka
-	./scripts/bootstrap_mongodb.sh
+	python scripts/bootstrap_mongodb.py
 
 
 sloc:

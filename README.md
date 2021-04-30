@@ -14,7 +14,12 @@
 * fuzzing test generateur random de scan, cases, ...
 
 * GUI: afficer les outils: kafka topics, kafka control center, mongodb ui, neo4j, kibana, .....
+* gerer les replica set de mongo
+* scripts: parametrizer bootstrap mongo pour l'appeler dans les tests avec un autre nom de DB
+* gerer les erreurs du connecteur kafka:      "errors.deadletterqueue.topic.name": "salver.mongo.dlq",
+
 # Ideas:
+
 
 * https://github.com/saeeddhqan/Maryam
 

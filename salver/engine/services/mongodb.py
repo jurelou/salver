@@ -9,11 +9,12 @@ from salver.config import engine_config
 from salver.common import models
 import time
 
-MONGO_CLIENT =  pymongo.MongoClient(engine_config.mongo.url)
+MONGO_DB =  pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
 
 def bootstrap():
     logger.info('Bootstrap mongodb')
-    MONGO_CLIENT.agents.create_index('name', unique=True)
+    MONGO_DB.agents.create_index('name', unique=True)
+    print("lol")
 
 # class MongoDB(BaseDB):
 #     def __init__(self, config):

@@ -14,6 +14,7 @@ topics = [
     'engine-connect',
     'agent-disconnect',
     'agent-collect-create',
+    'agent-connect'
     # 'agent-collect-item',
     # 'agent-collect-update-status',
 ]

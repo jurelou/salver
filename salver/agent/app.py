@@ -12,16 +12,6 @@ from salver.agent.api import AgentAPI
 from salver.agent.services import collectors, kafka_producers
 
 
-def on_sigterm(agent_disconnect, agent_info, *_args):
-    print('!!!!!!!!!', agent_info)
-    try:
-        agent_disconnect.produce(agent_info)
-    except Exception as err:
-        print(f'Could not send disconect: {err}')
-        sys.exit(0)
-    sys.exit(0)
-
-
 class SalverAgent:
     def __init__(self):
         self.name = f'agent-{socket.getfqdn()}-{uuid4().hex[:4]}'
@@ -40,7 +30,6 @@ class SalverAgent:
 
         agent_connect.produce(self.agent_info, flush=True)
 
-        # signal(SIGTERM, partial(on_sigterm, agent_disconnect, agent_info))
         try:
             self.api.start()
         except KeyboardInterrupt:

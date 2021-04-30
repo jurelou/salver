@@ -19,6 +19,7 @@ class Collect(BaseModel):
         facts = []
         from salver.common.facts import all_facts
 
+        print("@@@@@@@@@@@", obj)
         obj_facts = obj.pop('facts', [])
         for fact in obj_facts:
             fact_type = fact.pop('__fact_type__')
