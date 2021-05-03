@@ -17,17 +17,6 @@ def make_agent_broadcast_ping():
     )
 
 
-# def make_agent_collect():
-#     return Producer(
-#         topic='agent-collect',
-#         value_serializer=models.CollectRequest,
-#         schema_registry_url=engine_config.kafka.schema_registry_url,
-#         kafka_config={
-#             'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-#         },
-#     )
-
-
 def make_engine_connect():
     return Producer(
         topic='engine-connect',

@@ -1,40 +1,42 @@
+# -*- coding: utf-8 -*-
 import httpx
 
-schema_registry_url = "http://schema-registry:8081"
-kafka_connect_url = "http://localhost:8083/connectors"
-mongo_url = "mongodb://mongo1:27017"
-mongo_db_name = "salver"
+schema_registry_url = 'http://schema-registry:8081'
+kafka_connect_url = 'http://localhost:8083'
+mongo_url = 'mongodb://mongo1:27017'
+mongo_db_name = 'salver'
+
 
 def create_mongo_sink(topic, collection):
-  data =  {
-    "name": f"mongo-sink-{topic}",
-    "config": {
-      "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
-      "tasks.max": 1,
-      "topics": topic,
-      "connection.uri": mongo_url,
-      "database": mongo_db_name,
-      "collection": collection,
-      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-
-      "value.converter": "io.confluent.connect.avro.AvroConverter",
-      "value.converter.schema.registry.url": schema_registry_url,
-      "value.converter.schemas.enable": "true",
-
-      "errors.tolerance": "all",
-      "errors.log.enable": "true",
-      "errors.log.include.messages": "true",
-      "errors.deadletterqueue.topic.name": f"dlq.mongo.{mongo_db_name}.{collection}",
-      "errors.deadletterqueue.context.headers.enable": "true",
-      "errors.deadletterqueue.topic.replication.factor": 1
+    data = {
+        'name': f'mongo-sink-{topic}',
+        'config': {
+            'connector.class': 'com.mongodb.kafka.connect.MongoSinkConnector',
+            'tasks.max': 1,
+            'topics': topic,
+            'connection.uri': mongo_url,
+            'database': mongo_db_name,
+            'collection': collection,
+            'key.converter': 'org.apache.kafka.connect.storage.StringConverter',
+            'value.converter': 'io.confluent.connect.json.JsonSchemaConverter',
+            'value.converter.schema.registry.url': schema_registry_url,
+            'value.converter.schemas.enable': True,
+            'errors.tolerance': 'all',
+            'errors.log.enable': 'true',
+            'errors.log.include.messages': 'true',
+            'errors.deadletterqueue.topic.name': f'dlq.mongo.{mongo_db_name}.{collection}',
+            'errors.deadletterqueue.context.headers.enable': 'true',
+            'errors.deadletterqueue.topic.replication.factor': 1,
+        },
     }
-  }
-  res = httpx.post(kafka_connect_url, json=data)
-  print(res.json())
-  res.raise_for_status()
+    httpx.delete(f'{kafka_connect_url}/connectors/mongo-sink-{topic}')
+    res = httpx.post(f'{kafka_connect_url}/connectors', json=data)
+    print(res.json())
+    res.raise_for_status()
 
-create_mongo_sink(topic="agent-connect", collection="agents")
-create_mongo_sink(topic="agent-collect-create", collection="collects")
+
+# create_mongo_sink(topic="agent-connect", collection="agents")
+create_mongo_sink(topic='agent-collect-create', collection='collects')
 
 
 # docker exec mongo1 /usr/bin/mongo --eval '''if (rs.status()["ok"] == 0) {
@@ -77,7 +79,6 @@ create_mongo_sink(topic="agent-collect-create", collection="collects")
 # }}' http://localhost:8083/connectors -w "\n"
 
 
-
 # curl -X POST -H "Content-Type: application/json" --data '
 #   {"name": "mongo-sink-agent-connect",
 #    "config": {
@@ -102,4 +103,3 @@ create_mongo_sink(topic="agent-collect-create", collection="collects")
 
 
 # }}' http://localhost:8083/connectors -w "\n"
-

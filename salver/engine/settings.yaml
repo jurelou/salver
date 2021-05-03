@@ -11,3 +11,8 @@ development:
     mongo:
         db_name: salver
         url: mongodb://localhost:27017
+    connectors:
+        mongo:
+            enabled: true
+            workers: 2
+            threads: 1

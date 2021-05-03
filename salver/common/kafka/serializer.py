@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
+from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDeserializer
 
 
 def _get_schema(schema_registry_client: SchemaRegistryClient, topic: str) -> str:
@@ -12,18 +12,18 @@ def _get_schema(schema_registry_client: SchemaRegistryClient, topic: str) -> str
 def make_serializer(topic, to_dict, schema_registry_url):
     """Create an AvroSerializer from a topic."""
     client = SchemaRegistryClient({'url': schema_registry_url})
-    return AvroSerializer(
+    return JSONSerializer(
         schema_str=_get_schema(client, topic),
         schema_registry_client=client,
         to_dict=to_dict,
+        conf={'auto.register.schemas': True},
     )
 
 
 def make_deserializer(topic, from_dict, schema_registry_url):
     """Create an AvroDeserializer from a topic."""
     client = SchemaRegistryClient({'url': schema_registry_url})
-    return AvroDeserializer(
+    return JSONDeserializer(
         schema_str=_get_schema(client, topic),
-        schema_registry_client=client,
         from_dict=from_dict,
     )

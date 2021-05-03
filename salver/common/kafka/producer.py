@@ -6,7 +6,7 @@ from loguru import logger
 from confluent_kafka import SerializingProducer
 from confluent_kafka.serialization import StringSerializer
 
-from salver.common.avro import make_serializer
+from salver.common.kafka.serializer import make_serializer
 
 
 class Producer:

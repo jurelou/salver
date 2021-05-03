@@ -9,21 +9,10 @@ from salver.engine.services import kafka_producers
 AVAILABLE_AGENTS = Manager().dict()
 
 
-class OnAgentConnect(ConsumerCallback):
-    def __init__(self):
-        # print("NEW", a)
-        # self.a = a
-        self.agents_broadcast_producer = kafka_producers.make_agent_broadcast_ping()
-
-    def on_message(self, agent_info):
-        logger.info(f'Got agent connect from {agent_info.name}')
-        AVAILABLE_AGENTS[agent_info.name] = agent_info
-        logger.debug(f'available agents: {list(AVAILABLE_AGENTS.keys())}')
-
-        # self.agents_broadcast_producer.produce(
-        #     models.PingRequest(ping='enginepinginging'),
-        #     flush=True,
-        # )
+def on_agent_connect(agent_info):
+    logger.info(f'Got agent connect from {agent_info.name}')
+    AVAILABLE_AGENTS[agent_info.name] = agent_info
+    logger.debug(f'available agents: {list(AVAILABLE_AGENTS.keys())}')
 
 
 def on_agent_disconnect(agent_info):
@@ -31,3 +20,7 @@ def on_agent_disconnect(agent_info):
     AVAILABLE_AGENTS.pop(agent_info.name, None)
 
     logger.debug(f'available agents: {list(AVAILABLE_AGENTS.keys())}')
+
+
+def agent_collect():
+    pass

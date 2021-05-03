@@ -1,20 +1,31 @@
 # -*- coding: utf-8 -*-
+import time
 from uuid import UUID
 from typing import List
 
 import pymongo
 from loguru import logger
 from pymongo.errors import DuplicateKeyError
-from salver.config import engine_config
-from salver.common import models
-import time
 
-MONGO_DB =  pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
+from salver.common import models
+from salver.config import engine_config
+from salver.engine import models as engine_models
+
+
+def get_database():
+    return pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
+
 
 def bootstrap():
     logger.info('Bootstrap mongodb')
-    MONGO_DB.agents.create_index('name', unique=True)
-    print("lol")
+    mongo_db = get_database()
+    mongo_db.agents.create_index('name', unique=True)
+
+
+def add_new_collect(db, collect: models.Collect):
+    logger.debug(f'mongodb: Add collect {collect}')
+    db.collects.insert_one(collect.dict())
+
 
 # class MongoDB(BaseDB):
 #     def __init__(self, config):

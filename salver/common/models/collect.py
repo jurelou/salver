@@ -1,37 +1,41 @@
 # -*- coding: utf-8 -*-
+import uuid
+from enum import Enum
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import Field, BaseModel, BaseConfig
 
-from .fact import BaseFact
+from .fact import BaseFact, facts_to_dict, facts_from_dict
+
+
+class ScanState(str, Enum):
+    UNKNOWN = 'unknown'
+    CREATED = 'created'
+
+    STARTING = 'starting'
+    STARTED = 'started'
+    FINISHED = 'finished'
+    ERRORED = 'errored'
 
 
 class Collect(BaseModel):
+    state: ScanState = ScanState.UNKNOWN
     collector_name: str
     facts: List[BaseFact]
+    external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+
+    class Config:
+        extra = 'ignore'
+        use_enum_values = True
 
     @staticmethod
     def to_dict(obj, _):
-        return obj.dict()
+        d = obj.dict(exclude={'facts', 'external_id'})
+        d['facts'] = facts_to_dict(obj.facts)
+        d['external_id'] = obj.external_id.hex
+        return d
 
     @staticmethod
     def from_dict(obj, _):
-        facts = []
-        from salver.common.facts import all_facts
-
-        print("@@@@@@@@@@@", obj)
-        obj_facts = obj.pop('facts', [])
-        for fact in obj_facts:
-            fact_type = fact.pop('__fact_type__')
-            if fact_type not in all_facts:
-                raise ValueError(f'Could not deserialize fact of type {fact_type}')
-            facts.append(all_facts[fact_type](**fact))
-        return Collect(facts=facts, **obj)
-
-
-class CollectResult(BaseModel):
-    duration: float
-    executions_count: int
-
-    # errors: Optional[List[str]] = None
-    facts: List[str] = []
+        facts = obj.pop('facts', [])
+        return Collect(facts=facts_from_dict(facts), **obj)

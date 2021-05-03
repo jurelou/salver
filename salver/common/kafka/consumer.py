@@ -11,7 +11,7 @@ from loguru import logger
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.serialization import StringDeserializer
 
-from salver.common.avro import make_deserializer
+from salver.common.kafka.serializer import make_deserializer
 
 
 def _process_msg(q, consumer, callback, topic):
@@ -30,10 +30,6 @@ class ConsumerCallback(ABC):
     @abstractmethod
     def on_message(self, message):
         pass
-
-
-# def handler(s, f):
-#     print("!!!!!!!!!!!!!!!!!!!!!!!", s, f)
 
 
 class Consumer:

@@ -13,6 +13,9 @@ docker:
 engine:
 	ENV_FOR_DYNACONF=development python -m salver.engine.app
 
+connectors:
+	ENV_FOR_DYNACONF=development python -m salver.engine.connectors_app
+
 agent:
 	ENV_FOR_DYNACONF=development python -m salver.agent.app
 
@@ -30,7 +33,7 @@ format:
 bootstrap:
 	./scripts/wait_services_up.sh
 	python -m scripts.bootstrap_kafka
-	python scripts/bootstrap_mongodb.py
+	# python scripts/bootstrap_mongodb.py
 
 
 sloc:

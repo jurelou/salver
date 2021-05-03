@@ -1,23 +1,64 @@
 # -*- coding: utf-8 -*-
+import time
+
 from salver.facts import Email, Person
 from salver.common import models
-from salver.engine.api import EngineAPI
-from salver.engine.services import kafka_producers, mongodb
+from salver.config import engine_config
+from salver.common.kafka import Consumer
+from salver.engine.services import agents, mongodb, kafka_producers
 
 
 class SalverEngine:
     def __init__(self):
-        self.api = EngineAPI(on_start=self.on_api_start)
+        common_params = {
+            'num_workers': engine_config.kafka.workers_per_topic,
+            'num_threads': engine_config.kafka.threads_per_worker,
+            'schema_registry_url': engine_config.kafka.schema_registry_url,
+            'kafka_config': {
+                'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+                'group.id': 'engine',
+            },
+        }
+        self.consumers = [
+            Consumer(
+                topic='agent-connect',
+                value_deserializer=models.AgentInfo,
+                callback=agents.on_agent_connect,
+                **common_params,
+            ),
+            # Consumer(
+            #     topic='agent-broadcast-ping',
+            #     value_deserializer=models.PingRequest,
+            #     callback=self.on_ping,
+            #     **common_params
+            # ),
+            Consumer(
+                topic='agent-disconnect',
+                value_deserializer=models.AgentInfo,
+                callback=agents.on_agent_disconnect,
+                **common_params,
+            ),
+        ]
 
     def start(self):
-        mongodb.bootstrap()        
-        self.api.start()
+        mongodb.bootstrap()
 
+        on_start_called = False
+        while True:
+            for consumer in self.consumers:
+                consumer.start_workers()
 
-    def on_api_start(self):
+            time.sleep(1)
+            if not on_start_called:
+                self.on_start()
+                on_start_called = True
+
+    def on_start(self):
+        print('START ENGINE')
         engine_connect = kafka_producers.make_engine_connect()
         engine_connect.produce(
-            models.EngineInfo(name='thats my engine name'), flush=True,
+            models.EngineInfo(name='thats my engine name'),
+            flush=True,
         )
 
         p = Person(firstname='1', lastname='1')
@@ -32,18 +73,7 @@ class SalverEngine:
         # info_res = kafka_producers.make_agent_broadcast_ping()
         # info_res.produce(models.PingRequest(ping='ping allllllll'), flush=True)
 
-        # self.producers.agents_collect.produce(c, flush=True)
-        # self.producers.agents_collect.produce(c, flush=True)
-        # self.producers.agents_collect.produce(c, flush=True)
-        # self.producers.agents_collect.produce(c, flush=True)
-        # self.producers.agents_collect.produce(c, flush=True)
-        # self.producers.agents_collect.produce(c, flush=True)
-        # self.producers.agents_collect.produce(c, flush=True)
 
-        # self.producers.agents_info.produce(models.AgentInfoRequest(), flush=True)
-        # self.producers.agents_broadcast.produce(models.PingRequest(), flush=True)
-
-
-
-engine = SalverEngine()
-engine.start()
+if __name__ == '__main__':
+    engine = SalverEngine()
+    engine.start()
