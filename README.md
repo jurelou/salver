@@ -8,37 +8,4 @@
 
 
 
-# TODO:
-
-* change avro to json
-* fuzzing test generateur random de scan, cases, ...
-
-* GUI: afficer les outils: kafka topics, kafka control center, mongodb ui, neo4j, kibana, .....
-* gerer les replica set de mongo
-* scripts: parametrizer bootstrap mongo pour l'appeler dans les tests avec un autre nom de DB
-* gerer les erreurs du connecteur kafka:      "errors.deadletterqueue.topic.name": "salver.mongo.dlq",
-
-# Ideas:
-
-
-* https://github.com/saeeddhqan/Maryam
-
-* https://bestpractices.coreinfrastructure.org/fr/projects/4577
-
-* https://github.com/cea-sec/ivre
-
-* https://github.com/TW-NCERT/ctifeeds
-
-* https://github.com/OWASP/Amass
-
-* https://github.com/j3ssie/Osmedeus
-
-* https://github.com/yogeshojha/rengine
-
-* https://github.com/qeeqbox/social-analyzer
-
-* https://github.com/shmilylty/OneForAll
-
-* https://github.com/mxrch/GHunt
-
-* https://github.com/elceef/dnstwist
+WIP 
