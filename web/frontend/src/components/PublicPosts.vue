@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <button v-on:click="sendMessage('hello')">Send Message</button>
-        llllllllllllazeazelllllll
+        azeaze
     </div>
 </template>
 

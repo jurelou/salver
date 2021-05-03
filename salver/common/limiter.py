@@ -3,11 +3,10 @@ from enum import IntEnum
 from time import time
 from queue import Queue
 from typing import Tuple
-from dataclasses import dataclass
 
 from pydantic import BaseModel
 
-from salver.common.exceptions import BucketFullException
+from salver.common.exceptions import RateLimitException
 
 
 class Duration(IntEnum):
@@ -22,26 +21,20 @@ class RequestRate(BaseModel):
     limit: int
     interval: Duration
 
-    def __str__(self):
-        print(f"RequestRate {self.limit} every {Duration(self.internal).name}")
-        return f"RequestRate {self.limit} every {Duration(self.internal).name}"
-
 
 class Bucket:
-    """A bucket that resides in memory
-    using python's built-in Queue class
-    """
+    """A bucket that resides in memory using python's built-in Queue."""
 
     def __init__(self, maxsize=0):
         self._q = Queue(maxsize=maxsize)
 
-    def inspect_expired_items(self, time: int) -> Tuple[int, int]:
-        """ Find how many items in bucket that have slipped out of the time-window."""
+    def inspect_expired_items(self, start_time: int) -> Tuple[int, int]:
+        """Find how many items in bucket that have slipped out of the time-window."""
         volume = self.size()
 
         for log_idx, log_item in enumerate(list(self._q.queue)):
-            if log_item > time:
-                return volume - log_idx, log_item - time
+            if log_item > start_time:
+                return volume - log_idx, log_item - start_time
         return 0, 0
 
     def size(self):
@@ -69,9 +62,10 @@ class Limiter:
         self._rates = rates
         self._bucket: Bucket = Bucket(maxsize=self._rates[-1].limit)
 
-    def _validate_rate_list(self, rates):
+    @staticmethod
+    def _validate_rate_list(rates):
         if not rates:
-            raise ValueError("Rate(s) must be provided")
+            raise ValueError('Rate(s) must be provided')
 
         for idx, rate in enumerate(rates[1:]):
             prev_rate = rates[idx]
@@ -80,7 +74,7 @@ class Limiter:
                 or rate.interval.value <= prev_rate.interval.value
             )
             if invalid:
-                raise ValueError(f"{prev_rate} cannot come before {rate}")
+                raise ValueError(f'{prev_rate} cannot come before {rate}')
 
     def try_acquire(self) -> None:
         """Acquiring an item or reject it if rate-limit has been exceeded."""
@@ -92,7 +86,7 @@ class Limiter:
             start_time = now - rate.interval.value
             item_count, remaining_time = self._bucket.inspect_expired_items(start_time)
             if item_count >= rate.limit:
-                raise BucketFullException(rate, remaining_time)
+                raise RateLimitException(rate, remaining_time)
             if idx == len(self._rates) - 1:
                 self._bucket.get(self._bucket.size() - item_count)
         self._bucket.put(now)

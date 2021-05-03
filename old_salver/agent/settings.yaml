@@ -1,0 +1,44 @@
+---
+default:
+    collectors_path: salver/modules/collectors
+    enabled_collectors:
+
+    celery:
+        broker_url: redis://localhost/0
+        result_backend: redis://localhost/1
+
+    logstash:
+        host: localhost
+        port: 5042
+
+testing:
+    celery:
+        broker_url: redis://localhost/10
+        result_backend: redis://localhost/11
+
+    enabled_collectors:
+        - dummy-docker-collector
+        - dummy-collector
+
+dev:
+
+    enabled_collectors:
+        - dummy-docker-collector
+        - dummy-collector
+        - recon-ng
+        - certificate-transparency
+            #- nmap
+        - sherlock
+        - infoga
+        - harvester
+        - subfinder
+        - phone-infoga
+        - twint
+        - zen
+        - blackwidow
+            #######################
+            # broken collectors
+            #######################
+            # - dirsearch
+            # - littlebrother
+            # - kupa3

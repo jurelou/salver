@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import hvac
 
-client = hvac.Client(url="http://127.0.0.1:8200")
+client = hvac.Client(url='http://127.0.0.1:8200')
 
 
 read_response = client.sys.read_init_status()
-print("Vault initialize status: %s" % read_response["initialized"])
+print('Vault initialize status: %s' % read_response['initialized'])
 
 
-print("Vault initialize status: %s" % client.sys.is_initialized())
+print('Vault initialize status: %s' % client.sys.is_initialized())
 
 
 """
@@ -23,7 +23,7 @@ print("unseal keys", unseal_keys)
 client.sys.submit_unseal_keys(keys=unseal_keys)
 """
 
-client.token = "s.vdStvMVThl8HfFndTesLRinzs.vdStvMVThl8HfFndTesLRinz"  # root_token
-print("Is Vault sealed: %s" % client.sys.is_sealed())
+client.token = 's.vdStvMVThl8HfFndTesLRinzs.vdStvMVThl8HfFndTesLRinz'  # root_token
+print('Is Vault sealed: %s' % client.sys.is_sealed())
 methods = client.sys.list_auth_methods()
-print("auth methods", methods)
+print('auth methods', methods)

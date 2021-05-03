@@ -1,19 +1,23 @@
+# re: redocker bootstrap
 
 redocker:
-	docker-compose down -v
-	docker-compose up --build --force-recreate -d
+	docker-compose -f ./deploy/docker-compose-kafka.yml down -v
+	docker-compose -f ./deploy/docker-compose-kafka.yml up --build --force-recreate -d
 
 docker:
-	docker-compose up -d
+	docker-compose -f ./deploy/docker-compose-kafka.yml up -d
 
-api:
-	uvicorn salver.api.main:app --reload
+# api:
+# 	uvicorn salver.api.main:app --reload
 
-controller:
-	 ENV_FOR_DYNACONF=dev celery  -A salver.controller.app worker --hostname=engine --logfile=/tmp/celery.log --loglevel=DEBUG -B
+engine:
+	ENV_FOR_DYNACONF=development python -m salver.engine.app
+
+connectors:
+	ENV_FOR_DYNACONF=development python -m salver.engine.connectors_app
 
 agent:
-	 ENV_FOR_DYNACONF=dev celery  -A salver.agent.app  worker --hostname=agent --logfile=/tmp/celery.log
+	ENV_FOR_DYNACONF=development python -m salver.agent.app
 
 install:
 	rm -rf env
@@ -24,13 +28,13 @@ install:
 format:
 	tox -e black
 	tox -e isort
-
+	pre-commit run --all-files
 
 bootstrap:
-	python scripts/bootstrap_elasticsearch.py -r
-	python scripts/bootstrap_elasticsearch.py
-	python scripts/bootstrap_kibana.py -r
-	python scripts/bootstrap_kibana.py
+	./scripts/wait_services_up.sh
+	python -m scripts.bootstrap_kafka
+	# python scripts/bootstrap_mongodb.py
+
 
 sloc:
 	pygount --format=summary ./salver

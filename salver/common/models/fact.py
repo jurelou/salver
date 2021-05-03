@@ -1,50 +1,42 @@
 # -*- coding: utf-8 -*-
-import hashlib
-from time import time
-from typing import Optional
+from typing import List
 
-from pydantic import Field, BaseModel, BaseConfig, root_validator
+from pydantic import BaseModel, BaseConfig
 
 
 class BaseFact(BaseModel):
-    __hash: Optional[str] = None
-
-    first_seen: float = Field(default_factory=time)
-    last_seen: float = Field(default_factory=time)
-
-    def __iter__(self):
-        raise TypeError
-
-    @root_validator
-    def set_hash(cls, values):
-        values.pop("hash__", None)
-        m = hashlib.sha256()
-        print("!!!!!!!", cls, type(cls))
-        if not "required" in cls.schema():
-            print(f"Strange fact ..... {cls.schema()}, {cls}, {type(cls)}")
-        required_fields = cls.schema()["required"]
-
-        for k in sorted(values):
-            if k in required_fields:
-                m.update(str(k).encode() + str(values[k]).encode())
-        values["hash__"] = m.hexdigest()
-        return values
-
     class Config(BaseConfig):
-        extra = "allow"
+        extra = 'allow'
 
     @staticmethod
-    def make_mapping(m):
-        m["mappings"]["properties"]["first_seen"] = {"type": "float"}
-        m["mappings"]["properties"]["last_seen"] = {"type": "float"}
-        return m
+    def to_dict(obj, *args):
+        d = obj.dict()
+        d['__fact_type__'] = type(obj).__name__
+        return d
 
-    @classmethod
-    def elastic_mapping(cls):
-        return BaseFact.make_mapping({"mappings": {"properties": {}}})
+    # @staticmethod
+    # def make_mapping(m):
+    #     m['mappings']['properties']['first_seen'] = {'type': 'float'}
+    #     m['mappings']['properties']['last_seen'] = {'type': 'float'}
+    #     return m
 
-    @staticmethod
-    def from_obj(fact_type: str, data):
-        from salver.facts import all_facts  # pragma: nocover
+    # @classmethod
+    # def elastic_mapping(cls):
+    #     return BaseFact.make_mapping({'mappings': {'properties': {}}})
 
-        return all_facts[fact_type](**data)
+
+def facts_to_dict(facts: List[BaseFact]):
+    return [BaseFact.to_dict(f) for f in facts]
+
+
+def facts_from_dict(obj):
+    from salver.common.facts import all_facts  # pragma: no cover
+
+    facts = []
+
+    for fact in obj:
+        fact_type = fact.pop('__fact_type__', None)
+        if fact_type not in all_facts:
+            raise ValueError(f'Could get facts from type {fact_type}')
+        facts.append(all_facts[fact_type](**fact))
+    return facts

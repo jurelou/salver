@@ -15,17 +15,20 @@
 <script>
     import Nav from "./components/Nav";
     export default {
+        name: 'App',
+        components: {
+            VuebaseLayout,
+            Nav
+        },
+        computed: {
+            component() {
+                return VuebaseLayout
+            }
+        }
+
         components: {Nav}
     };
 </script>
 
 <style>
-    .fade-enter-active,
-    .fade-leave-active {
-        transition: opacity 0.5s;
-    }
-    .fade-enter,
-    .fade-leave-active {
-        opacity: 0;
-    }
 </style>
