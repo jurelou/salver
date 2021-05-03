@@ -6,96 +6,83 @@ from signal import SIGTERM, signal
 from functools import partial
 
 from loguru import logger
-from celery.signals import worker_shutdown, worker_process_init, worker_process_shutdown
-from celery.schedules import crontab
 
 from salver.common import models
 from salver.config import agent_config
-from salver.common.celery import create_app
-from salver.common.models import Collector
-from salver.agent.services.logstash import LogstashInput
-from salver.agent.collectors.factory import CollectorFactory
+from salver.common.kafka import Consumer, ConsumerCallback
 
-all_collectors = CollectorFactory().build()
+# from salver.agent.api import AgentAPI
+from salver.agent.services import collectors, kafka_producers
 
 
-queues = [Queue(name) for name, config in all_collectors.items() if config['active']]
-logstash_client = LogstashInput(
-    host=agent_config.logstash.host,
-    port=agent_config.logstash.port,
-)
+class OnEngineConnect(ConsumerCallback):
+    def __init__(self, agent_info):
+        self.agent_connect = kafka_producers.make_agent_connect()
+        self.agent_info = agent_info
 
-collectors_conf = []
-for collector_name, collector_config in all_collectors.items():
-    config = None
-    input_facts = None
-    active = collector_config['active']
-    if active:
-        config = collector_config['instance'].config
-        input_facts = [
-            fact.schema()['title']
-            for fact in collector_config['instance'].callbacks().keys()
+    def on_message(self, agent_info_request):
+        logger.info(f'Got engine connect: {agent_info_request}')
+        self.agent_connect.produce(self.agent_info, flush=True)
+
+
+def on_collect(message):
+    logger.info(f'Got agent collect: {message}')
+
+
+class SalverAgent:
+    def __init__(self):
+        self.name = f'agent-{socket.getfqdn()}-{uuid4().hex[:4]}'
+        all_collectors = [
+            models.Collector(name=c_name, enabled=c_config['enabled'])
+            for c_name, c_config in collectors.ALL_COLLECTORS.items()
+        ]
+        self.agent_info = models.AgentInfo(name=self.name, collectors=all_collectors)
+
+        common_settings = {
+            'num_workers': agent_config.kafka.workers_per_topic,
+            'num_threads': agent_config.kafka.threads_per_worker,
+            'schema_registry_url': agent_config.kafka.schema_registry_url,
+        }
+        self.consumers = [
+            Consumer(
+                topic='agent-collect-create',
+                value_deserializer=models.Collect,
+                kafka_config={
+                    'bootstrap.servers': agent_config.kafka.bootstrap_servers,
+                    'group.id': 'agents',
+                },
+                callback=on_collect,
+                **common_settings,
+            ),
+            Consumer(
+                topic='engine-connect',
+                value_deserializer=models.EngineInfo,
+                kafka_config={
+                    'bootstrap.servers': agent_config.kafka.bootstrap_servers,
+                    'group.id': self.agent_info.name,
+                },
+                callback=partial(OnEngineConnect, self.agent_info),
+                **common_settings,
+            ),
         ]
 
-    collectors_conf.append(
-        Collector(
-            config=config,
-            name=collector_name,
-            active=active,
-            input_facts=input_facts,
-        ),
-    )
+    def start(self):
+        logger.info(f'Starting agent {self.name}')
 
-# Create celery app
-celery_app = create_app()
-celery_app.conf.update(
-    {
-        'collectors': [c.dict() for c in collectors_conf],
-        'imports': 'salver.agent.tasks',
-        'task_queues': queues,
-    },
-)
+        agent_connect = kafka_producers.make_agent_connect()
+        agent_connect.produce(self.agent_info, flush=True)
+
+        agent_disconnect = kafka_producers.make_agent_disconnect()
+
+        try:
+            while True:
+                for consumer in self.consumers:
+                    consumer.start_workers()
+        except KeyboardInterrupt:
+            logger.warning('quitting')
+            agent_disconnect.produce(self.agent_info, flush=True)
 
 
-celery_app.conf.update(agent_config.celery)
-
-# Hack for coverage.
-# See: https://github.com/nedbat/coveragepy/issues/689
-IS_TESTING = agent_config.ENV_FOR_DYNACONF == 'testing'
-if IS_TESTING:
-    from coverage import Coverage  # pragma: nocover
-
-    COVERAGE = None
-
-
-@worker_process_init.connect  # pragma: no cover
-def on_init(sender=None, conf=None, **kwargs):
-    try:
-        if IS_TESTING:
-            global COVERAGE
-            COVERAGE = Coverage(branch=True, config_file=True)
-            COVERAGE.start()
-    except Exception as err:
-        logger.critical(f'Error in signal `worker_process_init`: {err}')
-
-
-@worker_process_shutdown.connect  # pragma: no cover
-def on_process_shutdown(**kwargs):
-
-    try:
-        logstash_client.close()
-        if IS_TESTING and COVERAGE:
-            # COVERAGE.stop()
-            COVERAGE.save()
-    except Exception as err:
-        logger.critical(f'Error in signal `worker_process_shutdown`: {err}')
-
-
-if __name__ == '__main__':  # pragma: no cover
-    argv = [
-        '-A',
-        'salver.agent.app',
-        'worker',
-        '--hostname=agent_main',
-    ]
-    celery_app.worker_main(argv)
+if __name__ == '__main__':
+    agent = SalverAgent()
+    agent.start()

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 from .fact import BaseFact
-from .scan import Scan, ScanState, ScanConfig
-from .collector import Collector, CollectorBaseConfig
-from .scan_result import CollectResult
+from .ping import PingRequest
+from .agent import AgentInfo
+from .engine import EngineInfo
+from .collect import Collect
+from .collector import Collector
 
 __all__ = [
-    'Case',
     'BaseFact',
-    'Scan',
-    'ScanState',
-    'ScanConfig',
+    'PingRequest',
+    'Collect',
     'Collector',
-    'CollectorBaseConfig',
-    'CollectResult',
+    # 'CollectResult',
+    'EngineInfo',
+    'AgentInfo',
 ]
