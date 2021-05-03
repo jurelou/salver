@@ -3,7 +3,7 @@ class SalverException(Exception):
     """Base Salver exceptions class."""
 
 
-class RateLimitException(SalverException):
+class BucketFullException(SalverException):
     def __init__(self, rate, remaining_time):
         self.remaining_time = remaining_time
         self.rate = rate

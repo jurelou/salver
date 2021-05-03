@@ -20,17 +20,31 @@ class BaseFact(BaseModel):
     #     m['mappings']['properties']['last_seen'] = {'type': 'float'}
     #     return m
 
-    # @classmethod
-    # def elastic_mapping(cls):
-    #     return BaseFact.make_mapping({'mappings': {'properties': {}}})
+    @root_validator
+    def set_hash(cls, values):
+        if 'required' not in cls.schema():
+            return values
+        values.pop('hash__', None)
+        m = hashlib.sha256()
+        required_fields = cls.schema()['required']
+        for k in sorted(values):
+            if k in required_fields:
+                m.update(str(k).encode() + str(values[k]).encode())
+        values['hash__'] = m.hexdigest()
+        return values
 
+    @staticmethod
+    def make_mapping(m):
+        m['mappings']['properties']['first_seen'] = {'type': 'float'}
+        m['mappings']['properties']['last_seen'] = {'type': 'float'}
+        return m
 
-def facts_to_dict(facts: List[BaseFact]):
-    return [BaseFact.to_dict(f) for f in facts]
+    @classmethod
+    def elastic_mapping(cls):
+        return BaseFact.make_mapping({'mappings': {'properties': {}}})
 
-
-def facts_from_dict(obj):
-    from salver.common.facts import all_facts  # pragma: no cover
+    class Config(BaseConfig):
+        extra = 'allow'
 
     facts = []
 

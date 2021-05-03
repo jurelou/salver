@@ -4,7 +4,8 @@ from typing import List
 from pydantic import BaseModel
 
 
-class Collector(BaseModel):
+
+class CollectorBaseConfig(BaseModel):
     name: str
     enabled: bool
     # TODO: add allowed facts, collector config, ...
@@ -13,6 +14,13 @@ class Collector(BaseModel):
     def to_dict(obj, _):
         return obj.dict()
 
-    @staticmethod
-    def from_dict(obj, _):
-        return Collector(**obj)
+    class Config:
+        use_enum_values = True
+        json_encoders = {RequestRate: lambda v: str(v)}
+
+
+class Collector(BaseModel):
+    active: bool
+    name: str
+    config: Optional[CollectorBaseConfig] = None
+    input_facts: Optional[List[str]] = None

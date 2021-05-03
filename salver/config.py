@@ -2,9 +2,9 @@
 from loguru import logger
 from dynaconf import Dynaconf
 
-engine_config = Dynaconf(
+controller_config = Dynaconf(
     envvar_prefix='DYNACONF',
-    settings_files=['salver/engine/settings.yaml'],
+    settings_files=['salver/controller/settings.yaml'],
     environments=True,
 )
 
@@ -14,8 +14,8 @@ agent_config = Dynaconf(
     environments=True,
 )
 
-# api_config = Dynaconf(
-#     envvar_prefix='DYNACONF',
-#     settings_files=['salver/api/settings.yaml'],
-#     environments=True,
-# )
+api_config = Dynaconf(
+    envvar_prefix='DYNACONF',
+    settings_files=['salver/api/settings.yaml'],
+    environments=True,
+)

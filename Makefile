@@ -1,4 +1,4 @@
-# re: redocker bootstrap
+re: redocker bootstrap
 
 redocker:
 	docker-compose -f ./deploy/docker-compose-kafka.yml down -v
