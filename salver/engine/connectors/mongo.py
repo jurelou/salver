@@ -11,4 +11,5 @@ class OnCollectCreate(ConsumerCallback):
         self.db = get_database()
 
     def on_message(self, collect: models.Collect):
+        collect.state = models.CollectState.CREATED
         add_new_collect(self.db, collect)

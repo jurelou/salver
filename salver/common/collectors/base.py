@@ -38,9 +38,9 @@ class BaseCollector:
         except Exception as err:
             raise InvalidCollectorDefinition(type(self).__name__, err) from err
 
-        self._limiter = None
+        self.limiter = None
         if self.config.limiter:
-            self._limiter = Limiter(*self.config.limiter)
+            self.limiter = Limiter(self.config.name, *self.config.limiter)
 
     def configure(self):
         self.config = CollectorBaseConfig(**self.config)
@@ -89,10 +89,6 @@ class BaseCollector:
         return facts
 
     def collect(self, facts: List[models.BaseFact]):
-        if self._limiter:
-            self._limiter.try_acquire()
-        start_time = timer()
-
         callbacks = self._prepare_callbacks(facts)
 
         logger.debug(
@@ -100,15 +96,7 @@ class BaseCollector:
             {len(facts)} facts and {len(callbacks)} callbacks',
         )
 
-        output_facts = self._execute_callbacks(callbacks)
-        return (
-            models.CollectResult(
-                duration=timer() - start_time,
-                executions_count=len(callbacks),
-                facts=[f.hash__ for f in output_facts],
-            ),
-            output_facts,
-        )
+        return self._execute_callbacks(callbacks)
 
     @staticmethod
     def findall_regex(data, regex):

@@ -8,16 +8,17 @@ from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 
 from salver.common import models
 from salver.common.facts import all_facts
+from salver.common.utils import load_classes
+from salver.agent.services import collectors
+from salver.common.collectors import BaseCollector
 
-topics = [
-    'agent-broadcast-ping',
-    'engine-connect',
-    'agent-disconnect',
-    'agent-collect-create',
-    'agent-connect',
-    # 'agent-collect-item',
-    # 'agent-collect-update-status',
-]
+collector_modules = load_classes(
+    root_path='salver/agent/collectors',
+    parent_class=BaseCollector,
+)
+
+topics = ['agent-broadcast-ping', 'engine-connect', 'agent-disconnect', 'agent-connect']
+topics.extend([f"agent-collect-{c.config['name']}" for c in collector_modules])
 
 admin_client = AdminClient({'bootstrap.servers': 'localhost:9092'})
 shema_registry_client = SchemaRegistryClient({'url': 'http://127.0.0.1:8081'})
@@ -88,11 +89,6 @@ def create_schemas():
         'engine-connect',
         Schema(schema_str=json.dumps(models.EngineInfo.schema()), schema_type='JSON'),
     )
-
-    # print(json.dumps(bf))
-
-    # print(models.Collect.schema())
-    sys.exit(0)
 
 
 remove_schemas()

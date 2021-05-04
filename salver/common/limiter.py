@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import time
 from enum import IntEnum
-from time import time
 from queue import Queue
 from typing import Tuple
 
+from loguru import logger
 from pydantic import BaseModel
 
 from salver.common.exceptions import RateLimitException
@@ -56,10 +57,12 @@ class Limiter:
 
     def __init__(
         self,
+        name,
         *rates: RequestRate,
     ):
         self._validate_rate_list(rates)
         self._rates = rates
+        self._name = name
         self._bucket: Bucket = Bucket(maxsize=self._rates[-1].limit)
 
     @staticmethod
@@ -78,7 +81,7 @@ class Limiter:
 
     def try_acquire(self) -> None:
         """Acquiring an item or reject it if rate-limit has been exceeded."""
-        now = int(time())
+        now = int(time.time())
         for idx, rate in enumerate(self._rates):
             if self._bucket.size() < rate.limit:
                 continue
@@ -90,3 +93,13 @@ class Limiter:
             if idx == len(self._rates) - 1:
                 self._bucket.get(self._bucket.size() - item_count)
         self._bucket.put(now)
+
+    def rate_limit(self) -> None:
+        """Acquire an item or sleep untill an item in available."""
+        try:
+            self.try_acquire()
+        except RateLimitException as err:
+            logger.info(
+                f'Rate limit reached for {self._name}, sleeping for {err.remaining_time}s',
+            )
+            time.sleep(err.remaining_time)

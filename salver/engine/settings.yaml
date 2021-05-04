@@ -16,3 +16,19 @@ development:
             enabled: true
             workers: 2
             threads: 1
+
+testing:
+    kafka:
+        bootstrap_servers: localhost:9092
+        schema_registry_url: http://127.0.0.1:8081
+
+        workers_per_topic: 1
+        threads_per_worker: 2
+    mongo:
+        db_name: salver-testing
+        url: mongodb://localhost:27017
+    connectors:
+        mongo:
+            enabled: true
+            workers: 1
+            threads: 2

@@ -8,7 +8,7 @@ from pydantic import Field, BaseModel, BaseConfig
 from .fact import BaseFact, facts_to_dict, facts_from_dict
 
 
-class ScanState(str, Enum):
+class CollectState(str, Enum):
     UNKNOWN = 'unknown'
     CREATED = 'created'
 
@@ -19,7 +19,7 @@ class ScanState(str, Enum):
 
 
 class Collect(BaseModel):
-    state: ScanState = ScanState.UNKNOWN
+    state: CollectState = CollectState.UNKNOWN
     collector_name: str
     facts: List[BaseFact]
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)

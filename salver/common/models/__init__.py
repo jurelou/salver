@@ -3,7 +3,7 @@ from .fact import BaseFact
 from .ping import PingRequest
 from .agent import AgentInfo
 from .engine import EngineInfo
-from .collect import Collect
+from .collect import Collect, CollectState
 from .collector import Collector
 
 __all__ = [
@@ -11,7 +11,7 @@ __all__ = [
     'PingRequest',
     'Collect',
     'Collector',
-    # 'CollectResult',
+    'CollectState',
     'EngineInfo',
     'AgentInfo',
 ]

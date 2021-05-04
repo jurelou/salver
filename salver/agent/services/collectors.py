@@ -36,6 +36,3 @@ def build():
         enabled = ': enabled' if collector_config['enabled'] else ''
         logger.info(f'Loaded collector {collector_name}{enabled}')
     return collectors
-
-
-ALL_COLLECTORS = build()

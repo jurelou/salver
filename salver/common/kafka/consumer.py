@@ -5,6 +5,7 @@ import signal
 import threading
 from abc import ABC, abstractmethod
 from queue import Queue
+from typing import Callable, Optional
 from multiprocessing import Process
 
 from loguru import logger
@@ -42,11 +43,18 @@ class Consumer:
         kafka_config,
         schema_registry_url,
         callback,
+        schema_name: Optional[str] = None,
+        rate_limit_cb: Optional[Callable] = None,
     ):
         logger.debug(
             f'Create a kafka consumer for topic {topic} with {num_workers} workers and {num_threads} threads',
         )
         self.topic = topic
+        if not schema_name:
+            schema_name = topic
+
+        self.rate_limit_cb = rate_limit_cb
+
         self.num_threads = num_threads
         self.num_workers = num_workers
 
@@ -56,7 +64,7 @@ class Consumer:
             'enable.auto.commit': False,
             'auto.offset.reset': 'latest',
             'value.deserializer': make_deserializer(
-                topic=self.topic,
+                subject=schema_name,
                 from_dict=value_deserializer.from_dict,
                 schema_registry_url=schema_registry_url,
             ),
@@ -84,7 +92,8 @@ class Consumer:
         msg = None
         while True:
             try:
-                # Check if we should rate limit
+                # if self.rate_limit_cb:
+                #     self.rate_limit_cb()
                 msg = consumer.poll(1)
                 if msg is None:
                     continue

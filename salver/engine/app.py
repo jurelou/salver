@@ -65,10 +65,10 @@ class SalverEngine:
         p2 = Person(firstname='1', lastname='2')
 
         e = Email(address='addr')
-        c = models.Collect(collector_name='toto', facts=[p, e, p2])
+        c = models.Collect(collector_name='dummy-collector', facts=[p, e, p2])
 
-        agent_collect = kafka_producers.make_agent_collect()
-        agent_collect.produce(c, flush=True)
+        agent_collects = kafka_producers.make_agent_collects()
+        agent_collects['dummy-collector'].produce(c, flush=True)
 
         # info_res = kafka_producers.make_agent_broadcast_ping()
         # info_res.produce(models.PingRequest(ping='ping allllllll'), flush=True)

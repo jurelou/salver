@@ -14,7 +14,8 @@ def make_connectors():
     if engine_config.connectors.mongo.enabled:
         consumers.append(
             Consumer(
-                topic='agent-collect-create',
+                topic='^agent-collect-*',
+                schema_name='agent-collect-create',
                 num_workers=engine_config.connectors.mongo.workers,
                 num_threads=engine_config.connectors.mongo.threads,
                 value_deserializer=models.Collect,
