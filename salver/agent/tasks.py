@@ -4,8 +4,6 @@ from timeit import default_timer as timer
 from loguru import logger
 
 from salver.common.kafka import ConsumerCallback
-
-# from salver.agent.api import AgentAPI
 from salver.agent.services import kafka_producers
 
 
