@@ -24,7 +24,7 @@ setup(
         'httpx==0.16.1',
         'loguru==0.5.3',
         'neo4j==4.2.1',
-        'pydantic==1.7.3',
+        'pydantic==1.7.4',
         'pymongo==3.11.3',
         'redis==3.5.3',
     ],
