@@ -12,6 +12,7 @@ from salver.common.utils import load_classes
 from salver.agent.services import collectors
 from salver.common.collectors import BaseCollector
 
+from salver.config import engine_config
 collector_modules = load_classes(
     root_path='salver/agent/collectors',
     parent_class=BaseCollector,
@@ -20,8 +21,8 @@ collector_modules = load_classes(
 topics = ['agent-broadcast-ping', 'engine-connect', 'agent-disconnect', 'agent-connect']
 topics.extend([f"agent-collect-{c.config['name']}" for c in collector_modules])
 
-admin_client = AdminClient({'bootstrap.servers': 'localhost:9092'})
-shema_registry_client = SchemaRegistryClient({'url': 'http://127.0.0.1:8081'})
+admin_client = AdminClient({'bootstrap.servers': engine_config.kafka.bootstrap_servers})
+shema_registry_client = SchemaRegistryClient({'url': engine_config.kafka.schema_registry_url})
 
 
 def delete_topics():
@@ -32,7 +33,7 @@ def delete_topics():
             print(f'Topic {topic} deleted')
         except Exception as e:
             print('Failed to delete topic {}: {}'.format(topic, e))
-    time.sleep(2)  # For some reasons changes are not applied directly ....
+    time.sleep(2)  # For some reasons changes are asynchronous ....
 
 
 def create_topics():

@@ -14,7 +14,7 @@ engine:
 	ENV_FOR_DYNACONF=development python -m salver.engine.app
 
 connectors:
-	ENV_FOR_DYNACONF=development python -m salver.engine.connectors_app
+	ENV_FOR_DYNACONF=development python -m salver.connectors.app
 
 agent:
 	ENV_FOR_DYNACONF=development python -m salver.agent.app
@@ -33,6 +33,7 @@ format:
 bootstrap:
 	./scripts/wait_services_up.sh
 	python -m scripts.bootstrap_kafka
+	python -m scripts.bootstrap_mongodb
 	# python scripts/bootstrap_mongodb.py
 
 

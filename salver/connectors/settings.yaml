@@ -1,0 +1,17 @@
+---
+default:
+
+development:
+
+  kafka:
+    bootstrap_servers: localhost:9092
+    schema_registry_url: http://127.0.0.1:8081
+
+  mongo:
+    enabled: true
+    db_name: salver
+    url: mongodb://localhost:27017
+    workers: 2
+    threads: 1
+
+testing:

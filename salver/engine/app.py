@@ -5,7 +5,7 @@ from salver.facts import Email, Person
 from salver.common import models
 from salver.config import engine_config
 from salver.common.kafka import Consumer
-from salver.engine.services import agents, mongodb, kafka_producers
+from salver.engine.services import agents, kafka_producers
 
 
 class SalverEngine:
@@ -17,7 +17,7 @@ class SalverEngine:
             'kafka_config': {
                 'bootstrap.servers': engine_config.kafka.bootstrap_servers,
                 'group.id': 'engine',
-            },
+            }
         }
         self.consumers = [
             Consumer(
@@ -26,12 +26,6 @@ class SalverEngine:
                 callback=agents.on_agent_connect,
                 **common_params,
             ),
-            # Consumer(
-            #     topic='agent-broadcast-ping',
-            #     value_deserializer=models.PingRequest,
-            #     callback=self.on_ping,
-            #     **common_params
-            # ),
             Consumer(
                 topic='agent-disconnect',
                 value_deserializer=models.AgentInfo,
@@ -41,8 +35,6 @@ class SalverEngine:
         ]
 
     def start(self):
-        mongodb.bootstrap()
-
         on_start_called = False
         while True:
             for consumer in self.consumers:

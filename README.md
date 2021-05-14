@@ -9,3 +9,8 @@
 
 
 WIP 
+
+
+#TODO:
+
+connectors: neo4J/eladstic make a caching mechanism usique a Q and sched() to flush the queue every X sec

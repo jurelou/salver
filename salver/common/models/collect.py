@@ -29,7 +29,7 @@ class Collect(BaseModel):
         use_enum_values = True
 
     @staticmethod
-    def to_dict(obj, _):
+    def to_dict(obj, *args):
         d = obj.dict(exclude={'facts', 'external_id'})
         d['facts'] = facts_to_dict(obj.facts)
         d['external_id'] = obj.external_id.hex

@@ -14,6 +14,11 @@ agent_config = Dynaconf(
     environments=True,
 )
 
+connectors_config = Dynaconf(
+    envvar_prefix='DYNACONF',
+    settings_files=['salver/connectors/settings.yaml'],
+    environments=True,
+)
 # api_config = Dynaconf(
 #     envvar_prefix='DYNACONF',
 #     settings_files=['salver/api/settings.yaml'],

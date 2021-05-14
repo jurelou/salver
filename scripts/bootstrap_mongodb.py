@@ -1,105 +1,108 @@
 # -*- coding: utf-8 -*-
-import httpx
+import pymongo
+from loguru import logger
 
-schema_registry_url = 'http://schema-registry:8081'
-kafka_connect_url = 'http://localhost:8083'
-mongo_url = 'mongodb://mongo1:27017'
-mongo_db_name = 'salver'
-
-
-def create_mongo_sink(topic, collection):
-    data = {
-        'name': f'mongo-sink-{topic}',
-        'config': {
-            'connector.class': 'com.mongodb.kafka.connect.MongoSinkConnector',
-            'tasks.max': 1,
-            'topics': topic,
-            'connection.uri': mongo_url,
-            'database': mongo_db_name,
-            'collection': collection,
-            'key.converter': 'org.apache.kafka.connect.storage.StringConverter',
-            'value.converter': 'io.confluent.connect.json.JsonSchemaConverter',
-            'value.converter.schema.registry.url': schema_registry_url,
-            'value.converter.schemas.enable': True,
-            'errors.tolerance': 'all',
-            'errors.log.enable': 'true',
-            'errors.log.include.messages': 'true',
-            'errors.deadletterqueue.topic.name': f'dlq.mongo.{mongo_db_name}.{collection}',
-            'errors.deadletterqueue.context.headers.enable': 'true',
-            'errors.deadletterqueue.topic.replication.factor': 1,
-        },
-    }
-    httpx.delete(f'{kafka_connect_url}/connectors/mongo-sink-{topic}')
-    res = httpx.post(f'{kafka_connect_url}/connectors', json=data)
-    print(res.json())
-    res.raise_for_status()
+from salver.common import models
+from salver.config import engine_config
 
 
-# create_mongo_sink(topic="agent-connect", collection="agents")
-create_mongo_sink(topic='agent-collect-create', collection='collects')
+def get_database():
+    return pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
 
 
-# docker exec mongo1 /usr/bin/mongo --eval '''if (rs.status()["ok"] == 0) {
-#     rsconf = {
-#       _id : "rs0",
-#       members: [
-#         { _id : 0, host : "mongo1:27017", priority: 1.0 },
-#         { _id : 1, host : "mongo2:27017", priority: 0.5 },
-#         { _id : 2, host : "mongo3:27017", priority: 0.5 }
-#       ]
-#     };
-#     rs.initiate(rsconf);
-# }
-# rs.conf();'''
+def bootstrap():
+    mongo_db = pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
+
+    print('Bootstrap mongodb')
+    mongo_db.agents.create_index('name', unique=True)
+
+if __name__ == "__main__":
+    bootstrap()
+
+# def add_new_collect(db, collect: models.Collect):
+#     logger.debug(f'mongodb: Add collect {collect}')
+#     db.collects.insert_one(collect.dict())
 
 
-# curl -X POST -H "Content-Type: application/json" --data '
-#   {"name": "mongo-sink-agent-connect",
-#    "config": {
-#      "connector.class":"com.mongodb.kafka.connect.MongoSinkConnector",
-#      "tasks.max":"1",
-#      "topics":"agent-connect",
-#      "connection.uri":"mongodb://mongo1:27017",
-#      "database":"salver",
-#      "collection":"agents",
-#      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-
-#      "value.converter": "io.confluent.connect.avro.AvroConverter",
-#      "value.converter.schema.registry.url": "http://schema-registry:8081",
-#      "value.converter.schemas.enable": "true",
-
-#      "errors.tolerance": "all",
-#      "errors.log.enable": "true",
-#      "errors.log.include.messages": "true",
-#      "errors.deadletterqueue.topic.name": "salver.mongo.dlq",
-#      "errors.deadletterqueue.context.headers.enable": "true",
-#      "errors.deadletterqueue.topic.replication.factor": 1
 
 
-# }}' http://localhost:8083/connectors -w "\n"
 
 
-# curl -X POST -H "Content-Type: application/json" --data '
-#   {"name": "mongo-sink-agent-connect",
-#    "config": {
-#      "connector.class":"com.mongodb.kafka.connect.MongoSinkConnector",
-#      "tasks.max":"1",
-#      "topics":"agent-connect",
-#      "connection.uri":"mongodb://mongo1:27017",
-#      "database":"salver",
-#      "collection":"agents",
-#      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-
-#      "value.converter": "io.confluent.connect.avro.AvroConverter",
-#      "value.converter.schema.registry.url": "http://schema-registry:8081",
-#      "value.converter.schemas.enable": "true",
-
-#      "errors.tolerance": "all",
-#      "errors.log.enable": "true",
-#      "errors.log.include.messages": "true",
-#      "errors.deadletterqueue.topic.name": "salver.mongo.dlq",
-#      "errors.deadletterqueue.context.headers.enable": "true",
-#      "errors.deadletterqueue.topic.replication.factor": 1
 
 
-# }}' http://localhost:8083/connectors -w "\n"
+# class MongoDB(BaseDB):
+#     def __init__(self, config):
+#         self._client = pymongo.MongoClient(config.endpoint)
+#         self._db_name = config.database
+#         self._db = self._client[config.database]
+#         logger.info(
+#             f'mongodb: Build version {self._client.server_info()["version"]} with {config}',
+#         )
+
+#     def flush(self):
+#         logger.info(f'mongodb: Flush')
+#         self._client.drop_database(self._db_name)
+
+#     def bootstrap(self):
+#         logger.debug(f'mongodb: Boostrap')
+#         self._db.cases.create_index('name', unique=True)
+
+#     def add_case(self, case: db_models.CaseInDB) -> None:
+#         """Add a new case."""
+#         logger.debug(f'mongodb: Add case {case.external_id}')
+#         try:
+#             self._db.cases.insert_one(case.dict())
+#         except DuplicateKeyError as err:
+#             raise exceptions.CaseAlreadyExists(case.name) from err
+
+#     def add_scan(self, scan: db_models.ScanInDB):
+#         """Add a new scan."""
+#         logger.debug(f'mongodb: Add scan {scan.external_id}')
+#         self._db.scans.insert_one(scan.dict())
+
+#     def get_scan(self, scan_id) -> db_models.ScanInDB:
+#         """Get a scan by it's ID."""
+#         logger.debug(f'mongodb: Get scan {scan_id}')
+#         scan = self._db.scans.find_one({'external_id': scan_id})
+#         if not scan:
+#             raise exceptions.ScanNotFound(scan_id)
+#         return db_models.ScanInDB(**scan)
+
+#     def case_exists(self, case_id: UUID) -> bool:
+#         """Check if a given case exists."""
+#         logger.debug(f'mongodb: check case {case_id} exists')
+#         return self._db.cases.count_documents({'external_id': case_id}) > 0
+
+#     def get_case(self, case_id: UUID) -> db_models.CaseInDB:
+#         """Get a case by it's ID."""
+#         logger.debug(f'mongodb: Get case {case_id}')
+#         case = self._db.cases.find_one({'external_id': case_id})  # find().limit(1)
+#         if not case:
+#             raise exceptions.CaseNotFound(case_id)
+#         return db_models.CaseInDB(**case)
+
+#     def update_scan_state(self, scan_id, state: ScanState):
+#         """Update a scan state."""
+#         logger.debug(f'mongodb: Set scan {scan_id} state to {state}')
+#         self._db.scans.update_one(
+#             {'external_id': scan_id},
+#             {'$set': {'state': state.value}},
+#         )
+
+#     def add_scan_results(self, scan_id: UUID, result: CollectResult):
+#         self._db.scans.update_one(
+#             {"external_id": scan_id},
+#             {"$set": result.dict(exclude={"facts"})},
+#         )
+
+#     def list_scans(self) -> List[UUID]:
+#         """Get all scans IDs."""
+#         logger.debug(f'mongodb: List scans')
+#         ids = self._db.scans.find({}, {'external_id': True, '_id': False})
+#         return [i['external_id'] for i in ids]
+
+#     def list_cases(self) -> List[UUID]:
+#         """Get all cases IDs."""
+#         logger.debug(f'mongodb: List cases')
+#         ids = self._db.cases.find({}, {'external_id': True, '_id': False})
+#         return [i['external_id'] for i in ids]
