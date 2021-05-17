@@ -5,6 +5,7 @@ from .agent import AgentInfo
 from .engine import EngineInfo
 from .collect import Collect, CollectState
 from .collector import Collector
+from .scan import Scan, ScanConfig, ScanState
 
 __all__ = [
     'BaseFact',
@@ -14,4 +15,7 @@ __all__ = [
     'CollectState',
     'EngineInfo',
     'AgentInfo',
+    'Scan',
+    'ScanConfig',
+    'ScanState'
 ]

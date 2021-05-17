@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 
-
+from salver.common.collectors import BaseCollector
+from salver.common.utils import load_classes
+from salver.common.kafka import Producer
 from salver.common import models
 from salver.config import engine_config
-from salver.common.kafka import Producer
 
-
+_COMMON_PARAMS = {
+        "schema_registry_url": engine_config.kafka.schema_registry_url,
+        "kafka_config": {
+            'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+        },
+}
 def make_agent_broadcast_ping():
     return Producer(
         topic='agent-broadcast-ping',
         value_serializer=models.PingRequest,
-        schema_registry_url=engine_config.kafka.schema_registry_url,
-        kafka_config={
-            'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-        },
+        **_COMMON_PARAMS
     )
 
 
@@ -21,15 +24,16 @@ def make_engine_connect():
     return Producer(
         topic='engine-connect',
         value_serializer=models.EngineInfo,
-        schema_registry_url=engine_config.kafka.schema_registry_url,
-        kafka_config={
-            'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-        },
+        **_COMMON_PARAMS
     )
 
-
-from salver.common.utils import load_classes
-from salver.common.collectors import BaseCollector
+def make_agent_collect(collector_name: str):
+    return Producer(
+        topic=f"collect-{collector_name}",
+        schema_name='collect-create',
+        value_serializer=models.Collect,
+        **_COMMON_PARAMS
+    )
 
 
 def make_agent_collects():
@@ -37,16 +41,13 @@ def make_agent_collects():
         root_path='salver/agent/collectors',
         parent_class=BaseCollector,
     )
-
     return {
-        c.config['name']: Producer(
-            topic=f"agent-collect-{c.config['name']}",
-            schema_name='agent-collect-create',
-            value_serializer=models.Collect,
-            schema_registry_url=engine_config.kafka.schema_registry_url,
-            kafka_config={
-                'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-            },
-        )
-        for c in collectors
+        c.config['name']: make_agent_collect(c.config['name']) for c in collectors
     }
+
+def make_scan():
+    return Producer(
+        topic=f"scan",
+        value_serializer=models.Scan,
+        **_COMMON_PARAMS
+    )

@@ -5,7 +5,7 @@ from salver.facts import Email, Person
 from salver.common import models
 from salver.config import engine_config
 from salver.common.kafka import Consumer
-from salver.engine.services import agents, kafka_producers
+from salver.engine.services import agents, kafka_producers, scan
 
 
 class SalverEngine:
@@ -32,15 +32,24 @@ class SalverEngine:
                 callback=agents.on_agent_disconnect,
                 **common_params,
             ),
+
+            Consumer(
+                topic='scan',
+                value_deserializer=models.Scan,
+                callback=scan.OnScan,
+                **common_params,
+            ),
         ]
+
 
     def start(self):
         on_start_called = False
+
         while True:
             for consumer in self.consumers:
                 consumer.start_workers()
 
-            time.sleep(1)
+            time.sleep(2)
             if not on_start_called:
                 self.on_start()
                 on_start_called = True
@@ -53,15 +62,27 @@ class SalverEngine:
             flush=True,
         )
 
-        p = Person(firstname='1', lastname='1')
-        p2 = Person(firstname='1', lastname='2')
+        # p = Person(firstname='1', lastname='1')
+        # p2 = Person(firstname='1', lastname='2')
 
-        e = Email(address='addr')
-        c = models.Collect(collector_name='dummy-collector', facts=[p, e, p2])
+        # e = Email(address='addr')
+        # c = models.Collect(collector_name='dummy-collector', facts=[p, e, p2])
 
-        agent_collects = kafka_producers.make_agent_collects()
-        agent_collects['dummy-collector'].produce(c, flush=True)
+        # agent_collects = kafka_producers.make_agent_collects()
+        # agent_collects['dummy-collector'].produce(c, flush=True)
 
+
+        # from salver.engine.scans import all_scans
+
+        # scan_producer = kafka_producers.make_scan()
+        # p = Person(firstname='1', lastname='1')
+        # s = models.Scan(
+        #     scan_type="single_collector",
+        #     config=models.ScanConfig(collector_name="salut"),
+        #     facts=[p]
+        # )
+        # scan_producer.produce(s, flush=True)
+        # print("@@@@@@", all_scans[0].name)
         # info_res = kafka_producers.make_agent_broadcast_ping()
         # info_res.produce(models.PingRequest(ping='ping allllllll'), flush=True)
 

@@ -18,8 +18,17 @@ collector_modules = load_classes(
     parent_class=BaseCollector,
 )
 
-topics = ['agent-broadcast-ping', 'engine-connect', 'agent-disconnect', 'agent-connect']
-topics.extend([f"agent-collect-{c.config['name']}" for c in collector_modules])
+topics = [
+    'agent-broadcast-ping',
+    'engine-connect',
+    'agent-disconnect',
+    'agent-connect',
+
+    'scan',
+]
+
+topics.extend([f"collect-{c.config['name']}" for c in collector_modules])
+
 
 admin_client = AdminClient({'bootstrap.servers': engine_config.kafka.bootstrap_servers})
 shema_registry_client = SchemaRegistryClient({'url': engine_config.kafka.schema_registry_url})
@@ -68,7 +77,7 @@ def create_schemas():
         Schema(schema_str=json.dumps(models.BaseFact.schema()), schema_type='JSON'),
     )
     shema_registry_client.register_schema(
-        'agent-collect-create',
+        'collect-create',
         Schema(schema_str=json.dumps(models.Collect.schema()), schema_type='JSON'),
     )
 
@@ -89,6 +98,11 @@ def create_schemas():
     shema_registry_client.register_schema(
         'engine-connect',
         Schema(schema_str=json.dumps(models.EngineInfo.schema()), schema_type='JSON'),
+    )
+
+    shema_registry_client.register_schema(
+        'scan',
+        Schema(schema_str=json.dumps(models.Scan.schema()), schema_type='JSON'),
     )
 
 

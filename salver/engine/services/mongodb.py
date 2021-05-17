@@ -1,20 +1,23 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 # import time
 # from uuid import UUID
 # from typing import List
 
-# import pymongo
-# from loguru import logger
+import pymongo
+from loguru import logger
 # from pymongo.errors import DuplicateKeyError
 
-# from salver.common import models
-# from salver.config import engine_config
+from salver.common import models
+from salver.config import engine_config
 # from salver.engine import models as engine_models
 
 
-# def get_database():
-#     return pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
+def get_database():
+    return pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
 
+def add_scan(db, scan: models.Scan):
+    logger.debug(f'mongodb: Add scan {scan}')
+    db.scans.insert_one(scan.to_dict())
 
 # def bootstrap():
 #     logger.info('Bootstrap mongodb')
