@@ -25,6 +25,8 @@ topics = [
     'agent-connect',
 
     'scan',
+
+    'response-collect'
 ]
 
 topics.extend([f"collect-{c.config['name']}" for c in collector_modules])
@@ -79,6 +81,11 @@ def create_schemas():
     shema_registry_client.register_schema(
         'collect-create',
         Schema(schema_str=json.dumps(models.Collect.schema()), schema_type='JSON'),
+    )
+
+    shema_registry_client.register_schema(
+        'response-collect',
+        Schema(schema_str=json.dumps(models.CollectResponse.schema()), schema_type='JSON'),
     )
 
     shema_registry_client.register_schema(

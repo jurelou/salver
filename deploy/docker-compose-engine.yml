@@ -1,5 +1,17 @@
 ---
 version: '2'
+
+volumes:
+    mongo-rs1:
+    elastic:
+    # mongo-rs2:
+    # mongo-rs3:
+
+networks:
+    elastic:
+    admin:
+
+
 services:
   # neo4j:
   #   image: neo4j:4.0.3
@@ -12,6 +24,61 @@ services:
   #     NEO4J_kafka_bootstrap_servers: broker:19092
   #     NEO4J_AUTH: neo4j/connect
   #     NEO4J_dbms_memory_heap_max__size: 8G
+
+
+########################
+##  KIBANA
+########################
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.12.1
+        ports:
+            - 5601:5601
+        volumes:
+            - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+        environment:
+            ELASTICSEARCH_URL: http://elasticsearch:9200
+            ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+        networks:
+            - elastic
+
+########################
+##  ELASTICSEARCH
+########################
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+        ports:
+            - 127.0.0.1:9200:9200
+            - 127.0.0.1:9300:9300
+        environment:
+            discovery.type: single-node
+            #bootstrap.memory_lock: "true"
+            ES_JAVA_OPTS: "-Xmx1g -Xms1g"
+            ELASTIC_PASSWORD: superpasswd
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        networks:
+            - elastic
+        volumes:
+            - elastic:/usr/share/elasticsearch/data
+            - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
+########################
+# logstash (agent side)
+########################
+    logstash:
+        image: logstash:7.12.1
+        restart: always
+        ports:
+            - 127.0.0.1:5042:5042
+        volumes:
+            - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+            - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+        environment:
+            LS_JAVA_OPTS: -Xmx256m -Xms256m
+        networks:
+            - elastic
 
 ################################
 # MONGODB
@@ -243,8 +310,3 @@ services:
             - broker
             - schema-registry
             - rest-proxy
-
-volumes:
-    mongo-rs1:
-    # mongo-rs2:
-    # mongo-rs3:

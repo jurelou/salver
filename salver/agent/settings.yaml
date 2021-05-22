@@ -15,6 +15,11 @@ development:
 
         workers_per_topic: 2
         threads_per_worker: 4
+    
+    logstash:
+        host: localhost
+        port: 5042
+        batch_size: 20
 
 testing:
     enabled_collectors:

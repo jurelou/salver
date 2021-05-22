@@ -1,11 +1,11 @@
 re: redocker bootstrap
 
 redocker:
-	docker-compose -f ./deploy/docker-compose-kafka.yml down -v
-	docker-compose -f ./deploy/docker-compose-kafka.yml up --build --force-recreate -d
+	docker-compose -f ./deploy/docker-compose-engine.yml down -v
+	docker-compose -f ./deploy/docker-compose-engine.yml up --build --force-recreate -d
 
 docker:
-	docker-compose -f ./deploy/docker-compose-kafka.yml up -d
+	docker-compose -f ./deploy/docker-compose-engine.yml up -d
 
 # api:
 # 	uvicorn salver.api.main:app --reload
@@ -34,6 +34,8 @@ bootstrap:
 	./scripts/wait_services_up.sh
 	python -m scripts.bootstrap_kafka
 	python -m scripts.bootstrap_mongodb
+	python -m scripts.bootstrap_kibana
+
 	# python scripts/bootstrap_mongodb.py
 
 

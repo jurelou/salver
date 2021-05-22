@@ -17,11 +17,24 @@ class CollectState(str, Enum):
     FINISHED = 'finished'
     ERRORED = 'errored'
 
+class CollectResponse(BaseModel):
+    fact: BaseFact
+    collect_id: uuid.UUID
+    scan_id: uuid.UUID
+
+    @staticmethod
+    def to_dict(obj, *args):
+        d = obj.dict(exclude={'fact', 'collect_id', 'scan_id'})
+        d['fact'] = BaseFact.to_dict(obj.fact)
+        d['collect_id'] = obj.collect_id.hex
+        d['scan_id'] = obj.scan_id.hex
+        return d
 
 class Collect(BaseModel):
     state: CollectState = CollectState.UNKNOWN
     collector_name: str
     facts: List[BaseFact]
+    scan_id: uuid.UUID
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
     class Config:
@@ -30,9 +43,10 @@ class Collect(BaseModel):
 
     @staticmethod
     def to_dict(obj, *args):
-        d = obj.dict(exclude={'facts', 'external_id'})
+        d = obj.dict(exclude={'facts', 'external_id', 'scan_id'})
         d['facts'] = facts_to_dict(obj.facts)
         d['external_id'] = obj.external_id.hex
+        d['scan_id'] = obj.scan_id.hex
         return d
 
     @staticmethod

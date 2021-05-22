@@ -54,22 +54,31 @@ class BaseCollector:
 
     def _sanitize_output(self, fn):
         try:
-
             output = make_flat_list(fn())
             if not output:
-                return []
+                return
             for out in output:
                 if isinstance(out, models.BaseFact):
                     yield out
                 else:
-                    logger.warning(
-                        f'Found unknown output from collector {self.config.name}: {out}',
+                    error = f'Found unknown output from collector {self.config.name}: {out}'
+                    yield models.Error(
+                        context=f"agent-collect.unknown_output",
+                        value=error,
+                        collector_name=self.config.name
                     )
+                    logger.warning(error)
+
         except Exception as err:
             logger.error(
                 f'Error while executing callback from {self.config.name}: {type(err).__name__} {err}',
             )
-            raise CollectorRuntimeError(self.config.name, err) from err
+            yield models.Error(
+                context=f"agent-collect.error",
+                value=err,
+                collector_name=self.config.name,
+                error_class=type(err).__name__
+            )
 
     def _prepare_callbacks(
         self,
@@ -82,12 +91,6 @@ class BaseCollector:
                     callbacks.append(partial(cb, fact))
         return callbacks
 
-    def _execute_callbacks(self, callbacks):
-        facts = []
-        for cb in callbacks:
-            facts.extend(list(self._sanitize_output(cb)))
-        return facts
-
     def collect(self, facts: List[models.BaseFact]):
         callbacks = self._prepare_callbacks(facts)
 
@@ -96,7 +99,8 @@ class BaseCollector:
             {len(facts)} facts and {len(callbacks)} callbacks',
         )
 
-        return self._execute_callbacks(callbacks)
+        for cb in callbacks:
+            yield from self._sanitize_output(cb)
 
     @staticmethod
     def findall_regex(data, regex):

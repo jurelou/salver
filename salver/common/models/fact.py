@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
 from typing import List
+from uuid import UUID
 
 from pydantic import BaseModel, BaseConfig, root_validator
 
@@ -40,6 +41,10 @@ class BaseFact(BaseModel):
     # def elastic_mapping(cls):
     #     return BaseFact.make_mapping({'mappings': {'properties': {}}})
 
+class FactInDB(BaseFact):
+    collect_id: UUID
+    scan_id: UUID
+    fact_type: str
 
 def facts_to_dict(facts: List[BaseFact]):
     return [BaseFact.to_dict(f) for f in facts]

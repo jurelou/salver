@@ -18,14 +18,9 @@ class SingleCollector(BaseScan):
     def configure(self, config: ScanConfig):
         self.config = SingleCollectorConfig(**config.dict())
 
-    # def scan_success_lol(self, result):
-    #     print("CALLBACKKKKKKKKKKKKK", result)
-
     def scan(self, facts: List[BaseFact]):
         print("SCANNNNNNN", facts)
-        # a = self.launch_collector(
-        #     self.config.collector_name,
-        #     facts,
-        #     cb=self.scan_success_lol,
-        # )
-        # return a
+        self.launch_collector(
+            self.config.collector_name,
+            facts
+        )
