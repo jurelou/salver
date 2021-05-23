@@ -29,7 +29,7 @@ def make_engine_connect():
 
 def make_agent_collect(collector_name: str):
     return Producer(
-        topic=f"collect-{collector_name}",
+        topic=f"collect-create-{collector_name}",
         schema_name='collect-create',
         value_serializer=models.Collect,
         **_COMMON_PARAMS

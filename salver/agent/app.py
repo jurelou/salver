@@ -54,7 +54,7 @@ class SalverAgent:
 
             self.consumers.append(
                 Consumer(
-                    topic=f'collect-{collector_name}',
+                    topic=f'collect-create-{collector_name}',
                     schema_name='collect-create',
                     value_deserializer=models.Collect,
                     kafka_config={

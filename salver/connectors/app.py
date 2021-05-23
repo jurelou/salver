@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 import time
-
-from salver.connectors import mongodb
 from salver.config import connectors_config
 
+from salver.connectors import mongodb
+from salver.connectors import logstash
 
 def make_consummers():
     consumers = []
     if connectors_config.mongo.enabled:
         consumers.extend(mongodb.make_consummers())
+
+    if connectors_config.logstash.enabled:
+        consumers.extend(logstash.make_consummers())
+        
     return consumers
 
 

@@ -24,6 +24,7 @@ class OnScan(ConsumerCallback):
             agents_collectors_producers=self.agent_collects
         )
         scan_instance.configure(scan.config)
+        scan_instance.external_id = scan.external_id
         logger.info(f"Launch scan {scan_instance.name}: {scan_instance.external_id}")
         scan_instance.scan(scan.facts)
         logger.info(f"Scan {scan_instance.external_id} finished")

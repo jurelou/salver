@@ -11,11 +11,23 @@ class MongoDBCallback(ConsumerCallback):
     def __init__(self):
         self.db = pymongo.MongoClient(connectors_config.mongo.url)[connectors_config.mongo.db_name]
 
+class OnScan(MongoDBCallback):
+    def on_message(self, scan: models.Scan):
+        logger.info(f'mongodb connector: Add scan : {scan.external_id}')
+        self.db.scans.insert_one(models.Scan.to_dict(scan))
+
 class OnCollectCreate(MongoDBCallback):
     def on_message(self, collect: models.Collect):
         collect.state = models.CollectState.CREATED
-        logger.info(f'mongodb connector: Add collect item: {collect}')
+        logger.info(f'mongodb connector: Add collect: {collect.external_id}')
         self.db.collects.insert_one(models.Collect.to_dict(collect))
+
+class OnCollectDone(MongoDBCallback):
+    def on_message(self, collect: models.CollectDone):
+        print("@@@@", collect)
+        # logger.info(f'mongodb connector: Add collect: {collect.external_id}')
+        data = collect.dict(exclude={"collect_id"})
+        self.db.collects.update_one({"external_id": collect.collect_id.hex}, { "$set": data })
 
 class OnAgentConnect(MongoDBCallback):
     def on_message(self, agent_info: models.AgentInfo):
@@ -39,19 +51,34 @@ def make_consummers():
         },
     }
     return [
-        # Consumer(
-        #         topic='^agent-collect-*',
-        #         schema_name='agent-collect-create',
-        #         value_deserializer=models.Collect,
-        #         callback=OnCollectCreate,
-        #         **common_params
-        # ),
         Consumer(
                 topic='agent-connect',
                 value_deserializer=models.AgentInfo,
                 callback=OnAgentConnect,
+                **common_params 
+        ),
+        Consumer(
+                    topic='^collect-create-*',
+                    schema_name='collect-create',
+                    value_deserializer=models.Collect,
+                    callback=OnCollectCreate,
+                    **common_params
+        ),
+        Consumer(
+                    topic='collect-done',
+                    value_deserializer=models.CollectDone,
+                    callback=OnCollectDone,
+                    **common_params
+        ),
+
+        Consumer(
+                topic='scan',
+                value_deserializer=models.Scan,
+                callback=OnScan,
                 **common_params
         ),
+
+
         Consumer(
                 topic='agent-disconnect',
                 value_deserializer=models.AgentInfo,

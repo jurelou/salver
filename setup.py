@@ -21,7 +21,7 @@ setup(
         # 'docker',
         'dynaconf==3.1.4',
         'httpx==0.18.1',
-        # 'elasticsearch==7.10.1',
+        'elasticsearch==7.12.1',
         # 'httpx==0.16.1',
         'loguru==0.5.3',
         # 'neo4j==4.2.1',

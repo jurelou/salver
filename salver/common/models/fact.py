@@ -31,15 +31,12 @@ class BaseFact(BaseModel):
         d['__fact_type__'] = type(obj).__name__
         return d
 
-    # @staticmethod
-    # def make_mapping(m):
-    #     m['mappings']['properties']['first_seen'] = {'type': 'float'}
-    #     m['mappings']['properties']['last_seen'] = {'type': 'float'}
-    #     return m
+    @staticmethod
+    def make_mapping(m):
+        m['mappings']['properties']['scan_id'] = {'type': 'keyword'}
+        m['mappings']['properties']['collect_id'] = {'type': 'keyword'}
+        return m
 
-    # @classmethod
-    # def elastic_mapping(cls):
-    #     return BaseFact.make_mapping({'mappings': {'properties': {}}})
 
 class FactInDB(BaseFact):
     collect_id: UUID
@@ -48,7 +45,6 @@ class FactInDB(BaseFact):
 
 def facts_to_dict(facts: List[BaseFact]):
     return [BaseFact.to_dict(f) for f in facts]
-
 
 def facts_from_dict(obj):
     from salver.common.facts import all_facts  # pragma: no cover

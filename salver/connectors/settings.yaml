@@ -14,4 +14,12 @@ development:
     workers: 2
     threads: 1
 
+  logstash:
+    enabled: true
+    host: localhost
+    port: 5042
+    batch_size: 20
+    workers: 2
+    threads: 1
+
 testing:

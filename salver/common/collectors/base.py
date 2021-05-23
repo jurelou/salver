@@ -52,7 +52,7 @@ class BaseCollector:
             f'Collector {type(self).__name__} does not have any callbacks',
         )
 
-    def _sanitize_output(self, fn):
+    def _sanitize_output(self, collect_id, fn):
         try:
             output = make_flat_list(fn())
             if not output:
@@ -64,7 +64,8 @@ class BaseCollector:
                     error = f'Found unknown output from collector {self.config.name}: {out}'
                     yield models.Error(
                         context=f"agent-collect.unknown_output",
-                        value=error,
+                        collect_id=collect_id,
+                        error=error,
                         collector_name=self.config.name
                     )
                     logger.warning(error)
@@ -75,9 +76,9 @@ class BaseCollector:
             )
             yield models.Error(
                 context=f"agent-collect.error",
-                value=err,
-                collector_name=self.config.name,
-                error_class=type(err).__name__
+                error=err,
+                collect_id=collect_id,
+                collector_name=self.config.name
             )
 
     def _prepare_callbacks(
@@ -91,7 +92,7 @@ class BaseCollector:
                     callbacks.append(partial(cb, fact))
         return callbacks
 
-    def collect(self, facts: List[models.BaseFact]):
+    def collect(self, collect_id, facts: List[models.BaseFact]):
         callbacks = self._prepare_callbacks(facts)
 
         logger.debug(
@@ -100,7 +101,7 @@ class BaseCollector:
         )
 
         for cb in callbacks:
-            yield from self._sanitize_output(cb)
+            yield from self._sanitize_output(collect_id, cb)
 
     @staticmethod
     def findall_regex(data, regex):

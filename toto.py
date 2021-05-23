@@ -3,12 +3,12 @@
 from salver.common.kafka import Producer
 from salver.common import models
 from salver.config import engine_config
-from salver.facts import Person, Email
+from salver.facts import *
 
-p = Person(firstname='1', lastname='1')
-p2 = Person(firstname='1', lastname='2')
+# p = Person(firstname='1', lastname='1')
+# p2 = Person(firstname='1', lastname='2')
 
-e = Email(address='addr')
+# e = Email(address='addr')
 # c = models.Collect(collector_name='dummy-collector', facts=[p, e, p2])
 
 scan_producer = Producer(
@@ -21,10 +21,24 @@ scan_producer = Producer(
 )
 
 
-p = Person(firstname='1', lastname='1')
 s = models.Scan(
     scan_type="single_collector",
     config=models.ScanConfig(collector_name="dummy-docker-collector"),
-    facts=[p]
+    facts=[
+                Phone(number="+33123123"),
+                Phone(number="+33689181869"),
+                Username(name="jurelou"),
+                Company(name="wavely"),
+                Domain(fqdn="wavely.fr"),
+                Person(
+                    firstname="fname",
+                    lastname="lname",
+                    anther="ldm",
+                    first_seen=42,
+                    last_seen=200,
+                ),
+                Email(address="test@gmail.test"),
+            ],
 )
+
 scan_producer.produce(s, flush=True)

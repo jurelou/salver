@@ -15,7 +15,14 @@ class BaseScan:
             raise ValueError(f'Scan {type(self).__name__} does not have a `name` property')
 
         self.agents_collectors_producers = agents_collectors_producers
-        self.external_id : uuid.UUID = uuid.uuid4()
+
+    @property
+    def external_id(self):
+        return self._external_id
+
+    @external_id.setter
+    def external_id(self, id):
+        self._external_id = id
 
     def configure(self, config: ScanConfig):
         self.config = config

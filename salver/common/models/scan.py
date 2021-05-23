@@ -28,7 +28,7 @@ class Scan(BaseModel):
 
     state: ScanState = ScanState.UNKNOWN
 
-    # external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
     class Config:
         extra = 'ignore'
@@ -37,9 +37,9 @@ class Scan(BaseModel):
     @staticmethod
     def to_dict(obj, *args):
         # d = obj.dict(exclude={'facts', 'external_id'})
-        d = obj.dict(exclude={'facts'})
+        d = obj.dict(exclude={'facts', 'external_id'})
         d['facts'] = facts_to_dict(obj.facts)
-        # d['external_id'] = obj.external_id.hex
+        d['external_id'] = obj.external_id.hex
         return d
 
     @staticmethod

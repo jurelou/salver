@@ -15,6 +15,8 @@ def bootstrap():
 
     print('Bootstrap mongodb')
     mongo_db.agents.create_index('name', unique=True)
+    mongo_db.scans.create_index('external_id', unique=True)
+    mongo_db.collects.create_index('external_id', unique=True)
 
 if __name__ == "__main__":
     bootstrap()

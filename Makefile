@@ -35,6 +35,7 @@ bootstrap:
 	python -m scripts.bootstrap_kafka
 	python -m scripts.bootstrap_mongodb
 	python -m scripts.bootstrap_kibana
+	python -m scripts.bootstrap_elasticsearch
 
 	# python scripts/bootstrap_mongodb.py
 

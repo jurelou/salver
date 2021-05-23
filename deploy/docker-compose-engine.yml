@@ -52,7 +52,7 @@ services:
         environment:
             discovery.type: single-node
             #bootstrap.memory_lock: "true"
-            ES_JAVA_OPTS: "-Xmx1g -Xms1g"
+            ES_JAVA_OPTS: -Xmx256m -Xms256m
             ELASTIC_PASSWORD: superpasswd
         ulimits:
             memlock:
@@ -76,7 +76,7 @@ services:
             - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
             - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
         environment:
-            LS_JAVA_OPTS: -Xmx256m -Xms256m
+            ES_JAVA_OPTS: -Xmx256m -Xms256m
         networks:
             - elastic
 
@@ -202,76 +202,75 @@ services:
 ################################
 # KAFKA CONNECT
 ################################
-    connect:
-        build:
-            context: ./kafka-connect
-        hostname: connect
-        container_name: connect
-        depends_on:
-            - zookeeper
-            - broker
-            - schema-registry
-        ports:
-            - 8083:8083
-        environment:
-            CONNECT_BOOTSTRAP_SERVERS: broker:19092
-            CONNECT_REST_ADVERTISED_HOST_NAME: connect
-            CONNECT_REST_PORT: 8083
-            CONNECT_GROUP_ID: compose-connect-group
+    # connect:
+    #     build:
+    #         context: ./kafka-connect
+    #     hostname: connect
+    #     container_name: connect
+    #     depends_on:
+    #         - zookeeper
+    #         - broker
+    #         - schema-registry
+    #     ports:
+    #         - 8083:8083
+    #     environment:
+    #         CONNECT_BOOTSTRAP_SERVERS: broker:19092
+    #         CONNECT_REST_ADVERTISED_HOST_NAME: connect
+    #         CONNECT_REST_PORT: 8083
+    #         CONNECT_GROUP_ID: compose-connect-group
 
-            CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
-            CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-            CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
-            CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
-            CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-            CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
-            CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+    #         CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+    #         CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+    #         CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+    #         CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+    #         CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+    #         CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+    #         CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
 
-            CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-            CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-            CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-            CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    #         CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+    #         CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    #         CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+    #         CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
-            CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-            CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    #         CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    #         CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
-            CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
-            CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
+    #         CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+    #         CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
 
-            CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
-            CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=DEBUG,org.I0Itec.zkclient=DEBUG,org.reflections=ERROR
+    #         CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+    #         CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=DEBUG,org.I0Itec.zkclient=DEBUG,org.reflections=ERROR
 
-            CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.3.0.jar
-            CONNECT_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
-            CONNECT_CONSUMER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+    #         CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.3.0.jar
+    #         CONNECT_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+    #         CONNECT_CONSUMER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
 
-        command: /etc/confluent/docker/run
+    #     command: /etc/confluent/docker/run
 
 ################################
 # KAFKA CONTROL-CENTER
 ################################
-    control-center:
-        image: confluentinc/cp-enterprise-control-center:5.5.4
-        hostname: control-center
-        container_name: control-center
-        depends_on:
-            - zookeeper
-            - broker
-            - schema-registry
-            - connect
-        ports:
-            - 9021:9021
-        environment:
-            CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
-            CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
-            CONTROL_CENTER_CONNECT_CLUSTER: connect:8083
-            CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    # control-center:
+    #     image: confluentinc/cp-enterprise-control-center:5.5.4
+    #     hostname: control-center
+    #     container_name: control-center
+    #     depends_on:
+    #         - zookeeper
+    #         - broker
+    #         - schema-registry
+    #     ports:
+    #         - 9021:9021
+    #     environment:
+    #         CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
+    #         CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
+    #         CONTROL_CENTER_CONNECT_CLUSTER: connect:8083
+    #         CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
-            CONTROL_CENTER_REPLICATION_FACTOR: 1
-            CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-            CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-            CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-            PORT: 9021
+    #         CONTROL_CENTER_REPLICATION_FACTOR: 1
+    #         CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+    #         CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+    #         CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+    #         PORT: 9021
 
 
 ################################

@@ -25,11 +25,13 @@ topics = [
     'agent-connect',
 
     'scan',
+    'error',
 
-    'response-collect'
+    'collect-response',
+    'collect-done',
 ]
 
-topics.extend([f"collect-{c.config['name']}" for c in collector_modules])
+topics.extend([f"collect-create-{c.config['name']}" for c in collector_modules])
 
 
 admin_client = AdminClient({'bootstrap.servers': engine_config.kafka.bootstrap_servers})
@@ -82,9 +84,16 @@ def create_schemas():
         'collect-create',
         Schema(schema_str=json.dumps(models.Collect.schema()), schema_type='JSON'),
     )
-
     shema_registry_client.register_schema(
-        'response-collect',
+        'error',
+        Schema(schema_str=json.dumps(models.Error.schema()), schema_type='JSON'),
+    )
+    shema_registry_client.register_schema(
+        'collect-done',
+        Schema(schema_str=json.dumps(models.CollectDone.schema()), schema_type='JSON'),
+    )
+    shema_registry_client.register_schema(
+        'collect-response',
         Schema(schema_str=json.dumps(models.CollectResponse.schema()), schema_type='JSON'),
     )
 

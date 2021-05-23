@@ -3,7 +3,7 @@ from .fact import BaseFact
 from .ping import PingRequest
 from .agent import AgentInfo
 from .engine import EngineInfo
-from .collect import Collect, CollectState, CollectResponse
+from .collect import Collect, CollectState, CollectResponse, CollectDone
 from .collector import Collector
 from .scan import Scan, ScanConfig, ScanState
 from .error import Error
@@ -20,5 +20,6 @@ __all__ = [
     'ScanConfig',
     'ScanState',
     'Error',
-    'CollectResponse'
+    'CollectResponse',
+    'CollectDone'
 ]

@@ -7,3 +7,11 @@ class Error(BaseModel):
 
     class Config:
         extra = 'allow'
+
+    @staticmethod
+    def to_dict(obj, _):
+        return obj.dict()
+
+    @staticmethod
+    def from_dict(obj, _):
+        return Error(**obj)

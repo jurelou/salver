@@ -7,7 +7,7 @@ from salver.common.facts import all_facts
 
 kibana_url = 'http://localhost:5601'
 kibana_index_patterns = ['facts_*']
-kibana_index_patterns.extend([f'fact_{fact}*' for fact in all_facts.keys()])
+kibana_index_patterns.extend([f'fact_{fact.lower()}*' for fact in all_facts.keys()])
 
 
 def create_kibana_patterns(patterns):
