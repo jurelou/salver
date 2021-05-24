@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from salver.common.collectors import BaseCollector
-from salver.common.utils import load_classes
 from salver.common.kafka import Producer
 from salver.common import models
 from salver.config import engine_config
+from .collectors import all_collectors
 
 _COMMON_PARAMS = {
         "schema_registry_url": engine_config.kafka.schema_registry_url,
@@ -37,12 +36,8 @@ def make_agent_collect(collector_name: str):
 
 
 def make_agent_collects():
-    collectors = load_classes(
-        root_path='salver/agent/collectors',
-        parent_class=BaseCollector,
-    )
     return {
-        c.config['name']: make_agent_collect(c.config['name']) for c in collectors
+        c.config['name']: make_agent_collect(c.config['name']) for c in all_collectors
     }
 
 def make_scan():

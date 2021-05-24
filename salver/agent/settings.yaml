@@ -5,9 +5,26 @@ default:
 
 development:
     enabled_collectors:
-        - zen
         - dummy-docker-collector
         - dummy-collector
+
+        - recon-ng
+        - certificate-transparency
+        - sherlock
+        - infoga
+        - harvester
+        - subfinder
+        - phone-infoga
+        - twint
+        - zen
+        - blackwidow
+            #######################
+            # broken collectors
+            #######################
+            # - dirsearch
+            # - littlebrother
+            # - kupa3
+            # - nmap
 
     kafka:
         bootstrap_servers: localhost:9092

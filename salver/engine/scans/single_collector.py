@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # from salver.common.exceptions import CollectorNotFound
 from typing import List
-
+from loguru import logger
 from salver.common.models import ScanConfig, BaseFact
 from salver.engine.scans import BaseScan
 
@@ -11,7 +11,7 @@ class SingleCollectorConfig(ScanConfig):
 
 
 class SingleCollector(BaseScan):
-    name = "single_collector"
+    name = "single-collector"
 
     config: SingleCollectorConfig
 
@@ -19,7 +19,7 @@ class SingleCollector(BaseScan):
         self.config = SingleCollectorConfig(**config.dict())
 
     def scan(self, facts: List[BaseFact]):
-        print("SCANNNNNNN", facts)
+        logger.info("Launch single collector scan")
         self.launch_collector(
             self.config.collector_name,
             facts

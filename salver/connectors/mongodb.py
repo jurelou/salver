@@ -13,6 +13,7 @@ class MongoDBCallback(ConsumerCallback):
 
 class OnScan(MongoDBCallback):
     def on_message(self, scan: models.Scan):
+        scan.state = models.ScanState.CREATED
         logger.info(f'mongodb connector: Add scan : {scan.external_id}')
         self.db.scans.insert_one(models.Scan.to_dict(scan))
 
@@ -24,8 +25,7 @@ class OnCollectCreate(MongoDBCallback):
 
 class OnCollectDone(MongoDBCallback):
     def on_message(self, collect: models.CollectDone):
-        print("@@@@", collect)
-        # logger.info(f'mongodb connector: Add collect: {collect.external_id}')
+        logger.info(f'mongodb connector: collect {collect.collect_id.hex} finished')
         data = collect.dict(exclude={"collect_id"})
         self.db.collects.update_one({"external_id": collect.collect_id.hex}, { "$set": data })
 
@@ -70,15 +70,12 @@ def make_consummers():
                     callback=OnCollectDone,
                     **common_params
         ),
-
         Consumer(
                 topic='scan',
                 value_deserializer=models.Scan,
                 callback=OnScan,
                 **common_params
         ),
-
-
         Consumer(
                 topic='agent-disconnect',
                 value_deserializer=models.AgentInfo,

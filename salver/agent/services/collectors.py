@@ -24,6 +24,7 @@ def build():
             collectors[instance.config.name] = {
                 'instance': instance,
                 'enabled': instance.config.name in enabled_collectors,
+                'allowed_input': instance.callback_types
             }
         except InvalidCollectorDefinition as err:
             print(f'Could not load {collector}: {err}')

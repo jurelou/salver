@@ -62,31 +62,6 @@ class SalverEngine:
             flush=True,
         )
 
-        # p = Person(firstname='1', lastname='1')
-        # p2 = Person(firstname='1', lastname='2')
-
-        # e = Email(address='addr')
-        # c = models.Collect(collector_name='dummy-collector', facts=[p, e, p2])
-
-        # agent_collects = kafka_producers.make_agent_collects()
-        # agent_collects['dummy-collector'].produce(c, flush=True)
-
-
-        # from salver.engine.scans import all_scans
-
-        # scan_producer = kafka_producers.make_scan()
-        # p = Person(firstname='1', lastname='1')
-        # s = models.Scan(
-        #     scan_type="single_collector",
-        #     config=models.ScanConfig(collector_name="salut"),
-        #     facts=[p]
-        # )
-        # scan_producer.produce(s, flush=True)
-        # print("@@@@@@", all_scans[0].name)
-        # info_res = kafka_producers.make_agent_broadcast_ping()
-        # info_res.produce(models.PingRequest(ping='ping allllllll'), flush=True)
-
-
 if __name__ == '__main__':
     engine = SalverEngine()
     engine.start()

@@ -22,7 +22,7 @@ scan_producer = Producer(
 
 
 s = models.Scan(
-    scan_type="single_collector",
+    scan_type="full-scan",
     config=models.ScanConfig(collector_name="dummy-docker-collector"),
     facts=[
                 Phone(number="+33123123"),

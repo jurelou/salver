@@ -3,7 +3,7 @@ import json
 import socket
 import threading
 from typing import List
-
+import uuid
 from loguru import logger
 
 from salver.common import models
@@ -63,13 +63,37 @@ class OnCollectResponse(LogstashCallback):
             "collect_id": collect_response.collect_id.hex,
             "@metadata": {
                 'document_id': collect_response.fact.__hash__,
-                'fact_type': f"facts_{collect_response.fact.schema()['title'].lower()}",
+                'index': f"facts_{collect_response.fact.schema()['title'].lower()}",
             },
             **collect_response.fact.dict()
         }
 
         self.logstash_client.send_data(data)
 
+class OnError(LogstashCallback):
+    def on_message(self, error: models.Error):
+        logger.info(f'logstash connector got error: {error.context}')
+        data = error.dict()
+        data["@metadata"] = {
+                'index': "error",
+                'document_id': uuid.uuid4().hex
+        }
+        self.logstash_client.send_data(data)
+
+class OnScan(LogstashCallback):
+    def on_message(self, scan: models.Scan):
+        logger.info(f'logstash connector: got scan {scan.external_id}')
+        for fact in scan.facts:
+            data = {
+                "scan_id": scan.external_id.hex,
+                "@metadata": {
+                    'document_id': fact.__hash__,
+                    'index': f"facts_{fact.schema()['title'].lower()}",
+                },
+                **fact.dict()
+            }
+
+            self.logstash_client.send_data(data)
 
 def make_consummers():
     common_params = {
@@ -86,6 +110,19 @@ def make_consummers():
                 topic='collect-response',
                 value_deserializer=models.CollectResponse,
                 callback=OnCollectResponse,
+                **common_params
+        ),
+
+        Consumer(
+                topic='scan',
+                value_deserializer=models.Scan,
+                callback=OnScan,
+                **common_params
+        ),
+        Consumer(
+                topic='error',
+                value_deserializer=models.Error,
+                callback=OnError,
                 **common_params
         ),
     ]

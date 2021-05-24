@@ -7,4 +7,5 @@ from pydantic import BaseModel
 class Collector(BaseModel):
     name: str
     enabled: bool
-    # TODO: add allowed facts, collector config, ...
+    allowed_input: List[str]
+    # TODO: collector config, ...

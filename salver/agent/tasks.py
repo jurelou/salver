@@ -25,14 +25,7 @@ class OnCollect(ConsumerCallback):
         self.collect_finished_p = kafka_producers.make_collect_done()
         self.error_p = kafka_producers.make_error()
 
-    def on_message(self, collect):
-        logger.info(f'Got agent collect: {collect}')
-        if collect.collector_name not in self.enabled_collectors:
-            logger.warning(
-                f'Collector {collect.collector_name} does not exists (or not enabled).',
-            )
-            return
-
+    def execute_collector(self, collect):
         start_time = timer()
         collect_output = self.enabled_collectors[collect.collector_name].collect(
             collect.external_id.hex, collect.facts,
@@ -53,6 +46,21 @@ class OnCollect(ConsumerCallback):
                 print("GOT AN ERROR!!!", out)
         
         elapsed_time = timer() - start_time
+        return state, elapsed_time, facts_count
+
+    def on_message(self, collect):
+        logger.info(f'Got agent collect: {collect}')
+        if collect.collector_name not in self.enabled_collectors:
+            error = f'Collector {collect.collector_name} does not exists (or not enabled).'
+            logger.warning(error)
+            return self.error_p.produce(models.Error(
+                context=f"agent-collect.collector_not_found",
+                error=error,
+                collect_id=collect.external_id.hex,
+                collector_name=collect.collector_name
+            ))
+
+        state, elapsed_time, facts_count = self.execute_collector(collect)
         self.collect_finished_p.produce(models.CollectDone(
             collect_id=collect.external_id,
             state=state,

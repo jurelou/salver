@@ -42,6 +42,10 @@ class BaseCollector:
         if self.config.limiter:
             self.limiter = Limiter(self.config.name, *self.config.limiter)
 
+    @property
+    def callback_types(self):
+        return [ c.schema()["title"] for c in self.callbacks().keys() ]
+
     def configure(self):
         self.config = CollectorBaseConfig(**self.config)
 
@@ -76,7 +80,7 @@ class BaseCollector:
             )
             yield models.Error(
                 context=f"agent-collect.error",
-                error=err,
+                error=str(err),
                 collect_id=collect_id,
                 collector_name=self.config.name
             )
