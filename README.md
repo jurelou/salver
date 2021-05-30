@@ -6,6 +6,32 @@
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 [![python version](https://img.shields.io/badge/python-3.8-blue)](https://www.python.org/)
 
+# Install
 
+requires docker && python >= 3.8
+```
+make install # installe les dépendances python
+source env/bin/activate # active l'environnement virtuel
 
-WIP 
+make docker # crée les dockers (BDD / kafka)
+make bootstrap  # crée les index, prépare les BDD
+
+make agent
+make engine
+
+python toto.py # test: crée un scan
+
+```
+
+# TODO
+
+connectors: neo4J/eladstic make a caching mechanism usique a Q and sched() to flush the queue every X sec
+
+### API rest:
+
+- lister les agents
+- lister les collect pour un scan donné
+- lister lesscan
+- creer un scan (comme dans toto.py)
+
+- 

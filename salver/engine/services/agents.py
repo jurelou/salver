@@ -8,6 +8,16 @@ from salver.engine.services import kafka_producers
 
 AVAILABLE_AGENTS = Manager().dict()
 
+def get_collectors_mapping():
+    mapping = {}
+    for agent in AVAILABLE_AGENTS.values():
+        for collector in agent.collectors:
+            for allowed_input in collector.allowed_input:
+                if allowed_input in mapping:
+                    mapping[allowed_input].append(collector.name)
+                else:
+                    mapping[allowed_input] = [collector.name]
+    return mapping
 
 def on_agent_connect(agent_info):
     logger.info(f'Got agent connect from {agent_info.name}')

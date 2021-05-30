@@ -15,6 +15,7 @@ class PhoneInfoga(DockerCollector):
 
     def scan(self, phone):
         data = self.run_container(command=['scan', '-n', phone.number])
+        local_format = international_format = country_code = carrier = None
 
         for item in self.findall_regex(
             data,

@@ -1,30 +1,39 @@
-# -*- coding: utf-8 -*-
-import time
-from uuid import UUID
-from typing import List
+#-*- coding: utf-8 -*-
+# import time
+# from uuid import UUID
+# from typing import List
 
 import pymongo
 from loguru import logger
-from pymongo.errors import DuplicateKeyError
+# from pymongo.errors import DuplicateKeyError
 
 from salver.common import models
 from salver.config import engine_config
-from salver.engine import models as engine_models
+# from salver.engine import models as engine_models
 
 
 def get_database():
     return pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
 
+def add_scan(db, scan: models.Scan):
+    logger.debug(f'mongodb: Add scan {scan}')
+    db.scans.insert_one(scan.to_dict())
 
-def bootstrap():
-    logger.info('Bootstrap mongodb')
-    mongo_db = get_database()
-    mongo_db.agents.create_index('name', unique=True)
+# def bootstrap():
+#     logger.info('Bootstrap mongodb')
+#     mongo_db = get_database()
+#     mongo_db.agents.create_index('name', unique=True)
 
 
-def add_new_collect(db, collect: models.Collect):
-    logger.debug(f'mongodb: Add collect {collect}')
-    db.collects.insert_one(collect.dict())
+# def add_new_collect(db, collect: models.Collect):
+#     logger.debug(f'mongodb: Add collect {collect}')
+#     db.collects.insert_one(collect.dict())
+
+
+
+
+
+
 
 
 # class MongoDB(BaseDB):

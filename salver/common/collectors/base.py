@@ -38,9 +38,13 @@ class BaseCollector:
         except Exception as err:
             raise InvalidCollectorDefinition(type(self).__name__, err) from err
 
-        self._limiter = None
+        self.limiter = None
         if self.config.limiter:
-            self._limiter = Limiter(*self.config.limiter)
+            self.limiter = Limiter(self.config.name, *self.config.limiter)
+
+    @property
+    def callback_types(self):
+        return [ c.schema()["title"] for c in self.callbacks().keys() ]
 
     def configure(self):
         self.config = CollectorBaseConfig(**self.config)
@@ -52,24 +56,34 @@ class BaseCollector:
             f'Collector {type(self).__name__} does not have any callbacks',
         )
 
-    def _sanitize_output(self, fn):
+    def _sanitize_output(self, collect_id, fn):
         try:
-
             output = make_flat_list(fn())
             if not output:
-                return []
+                return
             for out in output:
                 if isinstance(out, models.BaseFact):
                     yield out
                 else:
-                    logger.warning(
-                        f'Found unknown output from collector {self.config.name}: {out}',
+                    error = f'Found unknown output from collector {self.config.name}: {out}'
+                    yield models.Error(
+                        context=f"agent-collect.unknown_output",
+                        collect_id=collect_id,
+                        error=error,
+                        collector_name=self.config.name
                     )
+                    logger.warning(error)
+
         except Exception as err:
             logger.error(
                 f'Error while executing callback from {self.config.name}: {type(err).__name__} {err}',
             )
-            raise CollectorRuntimeError(self.config.name, err) from err
+            yield models.Error(
+                context=f"agent-collect.error",
+                error=str(err),
+                collect_id=collect_id,
+                collector_name=self.config.name
+            )
 
     def _prepare_callbacks(
         self,
@@ -82,17 +96,7 @@ class BaseCollector:
                     callbacks.append(partial(cb, fact))
         return callbacks
 
-    def _execute_callbacks(self, callbacks):
-        facts = []
-        for cb in callbacks:
-            facts.extend(list(self._sanitize_output(cb)))
-        return facts
-
-    def collect(self, facts: List[models.BaseFact]):
-        if self._limiter:
-            self._limiter.try_acquire()
-        start_time = timer()
-
+    def collect(self, collect_id, facts: List[models.BaseFact]):
         callbacks = self._prepare_callbacks(facts)
 
         logger.debug(
@@ -100,15 +104,8 @@ class BaseCollector:
             {len(facts)} facts and {len(callbacks)} callbacks',
         )
 
-        output_facts = self._execute_callbacks(callbacks)
-        return (
-            models.CollectResult(
-                duration=timer() - start_time,
-                executions_count=len(callbacks),
-                facts=[f.hash__ for f in output_facts],
-            ),
-            output_facts,
-        )
+        for cb in callbacks:
+            yield from self._sanitize_output(collect_id, cb)
 
     @staticmethod
     def findall_regex(data, regex):

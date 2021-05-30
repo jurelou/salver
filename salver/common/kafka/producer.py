@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from uuid import uuid4
+from typing import Optional
 
 from loguru import logger
 from confluent_kafka import SerializingProducer
@@ -10,14 +11,24 @@ from salver.common.kafka.serializer import make_serializer
 
 
 class Producer:
-    def __init__(self, topic, kafka_config, value_serializer, schema_registry_url):
+    def __init__(
+        self,
+        topic,
+        kafka_config,
+        value_serializer,
+        schema_registry_url,
+        schema_name: Optional[str] = None,
+    ):
         self.topic = topic
+        if not schema_name:
+            schema_name = self.topic
+
         logger.debug(f'Create kafka producer for topic {self.topic}')
         kafka_config.update(
             {
                 'key.serializer': StringSerializer('utf_8'),
                 'value.serializer': make_serializer(
-                    topic=self.topic,
+                    subject=schema_name,
                     to_dict=value_serializer.to_dict,
                     schema_registry_url=schema_registry_url,
                 ),

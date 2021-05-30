@@ -8,19 +8,37 @@ from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 
 from salver.common import models
 from salver.common.facts import all_facts
+from salver.common.utils import load_classes
+from salver.agent.services import collectors
+from salver.common.collectors import BaseCollector
+
+
+collector_modules = load_classes(
+    root_path='salver/agent/collectors',
+    parent_class=BaseCollector,
+)
+
+schema_registry = "http://localhost:8081"
+kafka_bootstrap = "localhost:9092"
 
 topics = [
     'agent-broadcast-ping',
     'engine-connect',
     'agent-disconnect',
-    'agent-collect-create',
     'agent-connect',
-    # 'agent-collect-item',
-    # 'agent-collect-update-status',
+
+    'scan',
+    'error',
+
+    'collect-response',
+    'collect-done',
 ]
 
-admin_client = AdminClient({'bootstrap.servers': 'localhost:9092'})
-shema_registry_client = SchemaRegistryClient({'url': 'http://127.0.0.1:8081'})
+topics.extend([f"collect-create-{c.config['name']}" for c in collector_modules])
+
+
+admin_client = AdminClient({'bootstrap.servers': kafka_bootstrap})
+shema_registry_client = SchemaRegistryClient({'url': schema_registry})
 
 
 def delete_topics():
@@ -31,7 +49,7 @@ def delete_topics():
             print(f'Topic {topic} deleted')
         except Exception as e:
             print('Failed to delete topic {}: {}'.format(topic, e))
-    time.sleep(2)  # For some reasons changes are not applied directly ....
+    time.sleep(2)  # For some reasons changes are asynchronous ....
 
 
 def create_topics():
@@ -66,8 +84,20 @@ def create_schemas():
         Schema(schema_str=json.dumps(models.BaseFact.schema()), schema_type='JSON'),
     )
     shema_registry_client.register_schema(
-        'agent-collect-create',
+        'collect-create',
         Schema(schema_str=json.dumps(models.Collect.schema()), schema_type='JSON'),
+    )
+    shema_registry_client.register_schema(
+        'error',
+        Schema(schema_str=json.dumps(models.Error.schema()), schema_type='JSON'),
+    )
+    shema_registry_client.register_schema(
+        'collect-done',
+        Schema(schema_str=json.dumps(models.CollectDone.schema()), schema_type='JSON'),
+    )
+    shema_registry_client.register_schema(
+        'collect-response',
+        Schema(schema_str=json.dumps(models.CollectResponse.schema()), schema_type='JSON'),
     )
 
     shema_registry_client.register_schema(
@@ -89,10 +119,10 @@ def create_schemas():
         Schema(schema_str=json.dumps(models.EngineInfo.schema()), schema_type='JSON'),
     )
 
-    # print(json.dumps(bf))
-
-    # print(models.Collect.schema())
-    sys.exit(0)
+    shema_registry_client.register_schema(
+        'scan',
+        Schema(schema_str=json.dumps(models.Scan.schema()), schema_type='JSON'),
+    )
 
 
 remove_schemas()

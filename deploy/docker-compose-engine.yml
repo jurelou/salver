@@ -1,5 +1,18 @@
 ---
-version: '2'
+version: '3.5'
+
+volumes:
+    mongo-rs1:
+    elastic:
+    # mongo-rs2:
+    # mongo-rs3:
+
+networks:
+    elastic:
+    kafka:
+    mongo:
+    engine:
+
 services:
   # neo4j:
   #   image: neo4j:4.0.3
@@ -13,6 +26,63 @@ services:
   #     NEO4J_AUTH: neo4j/connect
   #     NEO4J_dbms_memory_heap_max__size: 8G
 
+
+########################
+##  KIBANA
+########################
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.12.1
+        ports:
+            - 5601:5601
+        volumes:
+            - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+        environment:
+            ELASTICSEARCH_URL: http://elasticsearch:9200
+            ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+        networks:
+            - elastic
+
+########################
+##  ELASTICSEARCH
+########################
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+        ports:
+            - 127.0.0.1:9200:9200
+            - 127.0.0.1:9300:9300
+        environment:
+            discovery.type: single-node
+            #bootstrap.memory_lock: "true"
+            ES_JAVA_OPTS: -Xmx256m -Xms256m
+            ELASTIC_PASSWORD: superpasswd
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        networks:
+            - elastic
+            - engine
+        volumes:
+            - elastic:/usr/share/elasticsearch/data
+            - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
+########################
+# logstash (agent side)
+########################
+    logstash:
+        image: logstash:7.12.1
+        restart: unless-stopped
+        ports:
+            - 127.0.0.1:5042:5042
+        volumes:
+            - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+            - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+        environment:
+            ES_JAVA_OPTS: -Xmx256m -Xms256m
+        networks:
+            - elastic
+            - engine
+
 ################################
 # MONGODB
 ################################
@@ -24,7 +94,10 @@ services:
             - mongo-rs1:/data/db
         ports:
             - 27017:27017
-        restart: always
+        networks:
+            - engine
+            - mongo
+        restart: unless-stopped
 
     # mongo2:
     #     image: mongo:4.4-bionic
@@ -51,13 +124,15 @@ services:
 ########################
     mongo-express:
         image: mongo-express
-        restart: always
+        restart: unless-stopped
         ports:
             - 8017:8081
         depends_on:
             - mongo1
             # - mongo2
             # - mongo3
+        networks:
+            - mongo
         environment:
             ME_CONFIG_MONGODB_SERVER: mongo1
             # ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
@@ -78,6 +153,8 @@ services:
         container_name: zookeeper
         ports:
             - 2181:2181
+        networks:
+            - kafka
         environment:
             ZOOKEEPER_CLIENT_PORT: 2181
             ZOOKEEPER_TICK_TIME: 2000
@@ -94,6 +171,9 @@ services:
         ports:
             - 9092:9092
             - 19092:19092
+        networks:
+            - engine
+            - kafka
         environment:
             KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:19092,OUTSIDE://localhost:9092
 
@@ -127,6 +207,9 @@ services:
             - broker
         ports:
             - 8081:8081
+        networks:
+            - engine
+            - kafka
         environment:
             SCHEMA_REGISTRY_HOST_NAME: schema-registry
             SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
@@ -135,76 +218,75 @@ services:
 ################################
 # KAFKA CONNECT
 ################################
-    connect:
-        build:
-            context: ./kafka-connect
-        hostname: connect
-        container_name: connect
-        depends_on:
-            - zookeeper
-            - broker
-            - schema-registry
-        ports:
-            - 8083:8083
-        environment:
-            CONNECT_BOOTSTRAP_SERVERS: broker:19092
-            CONNECT_REST_ADVERTISED_HOST_NAME: connect
-            CONNECT_REST_PORT: 8083
-            CONNECT_GROUP_ID: compose-connect-group
+    # connect:
+    #     build:
+    #         context: ./kafka-connect
+    #     hostname: connect
+    #     container_name: connect
+    #     depends_on:
+    #         - zookeeper
+    #         - broker
+    #         - schema-registry
+    #     ports:
+    #         - 8083:8083
+    #     environment:
+    #         CONNECT_BOOTSTRAP_SERVERS: broker:19092
+    #         CONNECT_REST_ADVERTISED_HOST_NAME: connect
+    #         CONNECT_REST_PORT: 8083
+    #         CONNECT_GROUP_ID: compose-connect-group
 
-            CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
-            CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-            CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
-            CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
-            CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-            CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
-            CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+    #         CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+    #         CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+    #         CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+    #         CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+    #         CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+    #         CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+    #         CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
 
-            CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-            CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-            CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-            CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    #         CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+    #         CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    #         CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+    #         CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
-            CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-            CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    #         CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    #         CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
-            CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
-            CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
+    #         CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
+    #         CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
 
-            CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
-            CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=DEBUG,org.I0Itec.zkclient=DEBUG,org.reflections=ERROR
+    #         CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+    #         CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=DEBUG,org.I0Itec.zkclient=DEBUG,org.reflections=ERROR
 
-            CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.3.0.jar
-            CONNECT_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
-            CONNECT_CONSUMER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+    #         CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.3.0.jar
+    #         CONNECT_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+    #         CONNECT_CONSUMER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
 
-        command: /etc/confluent/docker/run
+    #     command: /etc/confluent/docker/run
 
 ################################
 # KAFKA CONTROL-CENTER
 ################################
-    control-center:
-        image: confluentinc/cp-enterprise-control-center:5.5.4
-        hostname: control-center
-        container_name: control-center
-        depends_on:
-            - zookeeper
-            - broker
-            - schema-registry
-            - connect
-        ports:
-            - 9021:9021
-        environment:
-            CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
-            CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
-            CONTROL_CENTER_CONNECT_CLUSTER: connect:8083
-            CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    # control-center:
+    #     image: confluentinc/cp-enterprise-control-center:5.5.4
+    #     hostname: control-center
+    #     container_name: control-center
+    #     depends_on:
+    #         - zookeeper
+    #         - broker
+    #         - schema-registry
+    #     ports:
+    #         - 9021:9021
+    #     environment:
+    #         CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
+    #         CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
+    #         CONTROL_CENTER_CONNECT_CLUSTER: connect:8083
+    #         CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
-            CONTROL_CENTER_REPLICATION_FACTOR: 1
-            CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-            CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-            CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-            PORT: 9021
+    #         CONTROL_CENTER_REPLICATION_FACTOR: 1
+    #         CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+    #         CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+    #         CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+    #         PORT: 9021
 
 
 ################################
@@ -220,6 +302,8 @@ services:
             - 8082:8082
         hostname: rest-proxy
         container_name: rest-proxy
+        networks:
+            - kafka
         environment:
             KAFKA_REST_HOST_NAME: rest-proxy
             KAFKA_REST_BOOTSTRAP_SERVERS: broker:19092
@@ -233,6 +317,8 @@ services:
     kafka-topics-ui:
         image: landoop/kafka-topics-ui:0.9.4
         hostname: kafka-topics-ui
+        networks:
+            - kafka
         ports:
             - 8000:8000
         environment:
@@ -243,8 +329,3 @@ services:
             - broker
             - schema-registry
             - rest-proxy
-
-volumes:
-    mongo-rs1:
-    # mongo-rs2:
-    # mongo-rs3:
