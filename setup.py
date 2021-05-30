@@ -26,7 +26,7 @@ setup(
         'loguru==0.5.3',
         # 'neo4j==4.2.1',
         'docker==5.0.0',
-        'pydantic==1.8.1',
+        'pydantic==1.8.2',
         'confluent-kafka[json]==1.6.1',
         'pymongo==3.11.3',
         # 'redis==3.5.3',
