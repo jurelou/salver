@@ -11,7 +11,7 @@ docker:
 # 	uvicorn salver.api.main:app --reload
 
 engine:
-	docker-compose up --build
+	docker-compose up
 
 agent:
 	ENV_FOR_DYNACONF=development python -m salver.agent.app
@@ -35,7 +35,6 @@ bootstrap:
 	python -m scripts.bootstrap_elasticsearch
 
 	# python scripts/bootstrap_mongodb.py
-
 
 sloc:
 	pygount --format=summary ./salver

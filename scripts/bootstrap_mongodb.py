@@ -5,13 +5,11 @@ from loguru import logger
 from salver.common import models
 from salver.config import engine_config
 
-
-def get_database():
-    return pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
+MONGO_URL = "mongodb://localhost:27017"
 
 
 def bootstrap():
-    mongo_db = pymongo.MongoClient(engine_config.mongo.url)[engine_config.mongo.db_name]
+    mongo_db = pymongo.MongoClient(MONGO_URL)[engine_config.mongo.db_name]
 
     print('Bootstrap mongodb')
     mongo_db.agents.create_index('name', unique=True)

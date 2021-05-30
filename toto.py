@@ -10,13 +10,16 @@ from salver.facts import *
 
 # e = Email(address='addr')
 # c = models.Collect(collector_name='dummy-collector', facts=[p, e, p2])
+schema_registry = "http://localhost:8081"
+kafka_bootstrap = "localhost:9092"
+
 
 scan_producer = Producer(
     topic=f"scan",
     value_serializer=models.Scan,
-    schema_registry_url=engine_config.kafka.schema_registry_url,
+    schema_registry_url=schema_registry,
     kafka_config = {
-        'bootstrap.servers': engine_config.kafka.bootstrap_servers,
+        'bootstrap.servers': kafka_bootstrap,
     }
 )
 

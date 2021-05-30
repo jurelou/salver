@@ -12,11 +12,14 @@ from salver.common.utils import load_classes
 from salver.agent.services import collectors
 from salver.common.collectors import BaseCollector
 
-from salver.config import engine_config
+
 collector_modules = load_classes(
     root_path='salver/agent/collectors',
     parent_class=BaseCollector,
 )
+
+schema_registry = "http://localhost:8081"
+kafka_bootstrap = "localhost:9092"
 
 topics = [
     'agent-broadcast-ping',
@@ -34,8 +37,8 @@ topics = [
 topics.extend([f"collect-create-{c.config['name']}" for c in collector_modules])
 
 
-admin_client = AdminClient({'bootstrap.servers': engine_config.kafka.bootstrap_servers})
-shema_registry_client = SchemaRegistryClient({'url': engine_config.kafka.schema_registry_url})
+admin_client = AdminClient({'bootstrap.servers': kafka_bootstrap})
+shema_registry_client = SchemaRegistryClient({'url': schema_registry})
 
 
 def delete_topics():

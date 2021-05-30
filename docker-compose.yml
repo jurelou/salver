@@ -22,12 +22,12 @@ services:
 ########################
 ##  ENGINE
 ########################
-    # engine:
-    #     build: .
-    #     volumes:
-    #         - ./salver:/opt/salver/salver:ro
-    #     environment:
-    #         ENV_FOR_DYNACONF: development
-    #     networks:
-    #       - deploy_engine
-    #     command: -m salver.engine.app
+    engine:
+        build: .
+        volumes:
+            - ./salver:/opt/salver/salver:ro
+        environment:
+            ENV_FOR_DYNACONF: development
+        networks:
+          - deploy_engine
+        command: -m salver.engine.app
