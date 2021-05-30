@@ -5,7 +5,11 @@ from salver.facts import Email, Person
 from salver.common import models
 from salver.config import engine_config
 from salver.common.kafka import Consumer
+<<<<<<< HEAD
 from salver.engine.services import scan, agents, kafka_producers
+=======
+from salver.engine.services import agents, kafka_producers, scan
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 
 
 class SalverEngine:
@@ -17,7 +21,7 @@ class SalverEngine:
             'kafka_config': {
                 'bootstrap.servers': engine_config.kafka.bootstrap_servers,
                 'group.id': 'engine',
-            },
+            }
         }
         self.consumers = [
             Consumer(
@@ -32,14 +36,24 @@ class SalverEngine:
                 callback=agents.on_agent_disconnect,
                 **common_params,
             ),
+<<<<<<< HEAD
             Consumer(
                 topic='scan-create',
+=======
+
+            Consumer(
+                topic='scan',
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
                 value_deserializer=models.Scan,
                 callback=scan.OnScan,
                 **common_params,
             ),
         ]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
     def start(self):
         on_start_called = False
 
@@ -59,7 +73,10 @@ class SalverEngine:
             flush=True,
         )
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 if __name__ == '__main__':
     engine = SalverEngine()
     engine.start()

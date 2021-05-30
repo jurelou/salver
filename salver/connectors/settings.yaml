@@ -3,6 +3,7 @@ default:
 
 development:
 
+<<<<<<< HEAD
     kafka:
         bootstrap_servers: broker:19092
         schema_registry_url: http://schema-registry:8081
@@ -21,5 +22,25 @@ development:
         batch_size: 20
         workers: 2
         threads: 1
+=======
+  kafka:
+    bootstrap_servers: broker:19092
+    schema_registry_url: http://schema-registry:8081
+
+  mongo:
+    enabled: true
+    db_name: salver
+    url: mongodb://mongo1:27017
+    workers: 2
+    threads: 1
+
+  logstash:
+    enabled: true
+    host: logstash
+    port: 5042
+    batch_size: 20
+    workers: 2
+    threads: 1
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 
 testing:

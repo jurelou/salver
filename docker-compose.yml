@@ -2,8 +2,13 @@
 version: '3.5'
 
 networks:
+<<<<<<< HEAD
     deploy_engine:
         external: true
+=======
+  deploy_engine:
+    external: true
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 
 services:
 #######################
@@ -16,7 +21,11 @@ services:
         environment:
             ENV_FOR_DYNACONF: development
         networks:
+<<<<<<< HEAD
             - deploy_engine
+=======
+          - deploy_engine
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
         command: -m salver.connectors.app
 
 ########################
@@ -29,5 +38,10 @@ services:
         environment:
             ENV_FOR_DYNACONF: development
         networks:
+<<<<<<< HEAD
             - deploy_engine
         command: -m salver.engine.app
+=======
+          - deploy_engine
+        command: -m salver.engine.app
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96

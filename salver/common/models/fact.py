@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 import hashlib
+<<<<<<< HEAD
 from uuid import UUID
+=======
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 from typing import List
+from uuid import UUID
 
 from pydantic import BaseModel, BaseConfig, root_validator
 
@@ -36,17 +40,24 @@ class BaseFact(BaseModel):
         m['mappings']['properties']['scan_id'] = {'type': 'keyword'}
         m['mappings']['properties']['collect_id'] = {'type': 'keyword'}
         return m
+<<<<<<< HEAD
 
 
 class FactInDB(BaseFact):
     collect_id: UUID
     scan_id: UUID
     fact_type: str
+=======
 
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
+
+class FactInDB(BaseFact):
+    collect_id: UUID
+    scan_id: UUID
+    fact_type: str
 
 def facts_to_dict(facts: List[BaseFact]):
     return [BaseFact.to_dict(f) for f in facts]
-
 
 def facts_from_dict(obj):
     from salver.common.facts import all_facts  # pragma: no cover

@@ -5,7 +5,11 @@ from loguru import logger
 from salver.common import models
 from salver.config import engine_config
 
+<<<<<<< HEAD
 MONGO_URL = 'mongodb://localhost:27017'
+=======
+MONGO_URL = "mongodb://localhost:27017"
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 
 
 def bootstrap():
@@ -16,8 +20,12 @@ def bootstrap():
     mongo_db.scans.create_index('external_id', unique=True)
     mongo_db.collects.create_index('external_id', unique=True)
 
+<<<<<<< HEAD
 
 if __name__ == '__main__':
+=======
+if __name__ == "__main__":
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
     bootstrap()
 
 # def add_new_collect(db, collect: models.Collect):
@@ -25,6 +33,15 @@ if __name__ == '__main__':
 #     db.collects.insert_one(collect.dict())
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 # class MongoDB(BaseDB):
 #     def __init__(self, config):
 #         self._client = pymongo.MongoClient(config.endpoint)

@@ -7,12 +7,18 @@ from pydantic import Field, BaseModel, BaseConfig
 
 from .fact import BaseFact, facts_to_dict, facts_from_dict
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 class ScanConfig(BaseModel):
     class Config:
         extra = 'allow'
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 class ScanState(str, Enum):
     UNKNOWN = 'unknown'
     CREATED = 'created'
