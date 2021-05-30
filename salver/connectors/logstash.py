@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
+import uuid
 import socket
 import threading
 from typing import List
-import uuid
+
 from loguru import logger
 
 from salver.common import models
 from salver.config import connectors_config
-from salver.common.kafka import ConsumerCallback, Consumer
+from salver.common.kafka import Consumer, ConsumerCallback
 
 
 class LogstashClient:
@@ -49,80 +50,98 @@ class LogstashClient:
         self.send(json_data)
 
 
-
 class LogstashCallback(ConsumerCallback):
     def __init__(self):
         self.logstash_client = LogstashClient()
 
-class OnCollectResponse(LogstashCallback):
-    def on_message(self, collect_response: models.CollectResponse):
-        logger.info(f'logstash connector: get collect result {collect_response}')
 
+class OnCollectResult(LogstashCallback):
+    def on_message(self, collect_response: models.CollectResult):
         data = {
-            "scan_id": collect_response.scan_id.hex,
-            "collect_id": collect_response.collect_id.hex,
-            "@metadata": {
+            'scan_id': collect_response.scan_id.hex,
+            'collect_id': collect_response.collect_id.hex,
+            'collector_name': collect_response.collector_name,
+            '@metadata': {
                 'document_id': collect_response.fact.__hash__,
                 'index': f"facts_{collect_response.fact.schema()['title'].lower()}",
             },
-            **collect_response.fact.dict()
+            **collect_response.fact.dict(),
         }
-
         self.logstash_client.send_data(data)
+
+
+class OnCollectDone(LogstashCallback):
+    def on_message(self, collect: models.CollectDone):
+        collect_id = collect.collect_id.hex
+        print('!!!COLLECT DONE')
+        data = {
+            'collect_id': collect_id,
+            '@metadata': {
+                'document_id': collect_id,
+                'index': 'collect-done',
+            },
+            **collect.dict(exclude={'collect_id'}),
+        }
+        self.logstash_client.send_data(data)
+
 
 class OnError(LogstashCallback):
     def on_message(self, error: models.Error):
         logger.info(f'logstash connector got error: {error.context}')
         data = error.dict()
-        data["@metadata"] = {
-                'index': "error",
-                'document_id': uuid.uuid4().hex
-        }
+        data['@metadata'] = {'index': 'error', 'document_id': uuid.uuid4().hex}
         self.logstash_client.send_data(data)
+
 
 class OnScan(LogstashCallback):
     def on_message(self, scan: models.Scan):
         logger.info(f'logstash connector: got scan {scan.external_id}')
         for fact in scan.facts:
             data = {
-                "scan_id": scan.external_id.hex,
-                "@metadata": {
+                'scan_id': scan.external_id.hex,
+                '@metadata': {
                     'document_id': fact.__hash__,
                     'index': f"facts_{fact.schema()['title'].lower()}",
                 },
-                **fact.dict()
+                **fact.dict(),
             }
 
             self.logstash_client.send_data(data)
 
+
 def make_consummers():
     common_params = {
-        "num_workers": connectors_config.logstash.workers,
-        "num_threads": connectors_config.logstash.threads,
-        "schema_registry_url": connectors_config.kafka.schema_registry_url,
-        "kafka_config": {
+        'num_workers': connectors_config.logstash.workers,
+        'num_threads': connectors_config.logstash.threads,
+        'schema_registry_url': connectors_config.kafka.schema_registry_url,
+        'kafka_config': {
             'bootstrap.servers': connectors_config.kafka.bootstrap_servers,
-            'group.id': "logstash-connector",
+            'group.id': 'logstash-connector',
         },
     }
     return [
         Consumer(
-                topic='collect-response',
-                value_deserializer=models.CollectResponse,
-                callback=OnCollectResponse,
-                **common_params
-        ),
-
-        Consumer(
-                topic='scan',
-                value_deserializer=models.Scan,
-                callback=OnScan,
-                **common_params
+            topic='collect-result',
+            value_deserializer=models.CollectResult,
+            callback=OnCollectResult,
+            **common_params,
         ),
         Consumer(
-                topic='error',
-                value_deserializer=models.Error,
-                callback=OnError,
-                **common_params
+            topic='scan-create',
+            value_deserializer=models.Scan,
+            callback=OnScan,
+            **common_params,
+        ),
+        Consumer(
+            topic='error',
+            value_deserializer=models.Error,
+            callback=OnError,
+            **common_params,
+        ),
+        Consumer(
+            topic='collect-done',
+            value_deserializer=models.CollectDone,
+            callback=OnCollectDone,
+            **common_params,
         ),
     ]

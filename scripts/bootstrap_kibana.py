@@ -6,8 +6,8 @@ import httpx
 from salver.common.facts import all_facts
 
 kibana_url = 'http://localhost:5601'
-kibana_index_patterns = ['facts_*', 'error*']
-kibana_index_patterns.extend([f'fact_{fact.lower()}*' for fact in all_facts.keys()])
+kibana_index_patterns = ['facts_*', 'error-*', 'collect-done-*']
+kibana_index_patterns.extend([f'fact_{fact.lower()}-*' for fact in all_facts.keys()])
 
 
 def create_kibana_patterns(patterns):
@@ -28,7 +28,7 @@ def flush_kibana_patterns(patterns):
         r = httpx.delete(kibana_endpoint, headers={'kbn-xsrf': 'yes'})
         print(f'Delete kibana index pattern {pattern}: {r.status_code}')
 
-    [ _delete_index(index) for index in patterns ]
+    [_delete_index(index) for index in patterns]
 
 
 def parse_args():

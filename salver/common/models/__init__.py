@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from .fact import BaseFact
 from .ping import PingRequest
+from .scan import Scan, ScanState, ScanConfig
 from .agent import AgentInfo
-from .engine import EngineInfo
-from .collect import Collect, CollectState, CollectResponse, CollectDone
-from .collector import Collector
-from .scan import Scan, ScanConfig, ScanState
 from .error import Error
+from .engine import EngineInfo
+from .collect import Collect, CollectDone, CollectState, CollectResponse
+from .collector import Collector
 
 __all__ = [
     'BaseFact',
@@ -20,6 +20,6 @@ __all__ = [
     'ScanConfig',
     'ScanState',
     'Error',
-    'CollectResponse',
-    'CollectDone'
+    'CollectResult',
+    'CollectDone',
 ]

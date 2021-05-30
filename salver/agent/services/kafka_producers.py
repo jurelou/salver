@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from salver.common import models
 from salver.config import agent_config
 from salver.common.kafka import Producer
-from salver.common import models
+
 
 def make_error():
     return Producer(
@@ -24,6 +25,7 @@ def make_agent_connect():
         },
     )
 
+
 def make_collect_response():
     return Producer(
         topic='collect-response',
@@ -34,6 +36,7 @@ def make_collect_response():
         },
     )
 
+
 def make_collect_done():
     return Producer(
         topic='collect-done',
@@ -43,6 +46,7 @@ def make_collect_done():
             'bootstrap.servers': agent_config.kafka.bootstrap_servers,
         },
     )
+
 
 def make_agent_disconnect():
     return Producer(

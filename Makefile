@@ -11,7 +11,7 @@ docker:
 # 	uvicorn salver.api.main:app --reload
 
 engine:
-	docker-compose up
+	docker-compose up --force-recreate
 
 agent:
 	ENV_FOR_DYNACONF=development python -m salver.agent.app
@@ -25,7 +25,7 @@ install:
 format:
 	tox -e black
 	tox -e isort
-	pre-commit run --all-files
+	pre-commit run --all-files -v
 
 bootstrap:
 	./scripts/wait_services_up.sh
@@ -38,3 +38,9 @@ bootstrap:
 
 sloc:
 	pygount --format=summary ./salver
+
+clean:
+	docker-compose -f ./deploy/docker-compose-engine.yml -f ./docker-compose.yml down -v
+	docker container prune -f
+	docker network prune -f
+	docker volume prune -f

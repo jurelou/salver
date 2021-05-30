@@ -17,6 +17,7 @@ class CollectState(str, Enum):
     FINISHED = 'finished'
     ERRORED = 'errored'
 
+
 class CollectDone(BaseModel):
     collect_id: uuid.UUID
     duration: float
@@ -41,7 +42,7 @@ class CollectResponse(BaseModel):
     fact: BaseFact
     collect_id: uuid.UUID
     scan_id: uuid.UUID
-    collector_name: str = "a faire"
+    collector_name: str = 'a faire'
 
     @staticmethod
     def to_dict(obj, *args):
@@ -55,6 +56,62 @@ class CollectResponse(BaseModel):
     def from_dict(obj, _):
         fact = obj.pop('fact', None)
         return CollectResponse(fact=facts_from_dict([fact])[0], **obj)
+
+
+class CollectDone(BaseModel):
+    collect_id: uuid.UUID
+    duration: float
+    facts_count: int
+    state: CollectState = CollectState.FINISHED
+    collector_name: str
+
+    class Config:
+        use_enum_values = True
+
+    @staticmethod
+    def to_dict(obj, *args):
+        d = obj.dict(exclude={'collect_id'})
+        d['collect_id'] = obj.collect_id.hex
+        return d
+
+    @staticmethod
+    def from_dict(obj, _):
+        return CollectDone(**obj)
+
+    @classmethod
+    def elastic_mapping(cls):
+        return {
+            'mappings': {
+                'properties': {
+                    'collect_id': {'type': 'keyword'},
+                    'collector_name': {'type': 'keyword'},
+                    'duration': {'type': 'float'},
+                    'facts_count': {'type': 'integer'},
+                    'state': {'type': 'keyword'},
+                },
+            },
+        }
+
+
+class CollectResult(BaseModel):
+    fact: BaseFact
+    collect_id: uuid.UUID
+    scan_id: uuid.UUID
+    collector_name: str
+
+    @staticmethod
+    def to_dict(obj, *args):
+        d = obj.dict(exclude={'fact', 'collect_id', 'scan_id'})
+        d['fact'] = BaseFact.to_dict(obj.fact)
+        d['collect_id'] = obj.collect_id.hex
+        d['scan_id'] = obj.scan_id.hex
+        return d
+
+    @staticmethod
+    def from_dict(obj, _):
+        fact = obj.pop('fact', None)
+        return CollectResult(fact=facts_from_dict([fact])[0], **obj)
+
 
 class Collect(BaseModel):
     state: CollectState = CollectState.UNKNOWN

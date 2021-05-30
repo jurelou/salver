@@ -44,7 +44,7 @@ class Producer:
         if err is not None:
             logger.error(f'Delivery failed for {msg.key()}: {err}')
             return
-        logger.debug(f'Produced {str(msg.key())} to {msg.topic()}')
+        # logger.debug(f'Produced {str(msg.key())} to {msg.topic()}')
         # msg.key(),
         # msg.topic(),
         # msg.partition(),
@@ -53,7 +53,7 @@ class Producer:
     def produce(self, msg, flush=False):
         self.producer.poll(0.0)
         msg_id = uuid4().hex
-        logger.debug(f'Producing {msg_id} to {self.topic}: {msg}')
+        # logger.debug(f'Producing {msg_id} to {self.topic}: {msg}')
         self.producer.produce(
             topic=self.topic,
             key=msg_id,
@@ -64,5 +64,4 @@ class Producer:
             self.flush()
 
     def flush(self):
-        logger.debug(f'Flush producer for {self.topic}')
         self.producer.flush()

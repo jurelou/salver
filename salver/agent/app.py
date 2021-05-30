@@ -22,7 +22,11 @@ class SalverAgent:
     def __init__(self):
         self.name = f'agent-{socket.getfqdn()}-{uuid4().hex[:4]}'
         all_collectors = [
-            models.Collector(name=c_name, enabled=c_config['enabled'], allowed_input=c_config['allowed_input'])
+            models.Collector(
+                name=c_name,
+                enabled=c_config['enabled'],
+                allowed_input=c_config['allowed_input'],
+            )
             for c_name, c_config in ALL_COLLECTORS.items()
         ]
         enabled_collectors = {
@@ -80,7 +84,7 @@ class SalverAgent:
                 for consumer in self.consumers:
                     consumer.start_workers()
         except KeyboardInterrupt:
-            logger.warning('quitting')
+            logger.warning('Quitting, keyboard interrupt')
             agent_disconnect.produce(self.agent_info, flush=True)
 
 

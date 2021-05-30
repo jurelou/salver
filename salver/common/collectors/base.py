@@ -44,7 +44,7 @@ class BaseCollector:
 
     @property
     def callback_types(self):
-        return [ c.schema()["title"] for c in self.callbacks().keys() ]
+        return [c.schema()['title'] for c in self.callbacks().keys()]
 
     def configure(self):
         self.config = CollectorBaseConfig(**self.config)
@@ -65,12 +65,14 @@ class BaseCollector:
                 if isinstance(out, models.BaseFact):
                     yield out
                 else:
-                    error = f'Found unknown output from collector {self.config.name}: {out}'
+                    error = (
+                        f'Found unknown output from collector {self.config.name}: {out}'
+                    )
                     yield models.Error(
-                        context=f"agent-collect.unknown_output",
+                        context=f'agent-collect.unknown_output',
                         collect_id=collect_id,
                         error=error,
-                        collector_name=self.config.name
+                        collector_name=self.config.name,
                     )
                     logger.warning(error)
 
@@ -79,10 +81,10 @@ class BaseCollector:
                 f'Error while executing callback from {self.config.name}: {type(err).__name__} {err}',
             )
             yield models.Error(
-                context=f"agent-collect.error",
+                context=f'agent-collect.error',
                 error=str(err),
                 collect_id=collect_id,
-                collector_name=self.config.name
+                collector_name=self.config.name,
             )
 
     def _prepare_callbacks(
@@ -98,11 +100,6 @@ class BaseCollector:
 
     def collect(self, collect_id, facts: List[models.BaseFact]):
         callbacks = self._prepare_callbacks(facts)
-
-        logger.debug(
-            f'Execute collector {self.config.name} with \
-            {len(facts)} facts and {len(callbacks)} callbacks',
-        )
 
         for cb in callbacks:
             yield from self._sanitize_output(collect_id, cb)

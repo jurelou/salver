@@ -18,13 +18,9 @@ from salver.common.kafka.serializer import make_deserializer
 def _process_msg(q, consumer, callback, topic):
     msg = q.get(timeout=60)
     value = msg.value()
-    logger.debug(f'From {topic} got {value}')
-
     callback(value)
-
     q.task_done()
     consumer.commit(msg)
-    logger.debug(f'Task done {topic}')
 
 
 class ConsumerCallback(ABC):

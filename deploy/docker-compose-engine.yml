@@ -313,6 +313,7 @@ services:
 
 ################################
 # KAFKA TOPICS UI
+
 ################################
     kafka-topics-ui:
         image: landoop/kafka-topics-ui:0.9.4

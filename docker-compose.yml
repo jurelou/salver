@@ -2,8 +2,8 @@
 version: '3.5'
 
 networks:
-  deploy_engine:
-    external: true
+    deploy_engine:
+        external: true
 
 services:
 #######################
@@ -16,7 +16,7 @@ services:
         environment:
             ENV_FOR_DYNACONF: development
         networks:
-          - deploy_engine
+            - deploy_engine
         command: -m salver.connectors.app
 
 ########################
@@ -29,5 +29,5 @@ services:
         environment:
             ENV_FOR_DYNACONF: development
         networks:
-          - deploy_engine
+            - deploy_engine
         command: -m salver.engine.app
