@@ -1,5 +1,5 @@
 ---
-version: '2'
+version: '3.5'
 
 volumes:
     mongo-rs1:
@@ -9,8 +9,9 @@ volumes:
 
 networks:
     elastic:
-    admin:
-
+    kafka:
+    mongo:
+    engine:
 
 services:
   # neo4j:
@@ -60,6 +61,7 @@ services:
                 hard: -1
         networks:
             - elastic
+            - engine
         volumes:
             - elastic:/usr/share/elasticsearch/data
             - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
@@ -69,7 +71,7 @@ services:
 ########################
     logstash:
         image: logstash:7.12.1
-        restart: always
+        restart: unless-stopped
         ports:
             - 127.0.0.1:5042:5042
         volumes:
@@ -91,7 +93,10 @@ services:
             - mongo-rs1:/data/db
         ports:
             - 27017:27017
-        restart: always
+        networks:
+            - engine
+            - mongo
+        restart: unless-stopped
 
     # mongo2:
     #     image: mongo:4.4-bionic
@@ -118,13 +123,15 @@ services:
 ########################
     mongo-express:
         image: mongo-express
-        restart: always
+        restart: unless-stopped
         ports:
             - 8017:8081
         depends_on:
             - mongo1
             # - mongo2
             # - mongo3
+        networks:
+            - mongo
         environment:
             ME_CONFIG_MONGODB_SERVER: mongo1
             # ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
@@ -145,6 +152,8 @@ services:
         container_name: zookeeper
         ports:
             - 2181:2181
+        networks:
+            - kafka
         environment:
             ZOOKEEPER_CLIENT_PORT: 2181
             ZOOKEEPER_TICK_TIME: 2000
@@ -161,6 +170,9 @@ services:
         ports:
             - 9092:9092
             - 19092:19092
+        networks:
+            - engine
+            - kafka
         environment:
             KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:19092,OUTSIDE://localhost:9092
 
@@ -194,6 +206,9 @@ services:
             - broker
         ports:
             - 8081:8081
+        networks:
+            - engine
+            - kafka
         environment:
             SCHEMA_REGISTRY_HOST_NAME: schema-registry
             SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
@@ -286,6 +301,8 @@ services:
             - 8082:8082
         hostname: rest-proxy
         container_name: rest-proxy
+        networks:
+            - kafka
         environment:
             KAFKA_REST_HOST_NAME: rest-proxy
             KAFKA_REST_BOOTSTRAP_SERVERS: broker:19092
@@ -299,6 +316,8 @@ services:
     kafka-topics-ui:
         image: landoop/kafka-topics-ui:0.9.4
         hostname: kafka-topics-ui
+        networks:
+            - kafka
         ports:
             - 8000:8000
         environment:

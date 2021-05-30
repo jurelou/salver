@@ -11,10 +11,7 @@ docker:
 # 	uvicorn salver.api.main:app --reload
 
 engine:
-	ENV_FOR_DYNACONF=development python -m salver.engine.app
-
-connectors:
-	ENV_FOR_DYNACONF=development python -m salver.connectors.app
+	docker-compose up --build
 
 agent:
 	ENV_FOR_DYNACONF=development python -m salver.agent.app

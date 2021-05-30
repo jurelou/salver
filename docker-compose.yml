@@ -1,195 +1,33 @@
 ---
-version: '3.3'
-
-services:
-
-########################
-# logstash (agent side)
-########################
-
-    logstash:
-        image: logstash:7.12.0
-        restart: always
-        ports:
-            - 127.0.0.1:5042:5042
-        volumes:
-            - ./deploy/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-            - ./deploy/logstash/pipeline:/usr/share/logstash/pipeline:ro
-        environment:
-            LS_JAVA_OPTS: -Xmx256m -Xms256m
-        networks:
-            - elastic
-########################
-##  SUPERADMIN
-########################
-    superadmin:
-        image: nginx
-        restart: always
-        ports:
-            - 127.0.0.1:80:80
-        volumes:
-            - ./deploy/superadmin:/usr/share/nginx/html
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: rootroot
-
-########################
-##  MONGODB
-########################
-    mongo:
-        image: mongo
-        restart: always
-        ports:
-            - 127.0.0.1:27017:27017
-        networks:
-            - admin
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: rootroot
-
-########################
-##  MONGOEXPRESS
-########################
-    mongo-express:
-        image: mongo-express
-        restart: always
-        ports:
-            - 8081:8081
-        networks:
-            - admin
-    # environment:
-    #   ME_CONFIG_MONGODB_ADMINUSERNAME: root
-    #   ME_CONFIG_MONGODB_ADMINPASSWORD: rootroot
-
-########################
-##  NEO4J
-########################
-    neo4j:
-        image: neo4j:4.2.1
-        ports:
-            - 7474:7474
-            - 7687:7687
-        volumes:
-            - neo_data:/data
-            - neo_plugins:/plugins
-        environment:
-            NEO4J_AUTH: neo4j/root
-            NEO4J_apoc_export_file_enabled: 'true'
-            NEO4J_apoc_import_file_enabled: 'true'
-            NEO4J_apoc_import_file_use__neo4j__config: 'true'
-            NEO4JLABS_PLUGINS: '["apoc"]'
-        networks:
-            - admin
-
-########################
-##  KIBANA
-########################
-    kibana:
-        image: docker.elastic.co/kibana/kibana:7.10.1
-        ports:
-            - 5601:5601
-        volumes:
-            - ./deploy/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
-        environment:
-            ELASTICSEARCH_URL: http://elasticsearch:9200
-            ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-        networks:
-            - elastic
-
-########################
-##  ELASTICSEARCH
-########################
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
-        ports:
-            - 127.0.0.1:9200:9200
-            - 127.0.0.1:9300:9300
-        environment:
-            discovery.type: single-node
-      #bootstrap.memory_lock: "true"
-      #ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-            ELASTIC_PASSWORD: superpasswd
-        networks:
-            - elastic
-            - admin
-        volumes:
-            - elastic:/usr/share/elasticsearch/data
-      #- ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-
-
-########################
-##  FLOWER
-########################
-    flower:
-        image: mher/flower:latest
-        ports:
-            - 127.0.0.1:5555:5555
-        depends_on:
-            - redis
-        networks:
-            - admin
-        environment:
-            - CELERY_BROKER_URL=redis://redis:6379/0
-
-########################
-##  REDIS
-########################
-    redis:
-        image: redis:latest
-        ports:
-            - 127.0.0.1:6379:6379
-        hostname: redis
-        networks:
-            - admin
-
-########################
-##  REDISINSIGHT
-########################
-    redisinsight:
-        image: redislabs/redisinsight:latest
-        ports:
-            - 127.0.0.1:8001:8001
-        networks:
-            - admin
-
-
-#######################
-# FRONTEND
-#######################
-    frontend:
-        build: ./web/frontend
-        volumes:
-            - ./web/frontend/src:/opt/frontend/src
-        ports:
-            - 8181:8080
-        networks:
-            - admin
-
-#######################
-# BACKEND
-#######################
-    backend:
-        build: .
-        volumes:
-            - ./salver:/opt/api/salver
-        ports:
-            - 8000:8000
-        networks:
-            - admin
-        depends_on:
-            - mongo
-            - neo4j
-            - elasticsearch
-            - redis
+version: '3.5'
 
 networks:
-    elastic:
-    admin:
+  deploy_engine:
+    external: true
 
-volumes:
-    elastic:
-        driver: local
-    neo_data:
-        driver: local
-    neo_plugins:
-        driver: local
+services:
+#######################
+#  CONNECTORS
+#######################
+    connectors:
+        build: .
+        volumes:
+            - ./salver:/opt/salver/salver:ro
+        environment:
+            ENV_FOR_DYNACONF: development
+        networks:
+          - deploy_engine
+        command: -m salver.connectors.app
+
+########################
+##  ENGINE
+########################
+    # engine:
+    #     build: .
+    #     volumes:
+    #         - ./salver:/opt/salver/salver:ro
+    #     environment:
+    #         ENV_FOR_DYNACONF: development
+    #     networks:
+    #       - deploy_engine
+    #     command: -m salver.engine.app

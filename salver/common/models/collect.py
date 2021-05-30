@@ -40,6 +40,7 @@ class CollectDone(BaseModel):
 class CollectResponse(BaseModel):
     fact: BaseFact
     collect_id: uuid.UUID
+    collector_name: str
     scan_id: uuid.UUID
 
     @staticmethod

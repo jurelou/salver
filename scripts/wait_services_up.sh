@@ -7,8 +7,8 @@ function test_systems_available {
       printf '.'
       sleep 2
       let COUNTER+=1
-      if [[ $COUNTER -gt 30 ]]; then
-        echo -e '\nWARNING: Could not reach configured kafka system on http://localhost:$1 \nNote: This script requires curl.\n'
+      if [[ $COUNTER -gt 50 ]]; then
+        echo -e '\nWARNING: Could not reach system on http://localhost:$1 \n'
         exit 1
       fi
   done
