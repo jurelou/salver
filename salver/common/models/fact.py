@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
-from typing import List
 from uuid import UUID
+from typing import List
 
 from pydantic import BaseModel, BaseConfig, root_validator
 
@@ -43,8 +43,10 @@ class FactInDB(BaseFact):
     scan_id: UUID
     fact_type: str
 
+
 def facts_to_dict(facts: List[BaseFact]):
     return [BaseFact.to_dict(f) for f in facts]
+
 
 def facts_from_dict(obj):
     from salver.common.facts import all_facts  # pragma: no cover

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pydantic import BaseModel
 
+
 class Error(BaseModel):
     context: str
     error: str
@@ -15,3 +16,14 @@ class Error(BaseModel):
     @staticmethod
     def from_dict(obj, _):
         return Error(**obj)
+
+    @classmethod
+    def elastic_mapping(cls):
+        return {
+            'mappings': {
+                'properties': {
+                    'context': {'type': 'keyword'},
+                    'error': {'type': 'text'},
+                },
+            },
+        }

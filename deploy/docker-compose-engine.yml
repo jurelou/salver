@@ -276,6 +276,8 @@ services:
     #         - schema-registry
     #     ports:
     #         - 9021:9021
+    #     networks:
+    #         - kafka
     #     environment:
     #         CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
     #         CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -313,6 +315,7 @@ services:
 
 ################################
 # KAFKA TOPICS UI
+
 ################################
     kafka-topics-ui:
         image: landoop/kafka-topics-ui:0.9.4

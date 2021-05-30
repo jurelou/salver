@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 import uuid
 from typing import List
-from salver.common.models import BaseFact, ScanConfig, Collect
+
+from salver.common.models import Collect, BaseFact, ScanConfig
 from salver.engine.exceptions import CollectorNotFound
+
 
 class BaseScan:
 
-    name: str = ""
+    name: str = ''
     config: ScanConfig
 
     def __init__(self, agents_collectors_producers):
         if not self.name:
-            print("NO NAME")
-            raise ValueError(f'Scan {type(self).__name__} does not have a `name` property')
+            err = f'Scan {type(self).__name__} does not have a `name` property'
+            logger.error(err)
+            raise ValueError(err)
 
         self.agents_collectors_producers = agents_collectors_producers
 
@@ -29,7 +32,9 @@ class BaseScan:
 
     def scan(self, facts):
         """Starts the scan"""
-        raise NotImplementedError(f"Scan {self.name} does not implements a `scan` method.")
+        raise NotImplementedError(
+            f'Scan {self.name} does not implements a `scan` method.',
+        )
 
     def launch_collector(
         self,
@@ -43,6 +48,6 @@ class BaseScan:
             Collect(
                 scan_id=self.external_id,
                 collector_name=collector_name,
-                facts=facts
-            )
+                facts=facts,
+            ),
         )

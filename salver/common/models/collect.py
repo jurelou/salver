@@ -17,11 +17,13 @@ class CollectState(str, Enum):
     FINISHED = 'finished'
     ERRORED = 'errored'
 
+
 class CollectDone(BaseModel):
     collect_id: uuid.UUID
     duration: float
     facts_count: int
     state: CollectState = CollectState.FINISHED
+    collector_name: str
 
     class Config:
         use_enum_values = True
@@ -36,12 +38,26 @@ class CollectDone(BaseModel):
     def from_dict(obj, _):
         return CollectDone(**obj)
 
+    @classmethod
+    def elastic_mapping(cls):
+        return {
+            'mappings': {
+                'properties': {
+                    'collect_id': {'type': 'keyword'},
+                    'collector_name': {'type': 'keyword'},
+                    'duration': {'type': 'float'},
+                    'facts_count': {'type': 'integer'},
+                    'state': {'type': 'keyword'},
+                },
+            },
+        }
 
-class CollectResponse(BaseModel):
+
+class CollectResult(BaseModel):
     fact: BaseFact
     collect_id: uuid.UUID
     scan_id: uuid.UUID
-    collector_name: str = "a faire"
+    collector_name: str
 
     @staticmethod
     def to_dict(obj, *args):
@@ -54,7 +70,8 @@ class CollectResponse(BaseModel):
     @staticmethod
     def from_dict(obj, _):
         fact = obj.pop('fact', None)
-        return CollectResponse(fact=facts_from_dict([fact])[0], **obj)
+        return CollectResult(fact=facts_from_dict([fact])[0], **obj)
+
 
 class Collect(BaseModel):
     state: CollectState = CollectState.UNKNOWN

@@ -17,7 +17,5 @@ class Dirsearch(DockerCollector):
         data = self.run_container(
             command=['-u', domain.fqdn, '-F', '--timeout=5', '-q', '-t', '4'],
         )
-        print('!!!!', data)
-
         for item in self.findall_regex(data, r'2\d\d - .* - ([^\s]+)'):
             yield Uri(location=item)

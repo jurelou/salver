@@ -1,2 +1,3 @@
-cluster.name: "salver-cluster"
+---
+cluster.name: salver-cluster
 network.host: 0.0.0.0

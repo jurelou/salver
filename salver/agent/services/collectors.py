@@ -24,10 +24,10 @@ def build():
             collectors[instance.config.name] = {
                 'instance': instance,
                 'enabled': instance.config.name in enabled_collectors,
-                'allowed_input': instance.callback_types
+                'allowed_input': instance.callback_types,
             }
         except InvalidCollectorDefinition as err:
-            print(f'Could not load {collector}: {err}')
+            logger.error(f'Could not load {collector}: {err}')
 
     for enabled_collector in enabled_collectors:
         if enabled_collector not in collectors:
@@ -35,5 +35,5 @@ def build():
 
     for collector_name, collector_config in collectors.items():
         enabled = ': enabled' if collector_config['enabled'] else ''
-        logger.info(f'Loaded collector {collector_name}{enabled}')
+        logger.info(f'Loaded collector {collector_name} -> {enabled}')
     return collectors

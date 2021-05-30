@@ -7,9 +7,11 @@ from pydantic import Field, BaseModel, BaseConfig
 
 from .fact import BaseFact, facts_to_dict, facts_from_dict
 
+
 class ScanConfig(BaseModel):
     class Config:
         extra = 'allow'
+
 
 class ScanState(str, Enum):
     UNKNOWN = 'unknown'
