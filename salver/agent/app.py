@@ -22,15 +22,11 @@ class SalverAgent:
     def __init__(self):
         self.name = f'agent-{socket.getfqdn()}-{uuid4().hex[:4]}'
         all_collectors = [
-<<<<<<< HEAD
             models.Collector(
                 name=c_name,
                 enabled=c_config['enabled'],
                 allowed_input=c_config['allowed_input'],
             )
-=======
-            models.Collector(name=c_name, enabled=c_config['enabled'], allowed_input=c_config['allowed_input'])
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
             for c_name, c_config in ALL_COLLECTORS.items()
         ]
         enabled_collectors = {

@@ -34,7 +34,6 @@ connectors: neo4J/eladstic make a caching mechanism usique a Q and sched() to fl
 - lister lesscan
 - creer un scan (comme dans toto.py)
 
-<<<<<<< HEAD
 -
 
 
@@ -43,6 +42,3 @@ connectors: neo4J/eladstic make a caching mechanism usique a Q and sched() to fl
 - Mongo GUI: http://locahost:8017
 - Kafka GUI: http://localhost:8000/
 - Kibana: http://localhost:5601
-=======
-- 
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96

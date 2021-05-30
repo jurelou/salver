@@ -11,11 +11,7 @@ docker:
 # 	uvicorn salver.api.main:app --reload
 
 engine:
-<<<<<<< HEAD
 	docker-compose up --force-recreate
-=======
-	docker-compose up
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 
 agent:
 	ENV_FOR_DYNACONF=development python -m salver.agent.app

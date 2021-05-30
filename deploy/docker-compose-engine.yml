@@ -276,11 +276,6 @@ services:
     #         - schema-registry
     #     ports:
     #         - 9021:9021
-<<<<<<< HEAD:deploy/docker-compose-engine.yml
-    #     networks:
-    #         - kafka
-=======
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96:deploy/docker-compose-engine.yml
     #     environment:
     #         CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:19092
     #         CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181

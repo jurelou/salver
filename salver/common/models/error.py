@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from pydantic import BaseModel
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 class Error(BaseModel):
     context: str
     error: str
@@ -18,7 +15,6 @@ class Error(BaseModel):
 
     @staticmethod
     def from_dict(obj, _):
-<<<<<<< HEAD
         return Error(**obj)
 
     @classmethod
@@ -31,6 +27,3 @@ class Error(BaseModel):
                 },
             },
         }
-=======
-        return Error(**obj)
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96

@@ -16,7 +16,3 @@ function test_systems_available {
 
 test_systems_available 8082
 test_systems_available 5601
-<<<<<<< HEAD
-=======
-
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96

@@ -25,9 +25,5 @@ class DummyDocker(DockerCollector):
         date = self.run_container(command='date')
         yield Person(firstname='dummy docker', lastname=date)
         yield Email(address='dummy@email')
-<<<<<<< HEAD
         yield 'uno'
-=======
-        yield "uno"
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
         yield 222

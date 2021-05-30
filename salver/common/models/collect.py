@@ -17,6 +17,7 @@ class CollectState(str, Enum):
     FINISHED = 'finished'
     ERRORED = 'errored'
 
+
 class CollectDone(BaseModel):
     collect_id: uuid.UUID
     duration: float
@@ -41,7 +42,7 @@ class CollectResponse(BaseModel):
     fact: BaseFact
     collect_id: uuid.UUID
     scan_id: uuid.UUID
-    collector_name: str = "a faire"
+    collector_name: str = 'a faire'
 
     @staticmethod
     def to_dict(obj, *args):
@@ -55,6 +56,7 @@ class CollectResponse(BaseModel):
     def from_dict(obj, _):
         fact = obj.pop('fact', None)
         return CollectResponse(fact=facts_from_dict([fact])[0], **obj)
+
 
 class CollectDone(BaseModel):
     collect_id: uuid.UUID

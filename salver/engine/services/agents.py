@@ -8,6 +8,7 @@ from salver.engine.services import kafka_producers
 
 AVAILABLE_AGENTS = Manager().dict()
 
+
 def get_collectors_mapping():
     mapping = {}
     for agent in AVAILABLE_AGENTS.values():
@@ -18,6 +19,7 @@ def get_collectors_mapping():
                 else:
                     mapping[allowed_input] = [collector.name]
     return mapping
+
 
 def get_collectors_mapping():
     mapping = {}

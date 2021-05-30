@@ -44,11 +44,7 @@ class BaseCollector:
 
     @property
     def callback_types(self):
-<<<<<<< HEAD
         return [c.schema()['title'] for c in self.callbacks().keys()]
-=======
-        return [ c.schema()["title"] for c in self.callbacks().keys() ]
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
 
     def configure(self):
         self.config = CollectorBaseConfig(**self.config)
@@ -69,7 +65,6 @@ class BaseCollector:
                 if isinstance(out, models.BaseFact):
                     yield out
                 else:
-<<<<<<< HEAD
                     error = (
                         f'Found unknown output from collector {self.config.name}: {out}'
                     )
@@ -78,14 +73,6 @@ class BaseCollector:
                         collect_id=collect_id,
                         error=error,
                         collector_name=self.config.name,
-=======
-                    error = f'Found unknown output from collector {self.config.name}: {out}'
-                    yield models.Error(
-                        context=f"agent-collect.unknown_output",
-                        collect_id=collect_id,
-                        error=error,
-                        collector_name=self.config.name
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
                     )
                     logger.warning(error)
 
@@ -94,17 +81,10 @@ class BaseCollector:
                 f'Error while executing callback from {self.config.name}: {type(err).__name__} {err}',
             )
             yield models.Error(
-<<<<<<< HEAD
                 context=f'agent-collect.error',
                 error=str(err),
                 collect_id=collect_id,
                 collector_name=self.config.name,
-=======
-                context=f"agent-collect.error",
-                error=str(err),
-                collect_id=collect_id,
-                collector_name=self.config.name
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
             )
 
     def _prepare_callbacks(
@@ -121,14 +101,6 @@ class BaseCollector:
     def collect(self, collect_id, facts: List[models.BaseFact]):
         callbacks = self._prepare_callbacks(facts)
 
-<<<<<<< HEAD
-=======
-        logger.debug(
-            f'Execute collector {self.config.name} with \
-            {len(facts)} facts and {len(callbacks)} callbacks',
-        )
-
->>>>>>> 500275e8119b1fe94ff9b5b505d52a5ad88a8e96
         for cb in callbacks:
             yield from self._sanitize_output(collect_id, cb)
 
