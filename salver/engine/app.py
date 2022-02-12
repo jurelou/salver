@@ -1,67 +1,36 @@
 # -*- coding: utf-8 -*-
-import time
+from celery.signals import worker_init, worker_ready
+from loguru import logger
+import celery
 
-from salver.facts import Email, Person
-from salver.common import models
-from salver.config import engine_config
-from salver.common.kafka import Consumer
-from salver.engine.services import agents, kafka_producers, scan
+from salver.engine import settings
+from salver.common.celery import configure_celery
 
+celery_app = configure_celery(config=settings.celery)
+celery_app.conf.update(
+    {"imports": "salver.engine.tasks",}
+)
 
-class SalverEngine:
-    def __init__(self):
-        common_params = {
-            'num_workers': engine_config.kafka.workers_per_topic,
-            'num_threads': engine_config.kafka.threads_per_worker,
-            'schema_registry_url': engine_config.kafka.schema_registry_url,
-            'kafka_config': {
-                'bootstrap.servers': engine_config.kafka.bootstrap_servers,
-                'group.id': 'engine',
-            }
-        }
-        self.consumers = [
-            Consumer(
-                topic='agent-connect',
-                value_deserializer=models.AgentInfo,
-                callback=agents.on_agent_connect,
-                **common_params,
-            ),
-            Consumer(
-                topic='agent-disconnect',
-                value_deserializer=models.AgentInfo,
-                callback=agents.on_agent_disconnect,
-                **common_params,
-            ),
+@worker_init.connect
+def init(sender=None, conf=None, **kwargs):
+    logger.info("init")
 
-            Consumer(
-                topic='scan',
-                value_deserializer=models.Scan,
-                callback=scan.OnScan,
-                **common_params,
-            ),
-        ]
+@worker_ready.connect
+def ready(sender=None, conf=None, **kwargs):
+    logger.info("ready")
 
+    from salver.engine.controllers import agent_tasks
 
-    def start(self):
-        on_start_called = False
+    from salver.engine.scans import Scan
+    from salver.engine.scans.single_collector import SingleCollectorStrategy
 
-        while True:
-            for consumer in self.consumers:
-                consumer.start_workers()
+    from salver.common.facts.personnal.email import Email
 
-            time.sleep(2)
-            if not on_start_called:
-                self.on_start()
-                on_start_called = True
+    email = Email(address="lol@lol.fr")
 
-    def on_start(self):
-        print('START ENGINE')
-        engine_connect = kafka_producers.make_engine_connect()
-        engine_connect.produce(
-            models.EngineInfo(name='thats my engine name'),
-            flush=True,
-        )
+    scan = Scan(strategy=SingleCollectorStrategy(collector_name="dummy-collector"))
+    scan.run(facts=[email])
 
-if __name__ == '__main__':
-    engine = SalverEngine()
-    engine.start()
+    a = celery.current_app.control.inspect().active_queues()
+    print("!!!", a)
+

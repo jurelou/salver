@@ -1,34 +1,13 @@
 ---
 default:
-
-development:
-    kafka:
+    opensearch:
         bootstrap_servers: broker:19092
-        schema_registry_url: http://schema-registry:8081
 
-        workers_per_topic: 2
-        threads_per_worker: 4
-    mongo:
-        db_name: salver
-        url: mongodb://mongo1:27017
-    connectors:
-        mongo:
-            enabled: true
-            workers: 2
-            threads: 1
+    celery:
+      broker_url: redis://:COVOfUJsC8Bnly8aRX4W@redis/0
+      result_backend: redis://:COVOfUJsC8Bnly8aRX4W@redis/0
 
-testing:
-    kafka:
-        bootstrap_servers: localhost:9092
-        schema_registry_url: http://127.0.0.1:8081
-
-        workers_per_topic: 1
-        threads_per_worker: 2
-    mongo:
-        db_name: salver-testing
-        url: mongodb://localhost:27017
-    connectors:
-        mongo:
-            enabled: true
-            workers: 1
-            threads: 2
+local:
+    celery:
+      broker_url: redis://:COVOfUJsC8Bnly8aRX4W@localhost:6379/0
+      result_backend: redis://:COVOfUJsC8Bnly8aRX4W@localhost:6379/0

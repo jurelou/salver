@@ -1,46 +1,17 @@
 ---
 default:
-    kafka:
+    opensearch:
+        bootstrap_servers: broker:19092
+
+    celery:
+      broker_url: redis://:COVOfUJsC8Bnly8aRX4W@redis/0
+      result_backend: redis://:COVOfUJsC8Bnly8aRX4W@redis/0
+
     enabled_collectors:
+      - dummy-collector
 
-development:
-    enabled_collectors:
-        - dummy-docker-collector
-        - dummy-collector
+local:
+    celery:
+      broker_url: redis://:COVOfUJsC8Bnly8aRX4W@localhost:6379/0
+      result_backend: redis://:COVOfUJsC8Bnly8aRX4W@localhost:6379/0
 
-        - recon-ng
-        - certificate-transparency
-        - sherlock
-        - infoga
-        - harvester
-        - subfinder
-        - phone-infoga
-        - twint
-        - zen
-        - blackwidow
-            #######################
-            # broken collectors
-            #######################
-            # - dirsearch
-            # - littlebrother
-            # - kupa3
-            # - nmap
-
-    kafka:
-        bootstrap_servers: localhost:9092
-        schema_registry_url: http://127.0.0.1:8081
-
-        workers_per_topic: 2
-        threads_per_worker: 4
-
-
-testing:
-    enabled_collectors:
-        - dummy-docker-collector
-        - dummy-collector
-
-    kafka:
-        bootstrap_servers: localhost:9092
-        schema_registry_url: http://127.0.0.1:8081
-        workers_per_topic: 1
-        threads_per_worker: 2

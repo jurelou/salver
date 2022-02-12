@@ -1,40 +1,27 @@
-re: redocker bootstrap
 
 redocker:
-	docker-compose -f ./deploy/docker-compose-engine.yml down -v
-	docker-compose -f ./deploy/docker-compose-engine.yml up --build --force-recreate -d
+	docker-compose -f ./deploy/docker-compose.yml down -v
+	docker-compose -f ./deploy/docker-compose.yml up --build --force-recreate -d
 
 docker:
-	docker-compose -f ./deploy/docker-compose-engine.yml up -d
+	docker-compose -f ./deploy/docker-compose.yml up -d
 
-# api:
-# 	uvicorn salver.api.main:app --reload
+localengine:
+	ENV_FOR_DYNACONF=local celery  -A salver.engine.celery_app worker
 
-engine:
-	docker-compose up
-
-agent:
-	ENV_FOR_DYNACONF=development python -m salver.agent.app
+localagent:
+	ENV_FOR_DYNACONF=local celery  -A salver.agent.celery_app worker --hostname agent@`openssl rand -hex 4`
 
 install:
 	rm -rf env
 	python3.8 -m venv env
 	env/bin/pip install pip setuptools wheel -U
-	env/bin/pip install -e ".[dev]"
+	env/bin/python setup.py install
 
 format:
 	tox -e black
 	tox -e isort
 	pre-commit run --all-files
-
-bootstrap:
-	./scripts/wait_services_up.sh
-	python -m scripts.bootstrap_kafka
-	python -m scripts.bootstrap_mongodb
-	python -m scripts.bootstrap_kibana
-	python -m scripts.bootstrap_elasticsearch
-
-	# python scripts/bootstrap_mongodb.py
 
 sloc:
 	pygount --format=summary ./salver

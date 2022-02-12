@@ -1,0 +1,87 @@
+---
+version: '3'
+
+volumes:
+  opensearch-data1:
+  opensearch-data2:
+
+networks:
+  opensearch-net:
+
+services:
+  redis:
+    image: redis:7.0-rc1-alpine3.15
+    container_name: redis
+    command: redis-server --requirepass COVOfUJsC8Bnly8aRX4W
+    ports:
+      - 6379:6379
+
+  redis-gui:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-gui
+    hostname: redis-gui
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - REDIS_PASSWORD=COVOfUJsC8Bnly8aRX4W
+    ports:
+      - "8081:8081"
+
+  opensearch-1:
+    image: opensearchproject/opensearch:1.2.4
+    container_name: opensearch-1
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-1
+      - discovery.seed_hosts=opensearch-1,opensearch-2
+      - cluster.initial_master_nodes=opensearch-1,opensearch-2
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      #- 9600:9600
+    networks:
+      - opensearch-net
+
+  opensearch-2:
+    image: opensearchproject/opensearch:1.2.4
+    container_name: opensearch-2
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-2
+      - discovery.seed_hosts=opensearch-1,opensearch-2
+      - cluster.initial_master_nodes=opensearch-1,opensearch-2
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data2:/usr/share/opensearch/data
+    networks:
+      - opensearch-net
+
+  opensearch-gui:
+    image: opensearchproject/opensearch-dashboards:1.2.0
+    container_name: opensearch-gui
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-1:9200","https://opensearch-2:9200"]'
+    networks:
+      - opensearch-net
