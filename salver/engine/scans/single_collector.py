@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from typing import List
-
 from loguru import logger
 
 from salver.common.facts import BaseFact
@@ -12,5 +11,5 @@ class SingleCollectorStrategy(ScanStrategy):
         self._collector_name = collector_name
 
     def run(self, facts: List[BaseFact]):
-        logger.info(f"Launch single collector scan ({self._collector_name}) {facts}")
-        self.run_agent_scan(queue=self._collector_name, facts=facts)
+        scan_id = self.run_agent_scan(collector_name=self._collector_name, facts=facts)
+        logger.info(f"Launched single collector ({self._collector_name}) scan: {scan_id}")

@@ -8,10 +8,13 @@ from loguru import logger
 from salver.common.facts import BaseFact
 from salver.engine.controllers import agent_tasks
 
+from salver.engine.tasks import launch_scan
 
 class ScanStrategy(ABC):
-    def run_agent_scan(self, queue: str, facts: List[BaseFact]):
-        return agent_tasks.scan(queue=queue, scan_id=uuid4(), facts=facts)
+    def run_agent_scan(self, facts: List[BaseFact], collector_name: str = None):
+        scan_id = uuid4()
+        launch_scan.apply_async(kwargs={'collector_name': collector_name, 'scan_id': scan_id, 'facts': facts})
+        return scan_id
 
     @abstractmethod
     def run(self, facts: List[BaseFact]):

@@ -20,17 +20,16 @@ setup(
         'pydantic==1.9.0',
         'redis==4.1.3',
         'docker==5.0.0',
+        'ujson==5.1.0',
 
         # 'coverage==5.5',
         # 'celery-redbeat==2.0.0',
         # 'celerybeat-mongo==0.2.0',
-        # 'docker',
         #'httpx==0.18.1',
         #'elasticsearch==7.12.1',
         # 'httpx==0.16.1',
         # 'neo4j==4.2.1',
         #'pymongo==3.11.3',
-        # 'redis==3.5.3',
     ],
     extras_require={
         'dev': [

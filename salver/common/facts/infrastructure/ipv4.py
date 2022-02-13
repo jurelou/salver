@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+from salver.common.facts import BaseFact
+from pydantic import validator
+import ipaddress
+
+
+class IPv4(BaseFact):
+    address: str
+
+    @validator("address")
+    def check_valid_ipv4(cls, v):
+        try:
+            ipaddress.IPv4Address(v)
+        except ipaddress.AddressValueError as err:
+            raise ValueError(f"Fact IPv4 is invalid: {err}")
+        return v
+

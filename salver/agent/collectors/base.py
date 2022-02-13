@@ -112,8 +112,7 @@ class BaseCollector:
         callbacks = self._prepare_callbacks(facts)
 
         logger.debug(
-            f"Execute collector {self.config.name} with \
-            {len(facts)} facts and {len(callbacks)} callbacks",
+            f"Execute collector {self.config.name} with {len(facts)} facts and {len(callbacks)} callbacks",
         )
 
         for cb in callbacks:

@@ -11,29 +11,22 @@ celery_app = configure_celery(config=settings.celery)
 celery_app.conf.update(
     {
         "imports": "salver.engine.tasks",
+        "beat_schedule": {
+            'ping-agents-every-x-seconds': {
+                'task': 'ping_agents',
+                'schedule': settings.ping_agents_delay
+            }
+
+        }
     }
 )
 
 
 @worker_init.connect
-def init(sender=None, conf=None, **kwargs):
-    logger.info("init")
-
-
-@worker_ready.connect
 def ready(sender=None, conf=None, **kwargs):
-    logger.info("ready")
+    from salver.engine.tasks import ping_agents
 
-    from salver.engine.scans import Scan
-    from salver.engine.controllers import agent_tasks
-    from salver.common.facts.personnal.email import Email
-    from salver.engine.scans.single_collector import SingleCollectorStrategy
+    ping_agents.apply()
+    logger.info("engine ready")
 
-    scan = Scan(strategy=SingleCollectorStrategy(collector_name="dummy-docker-collector"))
 
-    scan.run(facts=[Email(address="aa")])
-    scan.run(facts=[Email(address="bb")])
-    scan.run(facts=[Email(address="cc")])
-
-    a = celery.current_app.control.inspect().active_queues()
-    print("!!!", a)

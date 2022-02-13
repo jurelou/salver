@@ -18,6 +18,7 @@ class CollectorFactory(Factory):
         collector_instances = {}
 
         for collector in collector_modules:
+            print("======", collector)
             collector_name = collector.config["name"]
             if collector_name not in enabled_collectors:
                 continue

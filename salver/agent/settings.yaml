@@ -10,6 +10,10 @@ default:
     enabled_collectors:
       - dummy-collector
       - dummy-docker-collector
+      - sherlock
+      - zen
+      - recon-ng
+      - the-harvester
 
     logstash:
       ip: logstash

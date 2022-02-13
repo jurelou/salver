@@ -7,8 +7,10 @@ redocker:
 docker:
 	docker-compose -f ./deploy/docker-compose.yml up -d
 
+test:
+	ENV_FOR_DYNACONF=local python test.py
 localengine:
-	ENV_FOR_DYNACONF=local celery  -A salver.engine.celery_app worker
+	ENV_FOR_DYNACONF=local celery  -A salver.engine.celery_app worker -B
 
 localagent:
 	ENV_FOR_DYNACONF=local celery  -A salver.agent.celery_app worker --hostname agent@`openssl rand -hex 4`
@@ -28,8 +30,8 @@ clean:
 	rm -fr dist/
 	rm -fr *.egg-info
 
-test:
-	pytest -s ./tests/
+# test:
+# 	pytest -s ./tests/
 
 lint:
 	tox -elint

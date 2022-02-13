@@ -1,5 +1,6 @@
 ---
 default:
+    ping_agents_delay: 8 #Seconds
     opensearch:
         bootstrap_servers: broker:19092
 

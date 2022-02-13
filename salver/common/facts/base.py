@@ -7,7 +7,7 @@ from pydantic import BaseModel, BaseConfig, root_validator
 
 
 class BaseFact(BaseModel):
-    __hash__: str = ""
+    hash__: str = ""
 
     class Config(BaseConfig):
         extra = "allow"
@@ -16,13 +16,13 @@ class BaseFact(BaseModel):
     def set_hash(cls, values):
         if "required" not in cls.schema():
             return values
-        values.pop("__hash__", None)
+        values.pop("hash__", None)
         m = hashlib.sha256()
         required_fields = cls.schema()["required"]
         for k in sorted(values):
             if k in required_fields:
                 m.update(str(k).encode() + str(values[k]).encode())
-        values["__hash__"] = m.hexdigest()
+        values["hash__"] = m.hexdigest()
         return values
 
     @staticmethod

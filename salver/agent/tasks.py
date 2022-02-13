@@ -13,5 +13,7 @@ def scan(scan_id: uuid.UUID, facts: List[BaseFact]):
     collector_name = current_task.request.delivery_info["routing_key"]
 
     collect_result = all_collectors[collector_name]["instance"].collect(scan_id, facts)
-    for i in collect_result:
-        logstash_client.send_fact(i)
+    for f in collect_result:
+        logstash_client.send_fact(source=collector_name, fact=f)
+
+
