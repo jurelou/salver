@@ -42,9 +42,12 @@ def ping_agents():
     active_queues = current_app.control.inspect().active_queues() or {}
     agents = {}
     for name in active_queues.keys():
-        conf = celery_app.control.inspect([name]).conf()[name]
-        if "collectors" not in conf:
+        conf = celery_app.control.inspect([name]).conf()
+        if not conf:
             continue
-        agents[name] = conf["collectors"]
+        collector_conf = conf[name]
+        if "collectors" not in collector_conf:
+            continue
+        agents[name] = collector_conf["collectors"]
     update_agents_list(agents)
     logger.debug("updated agents")

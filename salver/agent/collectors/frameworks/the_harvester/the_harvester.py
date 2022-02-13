@@ -36,7 +36,7 @@ class TheHarvester(DockerCollector):
         ):
             for ip in item.split("\n"):
                 if ip:
-                    yield IPv4(address=ip)
+                    yield from [ IPv4(address=i.strip()) for i in ip.split(",")]
 
         for item, _ in self.findall_regex(
             data,
@@ -56,6 +56,6 @@ class TheHarvester(DockerCollector):
                 if ":" in host:
                     domain, ip = host.split(":")
                     yield Domain(fqdn=domain, address=ip)
-                    yield IPv4(address=ip, dns=domain)
+                    yield from [ IPv4(address=i.strip(), domain=domain) for i in ip.split(",")]
                 else:
                     yield Domain(fqdn=host)
