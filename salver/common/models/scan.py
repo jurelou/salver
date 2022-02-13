@@ -7,9 +7,11 @@ from pydantic import Field, BaseModel, BaseConfig
 
 from salver.common.fact import BaseFact
 
+
 class ScanRequest(BaseModel):
     facts: List[BaseFact]
     identifier: uuid.UUID = Field(default_factory=uuid.uuid4)
+
 
 # class ScanConfig(BaseModel):
 #     class Config:

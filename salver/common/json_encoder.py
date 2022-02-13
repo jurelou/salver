@@ -1,9 +1,9 @@
 import json
-from datetime import datetime
 from uuid import UUID
+from datetime import datetime
 
-from salver.common.utils import datetime_to_str, str_to_datetime
 from salver.common.facts import BaseFact, all_facts
+from salver.common.utils import datetime_to_str, str_to_datetime
 
 
 class encode(json.JSONEncoder):
@@ -18,7 +18,7 @@ class encode(json.JSONEncoder):
             return {"__type__": "__datetime__", "epoch": datetime_to_str(obj)}
         elif isinstance(obj, UUID):
             return {"__type__": "__uuid__", "uuid": obj.hex}
-        
+
         return json.JSONEncoder.default(self, obj)  # pragma: no cover
 
 

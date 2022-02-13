@@ -8,5 +8,5 @@ class Phone(BaseFact):
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {'mappings': {'properties': {'number': {'type': 'keyword'}}}},
+            {"mappings": {"properties": {"number": {"type": "keyword"}}}},
         )

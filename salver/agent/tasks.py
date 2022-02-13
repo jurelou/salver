@@ -1,10 +1,12 @@
-from typing import List
-from celery import current_task
 import uuid
+from typing import List
 
-from salver.agent import celery_app
+from celery import current_task
+
+from salver.agent.app import celery_app, logstash_client
 from salver.common.facts import BaseFact
 from salver.agent.collectors import all_collectors
+
 
 @celery_app.task(name="scan")
 def scan(scan_id: uuid.UUID, facts: List[BaseFact]):
@@ -12,4 +14,4 @@ def scan(scan_id: uuid.UUID, facts: List[BaseFact]):
 
     collect_result = all_collectors[collector_name]["instance"].collect(scan_id, facts)
     for i in collect_result:
-        print(i)
+        logstash_client.send_fact(i)

@@ -1,3 +1,3 @@
-from .base import ScanStrategy, Scan
+from .base import Scan, ScanStrategy
 
 __all__ = ["Scan", "ScanStrategy"]

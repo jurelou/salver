@@ -9,9 +9,17 @@ default:
 
     enabled_collectors:
       - dummy-collector
+      - dummy-docker-collector
+
+    logstash:
+      ip: logstash
+      port: 5042
 
 local:
     celery:
       broker_url: redis://:COVOfUJsC8Bnly8aRX4W@localhost:6379/0
       result_backend: redis://:COVOfUJsC8Bnly8aRX4W@localhost:6379/0
 
+    logstash:
+      ip: localhost
+      port: 5042

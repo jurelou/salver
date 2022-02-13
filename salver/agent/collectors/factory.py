@@ -1,9 +1,9 @@
 from loguru import logger
 
-from salver.agent.collectors.base import BaseCollector
-from salver.common.exceptions import InvalidCollectorDefinition
-from salver.common.factory import Factory
 from salver.config import agent_config
+from salver.common.factory import Factory
+from salver.common.exceptions import InvalidCollectorDefinition
+from salver.agent.collectors.base import BaseCollector
 
 
 class CollectorFactory(Factory):
@@ -18,16 +18,17 @@ class CollectorFactory(Factory):
         collector_instances = {}
 
         for collector in collector_modules:
+            collector_name = collector.config["name"]
+            if collector_name not in enabled_collectors:
+                continue
 
             try:
                 collector_instance = collector()
             except Exception as err:
                 raise InvalidCollectorDefinition(
-                    collector_name=type(collector).__name__,
-                    error=err
+                    collector_name=type(collector).__name__, error=err
                 ) from err
-            collector_name = collector_instance.config.name
-            
+
             if collector_name in collector_instances:
                 raise InvalidCollectorDefinition(
                     collector_name=collector_name,
@@ -36,7 +37,7 @@ class CollectorFactory(Factory):
             collector_instances[collector_name] = {
                 "instance": collector_instance,
                 "enabled": collector_instance.config.name in enabled_collectors,
-                "allowed_input": collector_instance.callback_types
+                "allowed_input": collector_instance.callback_types,
             }
 
         for enabled_collector in enabled_collectors:
@@ -48,6 +49,6 @@ class CollectorFactory(Factory):
 
         self.items = collector_instances
         for name, conf in collector_instances.items():
-            enabled = ': enabled' if conf['enabled'] else ''
-            logger.info(f'Loaded collector {name}{enabled}')
+            enabled = ": enabled" if conf["enabled"] else ""
+            logger.info(f"Loaded collector {name}{enabled}")
         return collector_instances

@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 # from salver.common.exceptions import CollectorNotFound
 from typing import List
+
 from loguru import logger
 
-from salver.common.models import ScanConfig, BaseFact
 from salver.engine.scans import BaseScan
+from salver.common.models import BaseFact, ScanConfig
 from salver.engine.services.agents import get_collectors_mapping
 
 
 class FullScanConfig(ScanConfig):
     pass
+
 
 class FullScan(BaseScan):
     name = "full-scan"
@@ -22,10 +24,10 @@ class FullScan(BaseScan):
     @staticmethod
     def _get_available_collectors(facts: List[BaseFact]):
         available_collectors = get_collectors_mapping()
-        
+
         mapping = {}
         for fact in facts:
-            fact_type = fact.schema()["title"]            
+            fact_type = fact.schema()["title"]
             if fact_type not in available_collectors:
                 continue
             for collector in available_collectors[fact_type]:

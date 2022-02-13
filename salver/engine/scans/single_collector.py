@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from loguru import logger
 from typing import List
 
-from salver.engine.scans import ScanStrategy
+from loguru import logger
+
 from salver.common.facts import BaseFact
+from salver.engine.scans import ScanStrategy
 
 
 class SingleCollectorStrategy(ScanStrategy):

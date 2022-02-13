@@ -4,11 +4,11 @@ from setuptools import setup
 
 setup(
     name='salver',
-    version='2.4.0',
+    version='3.0.0',
     description='Yes',
     long_description='long desc',
-    author='Opulence',
-    author_email='contact@opulence.fr',
+    author='jurelou',
+    author_email='contact@salver.xyz',
     url='http://opulence.wtf',
     license='',
     packages=find_namespace_packages(include=['salver.*']),
@@ -18,7 +18,8 @@ setup(
         'dynaconf==3.1.7',
         'loguru==0.6.0',
         'pydantic==1.9.0',
-        'redis==4.1.3'
+        'redis==4.1.3',
+        'docker==5.0.0',
 
         # 'coverage==5.5',
         # 'celery-redbeat==2.0.0',
@@ -28,7 +29,6 @@ setup(
         #'elasticsearch==7.12.1',
         # 'httpx==0.16.1',
         # 'neo4j==4.2.1',
-        #'docker==5.0.0',
         #'pymongo==3.11.3',
         # 'redis==3.5.3',
     ],
@@ -47,14 +47,6 @@ setup(
             'isort==5.8.0',
             'pygount==1.2.4',
         ],
-        # 'api': [
-        #     'dynaconf==3.1.4',
-        #     'fastapi==0.63.0',
-        #     'uvicorn[standard]==0.13.4',
-        #     'celery==5.0.5',
-        #     'redis==3.5.3',
-        #     'python-socketio==4.6.1',
-        # ],
     },
     python_requires='>=3.8.*, <4',
 )

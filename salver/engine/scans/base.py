@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-from loguru import logger
-from typing import List
-from uuid import uuid4
 from abc import ABC, abstractmethod
+from uuid import uuid4
+from typing import List
+
+from loguru import logger
 
 from salver.common.facts import BaseFact
 from salver.engine.controllers import agent_tasks
 
-class ScanStrategy(ABC):
 
+class ScanStrategy(ABC):
     def run_agent_scan(self, queue: str, facts: List[BaseFact]):
         return agent_tasks.scan(queue=queue, scan_id=uuid4(), facts=facts)
 
     @abstractmethod
     def run(self, facts: List[BaseFact]):
         pass
+
 
 class Scan:
     def __init__(self, strategy: ScanStrategy = None) -> None:
@@ -25,6 +27,7 @@ class Scan:
             logger.critical("No ScanStrategy defined.")
             raise ValueError()
         self._strategy.run(facts)
+
 
 """
 class BaseScan:

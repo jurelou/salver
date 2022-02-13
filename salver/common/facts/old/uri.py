@@ -8,5 +8,5 @@ class Uri(BaseFact):
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {'mappings': {'properties': {'location': {'type': 'keyword'}}}},
+            {"mappings": {"properties": {"location": {"type": "keyword"}}}},
         )

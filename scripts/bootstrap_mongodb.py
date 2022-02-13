@@ -11,10 +11,11 @@ MONGO_URL = "mongodb://localhost:27017"
 def bootstrap():
     mongo_db = pymongo.MongoClient(MONGO_URL)[engine_config.mongo.db_name]
 
-    print('Bootstrap mongodb')
-    mongo_db.agents.create_index('name', unique=True)
-    mongo_db.scans.create_index('external_id', unique=True)
-    mongo_db.collects.create_index('external_id', unique=True)
+    print("Bootstrap mongodb")
+    mongo_db.agents.create_index("name", unique=True)
+    mongo_db.scans.create_index("external_id", unique=True)
+    mongo_db.collects.create_index("external_id", unique=True)
+
 
 if __name__ == "__main__":
     bootstrap()
@@ -22,12 +23,6 @@ if __name__ == "__main__":
 # def add_new_collect(db, collect: models.Collect):
 #     logger.debug(f'mongodb: Add collect {collect}')
 #     db.collects.insert_one(collect.dict())
-
-
-
-
-
-
 
 
 # class MongoDB(BaseDB):

@@ -1,8 +1,8 @@
-
 from loguru import logger
 
 from salver.common.facts import BaseFact
 from salver.common.factory import Factory
+
 
 class FactFactory(Factory):
     def build(self):

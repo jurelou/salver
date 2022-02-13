@@ -1,6 +1,12 @@
+from .base import BaseCollector, CollectorBaseConfig
+from .docker import DockerCollector
 from .factory import CollectorFactory
-from .base import BaseCollector
 
 all_collectors = CollectorFactory().build()
 
-__all__ = ["all_collectors", "BaseCollector"]
+__all__ = [
+    "all_collectors",
+    "BaseCollector",
+    "CollectorBaseConfig",
+    "DockerCollector"
+]

@@ -1,3 +1,4 @@
+.PHONY: clean
 
 redocker:
 	docker-compose -f ./deploy/docker-compose.yml down -v
@@ -16,12 +17,22 @@ install:
 	rm -rf env
 	python3.8 -m venv env
 	env/bin/pip install pip setuptools wheel -U
-	env/bin/python setup.py install
+	env/bin/pip install .[dev]
 
-format:
-	tox -e black
-	tox -e isort
-	pre-commit run --all-files
+clean:
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -rf {} +
+	rm -fr build/
+	rm -fr dist/
+	rm -fr *.egg-info
+
+test:
+	pytest -s ./tests/
+
+lint:
+	tox -elint
 
 sloc:
 	pygount --format=summary ./salver

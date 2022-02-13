@@ -27,6 +27,16 @@ services:
     ports:
       - "8081:8081"
 
+  logstash:
+    image: opensearchproject/logstash-oss-with-opensearch-output-plugin:7.16.3
+    networks:
+      - opensearch-net
+    restart: always
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - 127.0.0.1:5042:5042
+
   opensearch-1:
     image: opensearchproject/opensearch:1.2.4
     container_name: opensearch-1
