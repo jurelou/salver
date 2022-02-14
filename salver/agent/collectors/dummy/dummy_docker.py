@@ -16,13 +16,13 @@ class Dummy(DockerCollector):
 
     def callbacks(self):
         return {
-            Email: self.cb_email,
+            Email: self.cb_email, 
             Username: self.cb_username,
         }
 
     def cb_username(self, username):
         whoami = self.run_container(command="whoami")
-        yield Username(name= username + whoami)
+        yield Username(name= username.name + whoami)
         yield Email(address="dummy@" + whoami)
 
     def cb_email(self, email):

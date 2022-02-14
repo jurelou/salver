@@ -4,7 +4,7 @@ from salver.engine.scans.full_scan import FullScanStrategy
 
 from salver.common.facts import Email, Username, Company, Domain
 
-scan = Scan(strategy=SingleCollectorStrategy(collector_name="the-harvester"))
+scan = Scan(strategy=SingleCollectorStrategy(collector_name="little-brother"))
 #scan = Scan(strategy=FullScanStrategy())
 
 scan.run(facts=[

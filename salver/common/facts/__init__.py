@@ -6,9 +6,11 @@ from .personnal.email import Email
 from .personnal.person import Person
 from .personnal.username import Username
 from .personnal.online_profile import OnlineProfile
+from .personnal.phone import Phone
 
 from .infrastructure.domain import Domain
 from .infrastructure.ipv4 import IPv4
+from .infrastructure.uri import Uri
 
 from .others.company import Company
 
@@ -23,5 +25,6 @@ __all__ = [
     "Username",
     "OnlineProfile",
     "Company",
-    "Domain"
+    "Domain",
+    "Phone"
 ]

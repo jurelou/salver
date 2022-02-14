@@ -2,11 +2,11 @@
 from salver.common.facts import BaseFact
 
 
-class Email(BaseFact):
-    address: str
+class Phone(BaseFact):
+    number: str
 
     @classmethod
     def elastic_mapping(cls):
         return BaseFact.make_mapping(
-            {'mappings': {'properties': {'address': {'type': 'keyword'}}}},
+            {'mappings': {'properties': {'number': {'type': 'keyword'}}}},
         )

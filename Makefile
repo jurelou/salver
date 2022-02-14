@@ -6,9 +6,11 @@ redocker:
 
 docker:
 	docker-compose -f ./deploy/docker-compose.yml up -d
+	python scripts/bootstrap_elasticsearch.py
 
 test:
 	ENV_FOR_DYNACONF=local python test.py
+	
 localengine:
 	ENV_FOR_DYNACONF=local celery  -A salver.engine.celery_app worker -B
 

@@ -15,3 +15,8 @@ class IPv4(BaseFact):
             raise ValueError(f"Fact IPv4 is invalid: {err}")
         return v
 
+    @classmethod
+    def elastic_mapping(cls):
+        return BaseFact.make_mapping(
+            {'mappings': {'properties': {'address': {'type': 'ip'}}}},
+        )

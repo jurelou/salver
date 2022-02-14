@@ -14,6 +14,11 @@ default:
       - zen
       - recon-ng
       - the-harvester
+      - black-widow
+      - infoga
+      - certificate-transparency
+      # - kupa3
+      - little-brother
 
     logstash:
       ip: logstash

@@ -33,7 +33,7 @@ class LogstashClient:
                 self.connect()
                 self.send(data)
 
-    def send_fact(self, source: str, fact: BaseFact):
+    def send_fact(self, source: str, scan_id, fact: BaseFact):
         fact_type = fact.schema()["title"]
         fact_dict = {
             "@metadata": {
@@ -41,6 +41,7 @@ class LogstashClient:
             },
             "fact_type": fact_type,
             "fact_source": source,
+            "scan_id": scan_id,
             **fact.dict()
         }
         fact_str = ujson.dumps(fact_dict).encode('utf-8') + b"\n"

@@ -14,6 +14,6 @@ def scan(scan_id: uuid.UUID, facts: List[BaseFact]):
 
     collect_result = all_collectors[collector_name]["instance"].collect(scan_id, facts)
     for f in collect_result:
-        logstash_client.send_fact(source=collector_name, fact=f)
+        logstash_client.send_fact(source=collector_name, scan_id=scan_id.hex, fact=f)
 
 
