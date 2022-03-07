@@ -1,26 +1,15 @@
 # -*- coding: utf-8 -*-
-# from salver.common.exceptions import CollectorNotFound
 from typing import List
 from loguru import logger
-from salver.common.models import ScanConfig, BaseFact
-from salver.engine.scans import BaseScan
+
+from salver.common.facts import BaseFact
+from salver.engine.scans import ScanStrategy
 
 
-class SingleCollectorConfig(ScanConfig):
-    collector_name: str
+class SingleCollectorStrategy(ScanStrategy):
+    def __init__(self, collector_name: str):
+        self._collector_name = collector_name
 
-
-class SingleCollector(BaseScan):
-    name = "single-collector"
-
-    config: SingleCollectorConfig
-
-    def configure(self, config: ScanConfig):
-        self.config = SingleCollectorConfig(**config.dict())
-
-    def scan(self, facts: List[BaseFact]):
-        logger.info("Launch single collector scan")
-        self.launch_collector(
-            self.config.collector_name,
-            facts
-        )
+    def run(self, facts: List[BaseFact]):
+        scan_id = self.run_agent_scan(collector_name=self._collector_name, facts=facts)
+        logger.info(f"Launched single collector ({self._collector_name}) scan: {scan_id}")

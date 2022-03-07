@@ -9,7 +9,6 @@ from pydantic import BaseModel
 
 from salver.common.exceptions import RateLimitException
 
-
 class Duration(IntEnum):
     SECOND = 1
     MINUTE = 60
@@ -32,7 +31,6 @@ class Bucket:
     def inspect_expired_items(self, start_time: int) -> Tuple[int, int]:
         """Find how many items in bucket that have slipped out of the time-window."""
         volume = self.size()
-
         for log_idx, log_item in enumerate(list(self._q.queue)):
             if log_item > start_time:
                 return volume - log_idx, log_item - start_time
@@ -42,7 +40,7 @@ class Bucket:
         return self._q.qsize()
 
     def put(self, item):
-        return self._q.put(item)
+        self._q.put(item)
 
     def get(self, number):
         counter = 0
@@ -68,7 +66,7 @@ class Limiter:
     @staticmethod
     def _validate_rate_list(rates):
         if not rates:
-            raise ValueError('Rate(s) must be provided')
+            raise ValueError("Rate(s) must be provided")
 
         for idx, rate in enumerate(rates[1:]):
             prev_rate = rates[idx]
@@ -77,10 +75,11 @@ class Limiter:
                 or rate.interval.value <= prev_rate.interval.value
             )
             if invalid:
-                raise ValueError(f'{prev_rate} cannot come before {rate}')
+                raise ValueError(f"{prev_rate} cannot come before {rate}")
 
     def try_acquire(self) -> None:
         """Acquiring an item or reject it if rate-limit has been exceeded."""
+
         now = int(time.time())
         for idx, rate in enumerate(self._rates):
             if self._bucket.size() < rate.limit:
@@ -100,6 +99,6 @@ class Limiter:
             self.try_acquire()
         except RateLimitException as err:
             logger.info(
-                f'Rate limit reached for {self._name}, sleeping for {err.remaining_time}s',
+                f"Rate limit reached for {self._name}, sleeping for {err.remaining_time}s",
             )
             time.sleep(err.remaining_time)

@@ -1,89 +1,38 @@
 # -*- coding: utf-8 -*-
-import sys
-import socket
-from uuid import uuid4
-from signal import SIGTERM, signal
-from functools import partial
-
+from kombu import Queue
 from loguru import logger
+from celery.signals import celeryd_init
+from celery.schedules import crontab
 
-from salver.agent import tasks
-from salver.common import models
-from salver.config import agent_config
-from salver.common.kafka import Consumer
+from salver.agent.config import settings
+from salver.common.celery import configure_celery
+from salver.agent.collectors import all_collectors
+from salver.agent.logstash import LogstashClient
 
-# from salver.agent.api import AgentAPI
-from salver.agent.services import collectors, kafka_producers
+queues = [Queue(collector) for collector in all_collectors.keys()]
 
-ALL_COLLECTORS = collectors.build()
+celery_app = configure_celery(config=settings.celery)
 
-
-class SalverAgent:
-    def __init__(self):
-        self.name = f'agent-{socket.getfqdn()}-{uuid4().hex[:4]}'
-        all_collectors = [
-            models.Collector(name=c_name, enabled=c_config['enabled'], allowed_input=c_config['allowed_input'])
-            for c_name, c_config in ALL_COLLECTORS.items()
-        ]
-        enabled_collectors = {
-            name: c['instance'] for name, c in ALL_COLLECTORS.items() if c['enabled']
+celery_app.conf.update(
+    {
+        "imports": "salver.agent.tasks",
+        "task_queues": queues,
+        "collectors": {
+            c_name: {
+                "enabled": collector["enabled"],
+                "allowed_input": collector["allowed_input"],
+                "config": collector["instance"].config.dict()
+            }
+            for c_name, collector in all_collectors.items()
         }
-        self.agent_info = models.AgentInfo(name=self.name, collectors=all_collectors)
+    }
+)
 
-        common_settings = {
-            'num_workers': agent_config.kafka.workers_per_topic,
-            'num_threads': agent_config.kafka.threads_per_worker,
-            'schema_registry_url': agent_config.kafka.schema_registry_url,
-        }
-        self.consumers = [
-            Consumer(
-                topic='engine-connect',
-                value_deserializer=models.EngineInfo,
-                kafka_config={
-                    'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                    'group.id': self.agent_info.name,
-                },
-                callback=partial(tasks.OnEngineConnect, self.agent_info),
-                **common_settings,
-            ),
-        ]
-        for collector_name, collector_config in ALL_COLLECTORS.items():
-            limiter = collector_config['instance'].limiter
-            if limiter:
-                limiter = limiter.rate_limit
-
-            self.consumers.append(
-                Consumer(
-                    topic=f'collect-create-{collector_name}',
-                    schema_name='collect-create',
-                    value_deserializer=models.Collect,
-                    kafka_config={
-                        'bootstrap.servers': agent_config.kafka.bootstrap_servers,
-                        'group.id': 'agents',
-                    },
-                    callback=partial(tasks.OnCollect, enabled_collectors),
-                    rate_limit_cb=limiter,
-                    **common_settings,
-                ),
-            )
-
-    def start(self):
-        logger.info(f'Starting agent {self.name}')
-
-        agent_connect = kafka_producers.make_agent_connect()
-        agent_connect.produce(self.agent_info, flush=True)
-
-        agent_disconnect = kafka_producers.make_agent_disconnect()
-
-        try:
-            while True:
-                for consumer in self.consumers:
-                    consumer.start_workers()
-        except KeyboardInterrupt:
-            logger.warning('quitting')
-            agent_disconnect.produce(self.agent_info, flush=True)
+logstash_client = LogstashClient()
 
 
-if __name__ == '__main__':
-    agent = SalverAgent()
-    agent.start()
+@celeryd_init.connect
+def startup(sender=None, conf=None, **kwargs):
+    logger.info("init")
+
+

@@ -12,8 +12,8 @@ class AgentInfo(BaseModel):
 
     @staticmethod
     def to_dict(obj, _):
-        res = obj.dict(exclude={'collectors'})
-        res['collectors'] = [c.dict() for c in obj.collectors]
+        res = obj.dict(exclude={"collectors"})
+        res["collectors"] = [c.dict() for c in obj.collectors]
         return res
 
     @staticmethod

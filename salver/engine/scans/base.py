@@ -1,14 +1,43 @@
 # -*- coding: utf-8 -*-
-import uuid
+from abc import ABC, abstractmethod
+from uuid import uuid4
 from typing import List
-from salver.common.models import BaseFact, ScanConfig, Collect
-from salver.engine.exceptions import CollectorNotFound
 
+from loguru import logger
+
+from salver.common.facts import BaseFact
+from salver.engine.controllers import agent_tasks
+
+from salver.engine.tasks import launch_scan
+
+class ScanStrategy(ABC):
+    def run_agent_scan(self, facts: List[BaseFact], collector_name: str = None):
+        scan_id = uuid4()
+        launch_scan.apply_async(kwargs={'collector_name': collector_name, 'scan_id': scan_id, 'facts': facts})
+        return scan_id
+
+    @abstractmethod
+    def run(self, facts: List[BaseFact]):
+        pass
+
+
+class Scan:
+    def __init__(self, strategy: ScanStrategy = None) -> None:
+        self._strategy = strategy
+
+    def run(self, facts: List[BaseFact]):
+        if not self._strategy:
+            logger.critical("No ScanStrategy defined.")
+            raise ValueError()
+        self._strategy.run(facts)
+
+
+"""
 class BaseScan:
 
     name: str = ""
     config: ScanConfig
-
+-
     def __init__(self, agents_collectors_producers):
         if not self.name:
             print("NO NAME")
@@ -28,7 +57,6 @@ class BaseScan:
         self.config = config
 
     def scan(self, facts):
-        """Starts the scan"""
         raise NotImplementedError(f"Scan {self.name} does not implements a `scan` method.")
 
     def launch_collector(
@@ -46,3 +74,4 @@ class BaseScan:
                 facts=facts
             )
         )
+"""

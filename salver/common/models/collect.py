@@ -9,13 +9,14 @@ from .fact import BaseFact, facts_to_dict, facts_from_dict
 
 
 class CollectState(str, Enum):
-    UNKNOWN = 'unknown'
-    CREATED = 'created'
+    UNKNOWN = "unknown"
+    CREATED = "created"
 
-    STARTING = 'starting'
-    STARTED = 'started'
-    FINISHED = 'finished'
-    ERRORED = 'errored'
+    STARTING = "starting"
+    STARTED = "started"
+    FINISHED = "finished"
+    ERRORED = "errored"
+
 
 class CollectDone(BaseModel):
     collect_id: uuid.UUID
@@ -28,8 +29,8 @@ class CollectDone(BaseModel):
 
     @staticmethod
     def to_dict(obj, *args):
-        d = obj.dict(exclude={'collect_id'})
-        d['collect_id'] = obj.collect_id.hex
+        d = obj.dict(exclude={"collect_id"})
+        d["collect_id"] = obj.collect_id.hex
         return d
 
     @staticmethod
@@ -45,16 +46,17 @@ class CollectResponse(BaseModel):
 
     @staticmethod
     def to_dict(obj, *args):
-        d = obj.dict(exclude={'fact', 'collect_id', 'scan_id'})
-        d['fact'] = BaseFact.to_dict(obj.fact)
-        d['collect_id'] = obj.collect_id.hex
-        d['scan_id'] = obj.scan_id.hex
+        d = obj.dict(exclude={"fact", "collect_id", "scan_id"})
+        d["fact"] = BaseFact.to_dict(obj.fact)
+        d["collect_id"] = obj.collect_id.hex
+        d["scan_id"] = obj.scan_id.hex
         return d
 
     @staticmethod
     def from_dict(obj, _):
-        fact = obj.pop('fact', None)
+        fact = obj.pop("fact", None)
         return CollectResponse(fact=facts_from_dict([fact])[0], **obj)
+
 
 class Collect(BaseModel):
     state: CollectState = CollectState.UNKNOWN
@@ -64,18 +66,18 @@ class Collect(BaseModel):
     external_id: uuid.UUID = Field(default_factory=uuid.uuid4)
 
     class Config:
-        extra = 'ignore'
+        extra = "ignore"
         use_enum_values = True
 
     @staticmethod
     def to_dict(obj, *args):
-        d = obj.dict(exclude={'facts', 'external_id', 'scan_id'})
-        d['facts'] = facts_to_dict(obj.facts)
-        d['external_id'] = obj.external_id.hex
-        d['scan_id'] = obj.scan_id.hex
+        d = obj.dict(exclude={"facts", "external_id", "scan_id"})
+        d["facts"] = facts_to_dict(obj.facts)
+        d["external_id"] = obj.external_id.hex
+        d["scan_id"] = obj.scan_id.hex
         return d
 
     @staticmethod
     def from_dict(obj, _):
-        facts = obj.pop('facts', [])
+        facts = obj.pop("facts", [])
         return Collect(facts=facts_from_dict(facts), **obj)
