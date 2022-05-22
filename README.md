@@ -19,19 +19,5 @@ make bootstrap  # crée les index, prépare les BDD
 make agent
 make engine
 
-python toto.py # test: crée un scan
-
 ```
 
-# TODO
-
-connectors: neo4J/eladstic make a caching mechanism usique a Q and sched() to flush the queue every X sec
-
-### API rest:
-
-- lister les agents
-- lister les collect pour un scan donné
-- lister lesscan
-- creer un scan (comme dans toto.py)
-
-- 
