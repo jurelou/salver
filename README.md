@@ -10,11 +10,11 @@
 
 requires docker && python >= 3.8
 ```
-make install # installe les dépendances python
-source env/bin/activate # active l'environnement virtuel
+make install 
+source env/bin/activate
 
-make docker # crée les dockers (BDD / kafka)
-make bootstrap  # crée les index, prépare les BDD
+make docker
+make bootstrap
 
 make agent
 make engine
