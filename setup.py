@@ -22,7 +22,7 @@ setup(
         'docker==5.0.0',
         'ujson==5.1.0',
         'opensearch-py==1.0.0',
-        'httpx==0.22.0',
+        'httpx==0.23.0',
         # 'coverage==5.5',
         # 'celery-redbeat==2.0.0',
         # 'celerybeat-mongo==0.2.0',
