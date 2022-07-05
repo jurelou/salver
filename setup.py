@@ -20,7 +20,7 @@ setup(
         'pydantic==1.9.0',
         'redis==4.1.3',
         'docker==5.0.0',
-        'ujson==5.1.0',
+        'ujson==5.4.0',
         'opensearch-py==1.0.0',
         'httpx==0.22.0',
         # 'coverage==5.5',
