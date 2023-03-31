@@ -18,7 +18,7 @@ setup(
         'dynaconf==3.1.7',
         'loguru==0.6.0',
         'pydantic==1.9.0',
-        'redis==4.1.3',
+        'redis==4.4.4',
         'docker==5.0.0',
         'ujson==5.1.0',
         'opensearch-py==1.0.0',
